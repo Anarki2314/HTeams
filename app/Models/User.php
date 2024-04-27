@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -20,8 +21,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
+        'orgName',
+        'phone',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -31,7 +36,8 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'updated_at',
+        'email_verified_at',
     ];
 
     /**
@@ -42,10 +48,31 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'role_id' => 'role'
     ];
 
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role->title === 'Админ';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role->title === 'Пользователь';
+    }
+
+    public function isOrganizer(): bool
+    {
+        return $this->role->title === 'Организатор';
     }
 }
