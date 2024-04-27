@@ -18,17 +18,18 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'created_at' => $this->created_at,
+            'role' => $this->role->title
         ];
 
-        if ($this->isUser() || ($this->role->title === 'Admin' && auth()->user()->isAdmin())) {
+        if ($this->isUser()) {
             $data['name'] = $this->name;
             $data['surname'] = $this->surname;
             $data['isUser'] = true;
-            $data['role'] = $this->role_id;
-        } elseif ($this->isOrganizer() || ($this->role->title === 'Admin' && auth()->user()->isAdmin())) {
+        } elseif ($this->isOrganizer()) {
             $data['orgName'] = $this->orgName;
             $data['isOrganizer'] = true;
-            $data['role'] = $this->role_id;
+        } elseif ($this->isAdmin()) {
+            $data['isAdmin'] = true;
         }
 
         return $data;

@@ -16,21 +16,27 @@
     composer install
     ```
 4. Copy the .env.example file to .env and fill update the necessary configuration:
+   For Linux:
     ```bash
     cp .env.example .env
+    ```
+    For Windows:
+    ```bash
     copy .env.example .env
     ```
 5. Generate a new application key:
     ```bash
     php artisan key:generate
     ```
-6. Migrate and seed the database :
+6. Create the database
+
+7. Migrate and seed the database :
     ```bash
     php artisan migrate --seed
     ```
-7. Run the server:
+8. Run the server:
     ```bash
     php artisan serve
     npm run dev
     ```
-8. Visit http://localhost:8000 in your browser.
+9. Visit http://localhost:8000 in your browser.

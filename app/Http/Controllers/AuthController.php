@@ -17,11 +17,6 @@ class AuthController extends Controller
 
 
         $validated = $request->validated();
-        if (User::where('email', $validated['email'])->exists()) {
-            return response()->json([
-                'message' => 'Пользователь с таким email уже существует',
-            ], 409);
-        }
         $user = User::create($validated);
 
         $token = TokenService::generateToken($user);
@@ -29,16 +24,14 @@ class AuthController extends Controller
             'data' => [
                 'token' => $token,
                 'user' => new UserResource($user),
-                ''
             ],
-            'message' => 'Пользователь успешно зарегистрирован',
+            'message' => 'Вы успешно зарегистрировались',
         ], 201);
     }
 
     public function signIn(SignInRequest $request)
     {
         $credentials = $request->validated(); // email and password
-
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = TokenService::generateToken($user);
@@ -47,10 +40,18 @@ class AuthController extends Controller
                     'token' => $token,
                     'user' => new UserResource($user),
                 ],
-                'message' => 'Пользователь успешно авторизован',
+                'message' => 'Вы вошли в аккаунт',
             ], 200);
         }
 
         return response()->json(['message' => 'Неверная почта или пароль'], 401);
+    }
+
+    public function signOut(Request $request)
+    {
+        TokenService::deleteToken($request->user());
+        return response()->json([
+            'message' => 'Вы вышли из аккаунта',
+        ], 200);
     }
 }
