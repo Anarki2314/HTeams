@@ -39,6 +39,9 @@ body {
     background-color: #1B1B1B;
     color: #f4f4f4;
 }
+section {
+    position: relative;
+}
 img{
     max-width: 100%;
 }
@@ -133,7 +136,6 @@ ul {
     text-align: center;
     transition: all 0.3s ease;
 }
-
 .main-button, .main-button:any-link{
     background: none;
     border: 2px solid var(--color-main);
@@ -183,4 +185,23 @@ ul {
     background-color: #313131;
     color: #f4f4f4;
 }
+
+.dark-button{
+    background-color: #1B1B1B;
+    border: 2px solid #1B1B1B;
+    color: #f4f4f4;
+}
+
+.dark-button:hover{
+    background-color: rgb(27, 27, 27, 0.7);
+}
+
+.dark-button:focus-visible{
+    background-color: rgb(27, 27, 27, 0.7);
+}
+
+.dark-button:active{
+    background-color: rgb(27, 27, 27, 0.8);
+}
+
 </style>

@@ -31,18 +31,21 @@
             </div>
         </div>
     </section>
+
+    <footer-view/>
 </template>
 
 <script>
 import HeaderView from '@/components/HeaderView.vue';
 import AdminNav from '../../components/_admin/AdminNav.vue';
 import OrganizerCard from '../../components/_admin/OrganizerCard.vue';
-
+import FooterView from '@/components/FooterView.vue';
 export default {
     components: {
         HeaderView,
         AdminNav,
-        OrganizerCard
+        OrganizerCard,
+        FooterView
     },
     data() {
         return {

@@ -26,6 +26,7 @@ import AdminTags from '@/pages/_admin/Tags.vue';
 import AdminOrganizers from '@/pages/_admin/Organizers.vue';
 import AdminUser from '@/pages/_admin/User.vue';
 import AdminTeam from '@/pages/_admin/Team.vue';
+import AdminRequest from '@/pages/_admin/Request.vue';
 function requireAuth(to, from, next) {
     if (localStorage.getItem('token')) {
         next();
@@ -94,6 +95,10 @@ const routes = [
         component: AdminRequestsEvents,
     },
     {
+        path: '/_admin/requests',
+        component: AdminRequestsEvents,
+    },
+    {
         path: '/_admin/users',
         component: AdminUsers
     },
@@ -112,6 +117,10 @@ const routes = [
     {
         path: '/_admin/users/:userId',
         component: AdminUser
+    },
+    {
+        path: '/_admin/requests/:requestId',
+        component: AdminRequest
     },
     {
         path: '/_admin/organizers/:userId',

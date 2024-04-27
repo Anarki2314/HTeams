@@ -1,38 +1,76 @@
 <template>
-    <div class="team-row-card row-card justify-content-sm-between" v-if="hasRequiredProps">
-        <router-link :to="'/_admin/teams/' + team.id" class="container-team-name row-card-container-name">
-            <div class="container-team-image row-card-container-image">
-                <img :src="team.image" alt="" class="team-image row-card-image">
-            </div>
-            <h4 class="team-name row-card-name">{{ team.name }}</h4>
-        </router-link>
-        <div class="container-team-apply-button row-card-container-button">
-            <router-link :to="'/_admin/teams/' + team.id" class="button-view secondary-button">Просмотр</router-link>
+    <router-link :to="'/_admin/requests/'+ event.id " class="event-card" v-if="hasRequiredProps">
+        <div class="event-card-image-container">
+            <img class="event-card-image"
+             :src="event.image"  alt="">
         </div>
-    </div>
+        <div class="event-card-body d-flex flex-column">
+            <h3 class="event-card-title"> {{ event.title }}</h3>
+            <div class="event-card-tags d-flex align-items-center flex-wrap">
+
+                <span class="event-card-tag " v-for="tag, index in slicedTags" :key="tag "> #{{ tag.replace(' ', '') }} </span>
+                <span class="event-card-tag" v-if="slicedTags.length < event.tags.length"> +{{ event.tags.length - slicedTags.length }}</span>
+                
+            </div>
+            <div class="event-card-date"> {{ new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' })}} </div>
+        </div>
+    </router-link>
 </template>
 
-
 <script>
-
 export default {
-    props: {
-        team: {
-            type: Object,
-            required: true
-
+    data: function () {
+        
+        return {
+            slicedTags: [],
         }
     },
-
+    props: {
+        event: {
+            type: Object,
+            required: true
+        }
+    },
+    methods: {
+    },
+    mounted() {
+        this.slicedTags = this.event.tags.slice(0, 4)
+    },
     computed: {
         hasRequiredProps() {
-            const { id, name, image } = this.team
-            return id && name && image;
+            const { id, image, title, tags, date } = this.event
+            return id && image && title && tags && date;
         }
     }
 }
 </script>
 
 <style scoped>
+
+.event-card{
+    width: clamp( 280px, 100% , 500px);
+}
+.event-card-image{
+    width: clamp( 280px, 100% , 500px);
+    aspect-ratio: 2/1;
+    object-fit: cover;
+}
+.event-card-body{
+    margin-top: 10px;
+    gap: 10px;
+}
+.event-card-title{
+    font-size:clamp( 20px , 3vw , 30px );
+}
+.event-card-date{
+    font-size:clamp( 20px , 3vw , 30px );
+}
+.event-card-tags{
+    gap: 20px;
+    }
+.event-card-tag{
+    color: var(--color-main);
+    font-size: var(--size-text);
+}
 
 </style>

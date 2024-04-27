@@ -35,8 +35,8 @@
                             <div class="container-profile-item" v-if="isOrganizer">Создано мероприятий: <span class="profile-info-text">{name}</span></div>
                             <div class="container-profile-item">Предстоящие: <router-link to="/profile/upcoming" class="profile-info-text info-button">{surname}</router-link></div>
                             <div class="container-profile-item">Завершенные: <router-link to="/profile/finished" class="profile-info-text info-button">{phone}</router-link></div>
-                            <div class="container-profile-item" v-if="!isOrganizer"><span class="info-button">Создать команду</span></div>
-                            <div class="container-profile-item" v-if="!isOrganizer"><span class="info-button">Вступить в команду</span></div>
+                            <div class="container-profile-item" v-if="!isOrganizer"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
+                            <div class="container-profile-item" v-if="!isOrganizer"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
                             <div class="container-profile-item" v-if="isOrganizer"><span class="info-button">Создать мероприятие</span></div>
                             <!-- <div class="container-profile-item"><span class="info-but  ton">Ваша команда</span></div> -->
                         </div>
@@ -44,26 +44,62 @@
                 </div>
             </div>
         </div>
+        <modal v-if="showModal && activeModal === 'modal-create-team'" modalId="modal-create-team" @close="closeModal">
+                <h2 class="modal-title">Введите название команды</h2>
+                <div class="modal-content">
+                    <div class="modal-container-input">
+                        <input type="text" placeholder="Название команды" class="modal-input" v-model="teamname"/>
+                    </div>
+                    <div class="modal-container-buttons">
+                        <button class="button-view dark-button">Создать</button>
+                    </div>
+                </div>
+        </modal>
+        <modal v-if="showModal && activeModal === 'modal-join-team'" modalId="modal-join-team" @close="closeModal">
+                <h2 class="modal-title">Введите код команды</h2>
+                <div class="modal-content">
+                    <div class="modal-container-input">
+                        <input type="text" placeholder="Код команды" class="modal-input" v-model="inviteCode"/>
+                    </div>
+                    <div class="modal-container-buttons">
+                        <button class="button-view dark-button">Создать</button>
+                    </div>
+                </div>
+        </modal>
     </section>
 </template>
 
 <script>
 import HeaderView from '@/components/HeaderView.vue';
+import Modal from '@/components/Modal.vue';
 export default {
     components: {
-        HeaderView
+        HeaderView,
+        Modal
     },
     data() {
         return {
+            teamname : '',
             user : {},
-            isOrganizer : true
+            isOrganizer : false,
+            showModal: false,
+            activeModal: '',
         }
-    }
+    },
+    methods: {
+        openModal(modalId) {
+            this.showModal = true;
+            this.activeModal = modalId;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.activeModal = '';
+        },
+    },
 }
 </script>
 
 <style scoped>
-
 
 
 section{
