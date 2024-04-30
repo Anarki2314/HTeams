@@ -23,19 +23,21 @@
                         <div class="container-inputs">
 
                             <div class="container-input">
-                                <input type="email" v-model="email" required class="form-input">
+                                <input type="email" v-model="email" name="email" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': email }">Email</label>
                             </div>
                             
                             <div class="container-input">
-                                <input type="password" v-model="password" required class="form-input">
+                                <input type="password" v-model="password" name="password" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': password }">Пароль</label>
                             </div>
 
 
                         </div>
                         <div class="container-submit text-center">
-                            <button type="submit" class="submit-btn main-button">Войти</button>
+                            <button type="submit" class="submit-btn main-button" v-if="!loading">Войти</button>
+                            <div class="loading" v-if="loading"><img :src="'/assets/img/loading.svg'" alt=""></div>
+
                         </div>
                         <div class="container-text text-center">
                             <div class="sign-in-text"><span>У вас нет аккаунта? <router-link to="/signUp">Зарегистрироваться</router-link></span></div>
@@ -55,6 +57,7 @@ import api from '../api.js';
 export default {
     data() {
         return {
+            loading: false,
             email: '',
             password: '',
 
@@ -64,6 +67,7 @@ export default {
     methods: {
 
         async signIn() {
+            this.loading = true;
             try {
                 const response = await api.post('/auth/sign-in', {
                     email: this.email,
@@ -82,10 +86,9 @@ export default {
                     console.log(error.data.errors);
                 }
 
+            } finally {
+                this.loading = false;
             }
-        },
-        mounted() {
-            localStorage.getItem('token');
         },
     },
 

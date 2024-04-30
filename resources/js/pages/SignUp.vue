@@ -17,49 +17,50 @@
     <section class="sign-up-section">
         <div class="container-block">
             <div class="container-form">
-                <form action="" class="sign-up-form">
+                <form action="" class="sign-up-form" @submit.prevent="signUp">
                     <h2 class="block-title text-center">Регистрация</h2>
                     <div class="form-content">
                         <div class="container-inputs">
 
                             <div class="container-input">
-                                <input type="email" v-model="email" required class="form-input">
+                                <input type="email" v-model="email" name="email" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': email }">Email</label>
                             </div>
                             <div class="container-input" v-if="!organizer">
-                                <input type="text" v-model="name" required class="form-input">
+                                <input type="text" v-model="name" name="name" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': name }">Имя</label>
                             </div>
                             <div class="container-input" v-if="!organizer">
-                                <input type="text" v-model="surname" required class="form-input">
+                                <input type="text" v-model="surname" name="surname" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': surname }">Фамилия</label>
                             </div>
                             <div class="container-input" v-if="organizer">
-                                <input type="text" v-model="orgName" required class="form-input">
+                                <input type="text" v-model="orgName" name="orgName" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': orgName }">Название организации</label>
                             </div>
                             <div class="container-input">
-                                <input type="text" v-model="phone" required class="form-input">
+                                <input type="text" v-model="phone" name="tel" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': phone }">Телефон</label>
                             </div>
                             <div class="container-input">
-                                <input type="password" v-model="password" required class="form-input">
+                                <input type="password" v-model="password" name="password" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': password }">Пароль</label>
                             </div>
                             <div class="container-input">
-                                <input type="password" v-model="passwordRepeat" required class="form-input">
-                                <label for="" class="input-label" :class="{ 'active': passwordRepeat }">Повторите
+                                <input type="password" v-model="passwordConfirmation" name="passwordConfirmation" required class="form-input">
+                                <label for="" class="input-label" :class="{ 'active': passwordConfirmation }">Повторите
                                     пароль</label>
                             </div>
 
                             <div class="container-input">
-                                <input type="checkbox" required v-model="terms" class="d-none" id="terms">
+                                <input type="checkbox" name="terms" v-model="terms" class="d-none" id="terms">
                                 <label for="terms" class="terms-label">Пользовательское соглашение</label>
                             </div>
 
                         </div>
                         <div class="container-submit text-center">
-                            <button type="submit" class="submit-btn main-button ">Зарегистрироваться</button>
+                            <button type="submit" class="submit-btn main-button " v-if="!loading">Зарегистрироваться</button>
+                            <div class="loading" v-if="loading"><img :src="'/assets/img/loading.svg'" alt=""></div>
                         </div>
                         <div class="container-text text-center">
                             <div class="sign-up-text"  v-if ="organizer"><span class="sign-up-organization" @click="organizer = false">Зарегистрироваться как участник</span></div>
@@ -77,9 +78,12 @@
 </template>
 
 <script>
+import api from '../api.js';
 export default {
+
     data() {
         return {
+            loading: false,
             organizer: false,
             email: '',
             name: '',
@@ -87,10 +91,54 @@ export default {
             orgName: '',
             phone: '',
             password: '',
-            passwordRepeat: '',
+            passwordConfirmation: '',
             terms: false,
         }
+    },
+
+    methods: {
+
+async signUp() {
+    if (this.terms) {
+        this.loading = true;
+        try {
+            const data = {
+                email: this.email,
+                password: this.password,
+                password_confirmation: this.passwordConfirmation,
+                phone: this.phone,
+            }
+            if (this.organizer) {
+                data.orgName = this.orgName;
+                data.role_id = 2;
+            } else {
+                data.name = this.name;
+                data.surname = this.surname;
+                data.role_id = 1;
+            }
+            
+            const response = await api.post('/auth/sign-up', {
+                ...data
+            })
+            localStorage.setItem('token', response.data.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.data.user));
+    
+            this.$store.commit('login', response.data.data);
+            this.$router.push({ name: 'home' }  );
+        } catch (error) {
+            if (error.status === 401) {
+                console.log(error.data.message);
+            }
+            if (error.status === 422) {
+                console.log(error.data.errors);
+            }
+    } finally {
+        this.loading = false;
     }
+
+    }
+},
+},
 }
 </script>
 

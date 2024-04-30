@@ -23,18 +23,23 @@ class SignUpRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => $this->roleIsUser() ? 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u' : '',
-            'surname' => $this->roleIsUser() ? 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u' : 'nullable',
-            'orgName' => $this->roleIsOrganizer() ? 'required|min:2|regex:/^[а-яА-ЯёЁ\s]+$/u' : 'nullable',
+        $rules = [
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/',
-            'phone' => 'required|unique:users,phone|regex:/^\+7(\d{3})\d{3}-\d{2}-\d{2}$/',
             'role_id' => [
-                'required',
-                Rule::in([Role::getIdRoleByTitle('Пользователь'), Role::getIdRoleByTitle('Организатор')]), // Validate role_id exists in the roles table
+                'required', Rule::in([Role::getIdRoleByTitle('Пользователь'), Role::getIdRoleByTitle('Организатор')]), // Validate role_id exists in the roles table],
             ],
+            'phone' => 'required|unique:users,phone|regex:/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/',
+            'password' => 'required|confirmed|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/',
+
         ];
+
+        if ($this->roleIsUser()) {
+            $rules['name'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
+            $rules['surname'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
+        } elseif ($this->roleIsOrganizer()) {
+            $rules['orgName'] = 'required|min:2|regex:/^[а-яА-ЯёЁ\s]+$/u';
+        }
+        return $rules;
     }
 
     private function roleIsUser()
