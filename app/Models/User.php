@@ -7,6 +7,9 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -65,6 +68,21 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    // public function team(): BelongsTo
+    // {
+    //     return $this->belongsTo(Team::class, 'id', 'leader_id');
+    // }
+
+    public function team(): HasOneThrough
+    {
+        return $this->hasOneThrough(Team::class, TeamsMembers::class, 'user_id', 'id', 'id', 'team_id');
+    }
+
+    public function isLeader(): bool
+    {
+        return $this->id === $this->team->leader_id;
     }
 
     public function isAdmin(): bool

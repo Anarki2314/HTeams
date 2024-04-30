@@ -62,7 +62,10 @@ export default {
                 this.$store.dispatch('logout')
                 this.$router.replace('/')
             } catch (error) {
-                
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                this.$store.dispatch('logout')
+                this.$router.replace('/')
             }
         }
 

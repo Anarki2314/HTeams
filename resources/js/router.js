@@ -37,11 +37,15 @@ async function checkToken() {
         store.commit('login', response.data.data);
         localStorage.setItem('token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        localStorage.setItem('team', JSON.stringify(response.data.data.team));
         return true
     } catch (error) {
-        store.dispatch('logout');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        if (error.status === 401) {
+            store.dispatch('logout');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('team');
+        }
         return false 
     }
 
@@ -49,7 +53,6 @@ async function checkToken() {
 async function requireAuth(to, from, next) {
 
     if (await checkToken()) {
-        console.log(1)
         next();
     } else {
         next('/signIn');

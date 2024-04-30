@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SignInRequest;
 use App\Http\Requests\SignUpRequest;
+use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\TokenService;
@@ -25,6 +26,8 @@ class AuthController extends Controller
             'data' => [
                 'token' => $token,
                 'user' => new UserResource($user),
+                'team' => ($user->team) ? new TeamResource($user->team) : null,
+
             ],
             'message' => 'Вы успешно зарегистрировались',
         ], 201);
@@ -42,6 +45,8 @@ class AuthController extends Controller
                     'data' => [
                         'token' => $token,
                         'user' => new UserResource($user),
+
+                        'team' => ($user->team) ? new TeamResource($user->team) : null,
                     ],
                     'message' => 'Вы вошли в аккаунт',
                 ], 200);
@@ -69,6 +74,8 @@ class AuthController extends Controller
             'data' => [
                 'token' => $token,
                 'user' => new UserResource($user),
+                'team' => ($user->team) ? new TeamResource($user->team) : null,
+
             ],
             'message' => 'Токен обновлен',
         ], 200);

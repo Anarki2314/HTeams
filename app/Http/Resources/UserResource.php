@@ -25,6 +25,7 @@ class UserResource extends JsonResource
             $data['name'] = $this->name;
             $data['surname'] = $this->surname;
             $data['isUser'] = true;
+            $data['isLeader'] = ($this->team) ? $this->isLeader() : false;
         } elseif ($this->isOrganizer()) {
             $data['orgName'] = $this->orgName;
             $data['isOrganizer'] = true;

@@ -75,6 +75,7 @@ export default {
                 })
                 localStorage.setItem('token', response.data.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.data.user));
+                localStorage.setItem('team', JSON.stringify(response.data.data.team));
 
                 this.$store.commit('login', response.data.data);
                 this.$router.push({ name: 'home' }  );

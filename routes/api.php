@@ -16,10 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Auth routes
 Route::post('/auth/sign-up', [AuthController::class, 'signUp']);
 Route::post('/auth/sign-in', [AuthController::class, 'signIn']);
 Route::post('/auth/sign-out', [AuthController::class, 'signOut'])->middleware('auth:sanctum');
-Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum');
+Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum', 'abilities:Пользователь');
+
+// Team routes
+
+Route::apiResource('/teams', \App\Http\Controllers\TeamController::class)->middleware('auth:sanctum');
 
 Route::get('/user', function (Request $request) {
     return new UserResource($request->user());
