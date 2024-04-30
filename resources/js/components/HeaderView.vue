@@ -22,12 +22,16 @@
                     </ul>
                 </nav>
 
-                <div class="container-auth  d-none d-lg-flex">
+                <div class="container-auth  d-none d-lg-flex" v-if="!isAuth">
                     <router-link to="/signIn" class="sign-in-link">Войти</router-link>
                     <router-link to="/signUp">Зарегистрироваться</router-link>
 
                     <!-- <router-link to="/profile" class="profile-link">example@example.com</router-link>
                     <button class="logout-button">Выйти</button> -->
+                </div>
+                <div class="container-auth  d-none d-lg-flex" v-if="isAuth">
+                    <router-link to="/profile" class="profile-link">{{ $store.getters.getUser.email }}</router-link>
+                    <button class="logout-button" @click="logout">Выйти</button>
                 </div>
             </div>
         </div>
@@ -37,6 +41,33 @@
 
 </template>
 
+<script>
+
+import api from '../api.js';
+export default {
+
+    computed: {
+        isAuth() {
+            return this.$store.getters.isLoggedIn
+        }
+    },
+
+    methods: {
+
+        async logout() {
+            try{
+                const response = await api.post('/auth/sign-out')
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                this.$store.dispatch('logout')
+            } catch (error) {
+                
+            }
+        }
+
+    }
+}
+</script>
 <style scoped>
 
 ul {

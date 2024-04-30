@@ -153,6 +153,8 @@ ul {
 .main-button:focus-visible {
     background-color: var(--color-main);
     color: #1B1B1B;
+
+    outline: none;
 }
 .secondary-button, .secondary-button:any-link{
     background: #313131;
@@ -165,6 +167,7 @@ ul {
     background: rgb(49, 49, 49, 0.8);
 }
 .secondary-button:focus-visible {
+    outline: none;
     background: rgb(49, 49, 49, 0.8);
 }
 
@@ -177,6 +180,7 @@ ul {
     color: #f4f4f4;
 }
 .darken-button:focus-visible{
+    outline: none;
     background-color: #313131;
     color: #f4f4f4;
 }

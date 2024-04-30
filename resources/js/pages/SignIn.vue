@@ -14,10 +14,10 @@
         </div>
     </header>
 
-    <section class="sign-in-section">
+    <section class="sign-in-section ">
         <div class="container-block">
             <div class="container-form">
-                <form action="" class="sign-in-form">
+                <form action="" class="sign-in-form" @submit.prevent="signIn">
                     <h2 class="block-title text-center">Вход</h2>
                     <div class="form-content">
                         <div class="container-inputs">
@@ -51,13 +51,45 @@
 </template>
 
 <script>
+import api from '../api.js';
 export default {
     data() {
         return {
             email: '',
             password: '',
+
         }
-    }
+    },
+
+    methods: {
+
+        async signIn() {
+            try {
+                const response = await api.post('/auth/sign-in', {
+                    email: this.email,
+                    password: this.password,
+                })
+                localStorage.setItem('token', response.data.data.token);
+                localStorage.setItem('user', JSON.stringify(response.data.data.user));
+
+                this.$store.commit('login', response.data.data);
+                this.$router.push({ name: 'home' }  );
+            } catch (error) {
+                if (error.status === 401) {
+                    console.log(error.data.message);
+                }
+                if (error.status === 422) {
+                    console.log(error.data.errors);
+                }
+
+            }
+        },
+        mounted() {
+            localStorage.getItem('token');
+        },
+    },
+
+
 }
 </script>
 
@@ -72,6 +104,9 @@ header {
     position: relative;
     padding: 40px 0 0;
     font-size: var(--size-text);
+}
+section{
+    position: static;
 }
 
 .header-left-bg {

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -32,16 +33,19 @@ class AuthController extends Controller
     public function signIn(SignInRequest $request)
     {
         $credentials = $request->validated(); // email and password
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = TokenService::generateToken($user);
-            return response()->json([
-                'data' => [
-                    'token' => $token,
-                    'user' => new UserResource($user),
-                ],
-                'message' => 'Вы вошли в аккаунт',
-            ], 200);
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user) {
+            if (Hash::check($credentials['password'], $user->password)) {
+                $token = TokenService::generateToken($user);
+                return response()->json([
+                    'data' => [
+                        'token' => $token,
+                        'user' => new UserResource($user),
+                    ],
+                    'message' => 'Вы вошли в аккаунт',
+                ], 200);
+            }
         }
 
         return response()->json(['message' => 'Неверная почта или пароль'], 401);
@@ -50,6 +54,7 @@ class AuthController extends Controller
     public function signOut(Request $request)
     {
         TokenService::deleteToken($request->user());
+
         return response()->json([
             'message' => 'Вы вышли из аккаунта',
         ], 200);

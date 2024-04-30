@@ -1,4 +1,4 @@
-# Project Name
+# HTEAMS
 
 ## Installation
 
@@ -15,7 +15,7 @@
     npm install
     composer install
     ```
-4. Copy the .env.example file to .env and fill update the necessary configuration:
+4. Copy the .env.example file to .env and fill update the necessary configuration:\
    For Linux:
     ```bash
     cp .env.example .env

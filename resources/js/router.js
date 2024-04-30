@@ -40,39 +40,47 @@ const routes = [
     // Main Routes
     {
         path: '/',
+        name: 'home',
         component: Home
 
     },
     {
         path: '/signIn',
+        name: 'signIn',
         component: SignIn
     },
     {
         path: '/signUp',
+        name: 'signUp',
         component: SignUp
     },
     {
         path: '/events',
+        name: 'events',
         component: Events
     },
     {
         path: '/teams',
+        name: 'teams',
         component: Teams
     },
 
     // Profile Routes /profile/
     {
         path: '/profile',
+        name: 'profile',
         component: Profile,
         // beforeEnter: requireAuth
     },
     {
         path: '/profile/upcoming',
+        name: 'upcoming',
         component: UpcomingEvents,
         // beforeEnter: requireAuth
     },
     {
         path: '/profile/finished',
+        name: 'finished',
         component: FinishedEvents,
         // beforeEnter: requireAuth
     },
@@ -80,54 +88,66 @@ const routes = [
     // Team Routes
     {
         path: '/teams/:teamId',
+        name: 'team',
         component: Team
     },
 
     // Event Routes
     {
         path: '/events/:eventId',
+        name: 'event',
         component: Event
     },
 
     // Admin Routes
     {
         path: '/_admin/',
+        name: 'admin',
         component: AdminRequestsEvents,
     },
     {
         path: '/_admin/requests',
+        name: 'admin-requests',
         component: AdminRequestsEvents,
     },
     {
         path: '/_admin/users',
+        name: 'admin-users',
         component: AdminUsers
     },
     {
         path: '/_admin/teams',
+        name: 'admin-teams',
         component: AdminTeams
     },
     {
         path: '/_admin/tags',
+        name: 'admin-tags',
         component: AdminTags
     },
     {
         path: '/_admin/organizers',
+        name: 'admin-organizers',
         component: AdminOrganizers
     },
     {
         path: '/_admin/users/:userId',
+        name: 'admin-user',
         component: AdminUser
     },
     {
         path: '/_admin/requests/:requestId',
+        name: 'admin-request',
         component: AdminRequest
     },
     {
         path: '/_admin/organizers/:userId',
+        name: 'admin-organizer',
         component: AdminUser
     },
     {
         path: '/_admin/teams/:teamId',
+        name: 'admin-team',
         component: AdminTeam
     },
 
