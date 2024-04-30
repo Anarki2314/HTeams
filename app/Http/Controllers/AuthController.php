@@ -59,4 +59,18 @@ class AuthController extends Controller
             'message' => 'Вы вышли из аккаунта',
         ], 200);
     }
+
+    public function refresh(Request $request)
+    {
+        $user = $request->user();
+        TokenService::deleteToken($user);
+        $token = TokenService::generateToken($user);
+        return response()->json([
+            'data' => [
+                'token' => $token,
+                'user' => new UserResource($user),
+            ],
+            'message' => 'Токен обновлен',
+        ], 200);
+    }
 }

@@ -27,8 +27,29 @@ import AdminOrganizers from '@/pages/_admin/Organizers.vue';
 import AdminUser from '@/pages/_admin/User.vue';
 import AdminTeam from '@/pages/_admin/Team.vue';
 import AdminRequest from '@/pages/_admin/Request.vue';
-function requireAuth(to, from, next) {
-    if (localStorage.getItem('token')) {
+
+
+import api from '@/api';
+import store from '@/store/Auth-store.js';
+async function checkToken() {
+    try {
+        const response = await api.post('/auth/refresh');
+        store.commit('login', response.data.data);
+        localStorage.setItem('token', response.data.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        return true
+    } catch (error) {
+        store.dispatch('logout');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return false 
+    }
+
+} 
+async function requireAuth(to, from, next) {
+
+    if (await checkToken()) {
+        console.log(1)
         next();
     } else {
         next('/signIn');
@@ -70,7 +91,7 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: Profile,
-        // beforeEnter: requireAuth
+        beforeEnter: requireAuth
     },
     {
         path: '/profile/upcoming',

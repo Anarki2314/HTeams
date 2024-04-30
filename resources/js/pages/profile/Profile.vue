@@ -3,7 +3,7 @@
     <section class="profile-section ">
         <div class="container-block">
             <div class="container-profile ">
-                <h3 class="block-title text-center text-lg-start">{profileEmail}</h3>
+                <h3 class="block-title text-center text-lg-start">{{ user.email }}</h3>
                 <div class="container-profile-content mb-5 d-flex justify-content-center justify-content-lg-between flex-wrap">
 
                     <div class="container-profile-image d-flex flex-column">
@@ -17,28 +17,28 @@
                     <div class="container-profile-about">
                         <h4 class="profile-subtitle text-center text-md-start">Личная информация:</h4>
                         <div class="container-profile-items ">
-                            <div class="container-profile-item" v-if="!isOrganizer">Имя: <span class="profile-info-text">{name}</span></div>
-                            <div class="container-profile-item" v-if="!isOrganizer">Фамилия: <span class="profile-info-text">{surname}</span></div>
-                            <div class="container-profile-item" v-if="isOrganizer">Организация: <span class="profile-info-text">{surname}</span></div>
+                            <div class="container-profile-item" v-if="user.isUser">Имя: <span class="profile-info-text">{{ user.name }}</span></div>
+                            <div class="container-profile-item" v-if="user.isUser">Фамилия: <span class="profile-info-text">{{ user.surname }}</span></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer">Организация: <span class="profile-info-text">{{ user.orgName }}</span></div>
 
-                            <div class="container-profile-item">Телефон: <span class="profile-info-text">{phone}</span></div>
-                            <div class="container-profile-item">Дата регистрации: <span class="profile-info-text">{date}</span></div>
+                            <div class="container-profile-item">Телефон: <span class="profile-info-text">{{ user.phone }}</span></div>
+                            <div class="container-profile-item">Дата регистрации: <span class="profile-info-text">{{ user.createdAt }}</span></div>
                             <div class="container-profile-item"><span class="info-button">Сменить пароль</span></div>
                             <div class="container-profile-item"><span class="info-button">Удалить аккаунт</span></div>
                         </div>
                     </div>
-                    <div class="container-profile-stats">
+                    <div class="container-profile-stats" v-if="!user.isAdmin">
                     <h4 class="profile-subtitle text-center text-md-start">Статистика:</h4>
 
                     <div class="container-profile-items ">
-                            <div class="container-profile-item" v-if="!isOrganizer">Всего мероприятий: <span class="profile-info-text">{name}</span></div>
-                            <div class="container-profile-item" v-if="isOrganizer">Создано мероприятий: <span class="profile-info-text">{name}</span></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer">Всего мероприятий: <span class="profile-info-text">{name}</span></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer">Создано мероприятий: <span class="profile-info-text">{name}</span></div>
                             <div class="container-profile-item">Предстоящие: <router-link to="/profile/upcoming" class="profile-info-text info-button">{surname}</router-link></div>
                             <div class="container-profile-item">Завершенные: <router-link to="/profile/finished" class="profile-info-text info-button">{phone}</router-link></div>
-                            <div class="container-profile-item" v-if="!isOrganizer"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
-                            <div class="container-profile-item" v-if="!isOrganizer"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
-                            <div class="container-profile-item" v-if="isOrganizer"><span class="info-button">Создать мероприятие</span></div>
-                            <!-- <div class="container-profile-item"><span class="info-but  ton">Ваша команда</span></div> -->
+                            <div class="container-profile-item" v-if="!user.isOrganizer && !user.team"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer && !user.team"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer"><span class="info-button">Создать мероприятие</span></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer && user.team"><span class="info-button">Ваша команда</span></div>
                         </div>
                     </div>
                 </div>
@@ -79,9 +79,7 @@ export default {
     },
     data() {
         return {
-            teamname : '',
             user : {},
-            isOrganizer : false,
             showModal: false,
             activeModal: '',
         }
@@ -96,6 +94,10 @@ export default {
             this.activeModal = '';
         },
     },
+
+    mounted() {
+        this.user = JSON.parse(localStorage.getItem('user'));
+    }
 }
 </script>
 
@@ -141,7 +143,9 @@ section{
 .container-profile-items{
     display:flex;
     flex-direction: column;
-    gap: clamp( 10px , 3vw ,30px)
+    gap: clamp( 10px , 3vw ,30px);
+    max-width: 450px;
+
 }
 
 .container-profile-item{

@@ -35,8 +35,8 @@
 
                         </div>
                         <div class="container-submit text-center">
-                            <button type="submit" class="submit-btn main-button" v-if="!loading">Войти</button>
                             <div class="loading" v-if="loading"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                            <button type="submit" class="submit-btn main-button" v-if=" !loading">Войти</button>
 
                         </div>
                         <div class="container-text text-center">
