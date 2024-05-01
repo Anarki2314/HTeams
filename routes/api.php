@@ -33,6 +33,10 @@ Route::apiResource('/teams', TeamController::class)->middleware(['auth:sanctum']
 Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [ProfileController::class, 'getProfile']);
     Route::post('/create-team', [ProfileController::class, 'createTeam']);
+    Route::get('/team', [ProfileController::class, 'getTeam']);
+    Route::post('/team/invite', [ProfileController::class, 'inviteFromTeam']);
+    Route::post('/team/join', [ProfileController::class, 'inviteToTeam']);
+    Route::get('/team/invites', [ProfileController::class, 'getTeamInvites']);
 });
 
 Route::get('/user', function (Request $request) {

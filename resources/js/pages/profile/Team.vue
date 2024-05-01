@@ -1,4 +1,4 @@
-<template>
+<template #default>
     <header-view class=""/>
         <section class="team-section ">
             <div class="container-block">
@@ -7,13 +7,10 @@
                         <a @click="$router.go(-1)" class="router-link-underline">Назад</a>
                     </div>
                     <div class="container-team-title d-flex justify-content-center justify-content-md-between flex-wrap">
-                        <h3 class="block-title text-center text-lg-start">{teamEmail}</h3>
-                        <div class="container-team-apply-button">
+                        <h3 class="block-title text-center text-lg-start">{{ team.title }}</h3>
 
-                            <div class="button-view secondary-button">Подать заявку на вступление</div>
-                        </div>
                     </div>
-                    <div class="container-team-content mb-5 d-flex justify-content-center justify-content-lg-start flex-wrap">
+                    <div class="container-team-content mb-5 d-flex justify-content-center justify-content-lg-between flex-wrap">
     
                         <div class="container-team-image d-flex flex-column">
                             <!-- <img :src="'/assets/img/team.png'" alt=""> -->
@@ -23,70 +20,120 @@
                         
                         <div class="container-team-about">
                             <h4 class="team-subtitle text-center text-md-start">Участники:</h4>
-                            <div class="container-team-members d-flex justify-content-start justify-content-lg-between flex-wrap">
+                            <div class="container-team-members d-flex justify-content-start justify-content-lg-between flex-wrap flex-column">
 
-
-                                <div class="container-team-member d-flex align-items-center">
-                                    <div class="container-member-image">
-                                        <img src="https://via.placeholder.com/60" alt="" class="member-image">
-                                    </div>
-                                    <div class="member-name ">Фамилия Имя</div>
-                                </div>
-
-                                
-                                <div class="container-team-member d-flex align-items-center">
-                                    <div class="container-member-image">
-                                        <img src="https://via.placeholder.com/60" alt="" class="member-image">
-                                    </div>
-                                    <div class="member-name ">Фамилия Имя</div>
-                                </div>
-                                <div class="container-team-member d-flex align-items-center">
-                                    <div class="container-member-image">
-                                        <img src="https://via.placeholder.com/60" alt="" class="member-image">
-                                    </div>
-                                    <div class="member-name ">Фамилия Имя</div>
-                                </div>
-
-
-                                <div class="container-team-member d-flex align-items-center">
-                                    <div class="container-member-image">
-                                        <img src="https://via.placeholder.com/60" alt="" class="member-image">
-                                    </div>
-                                    <div class="member-name ">Фамилия Имя</div>
-                                </div>
-                                <div class="container-team-member d-flex align-items-center ">
-                                    <div class="container-member-image">
-                                        <img src="https://via.placeholder.com/60" alt="" class="member-image">
-                                    </div>
-                                    <div class="member-name ">Фамилия Имя</div>
-                                </div>
+                                <team-member-card v-for="member in team.members" :key="member.id" :member="member"/>
 
                             </div>
+                        </div>
+
+                        <div class="container-team-stats">
+                            <h4 class="team-subtitle text-center text-md-start">Статистика:</h4>
+                            
+                            <div class="container-team-items">
+                                <div class="container-team-item">
+                                    Код приглашения: <span>{{ team.inviteCode }}</span>
+                                </div>
+                                <div class="container-team-item"> 
+                                    <router-link to="/profile/team/invites">
+                                    Заявки на вступление: <span class="info-button">0</span> 
+                                </router-link>
+                                </div>
+                                <div class="container-team-item"><span to="/profile/team" class="info-button" @click="openModal('modal-invite-team')" v-if="!isTeamFull">Пригласить в команду</span></div>
+                                <div class="container-team-item" v-if="user.isLeader"><span to="/profile/team" class="info-button" >Удалить команду</span></div>
+                            </div>
+
                         </div>
                         
                         
                     </div>
                 </div>
             </div>
+            <modal v-if="showModal && activeModal === 'modal-invite-team'" modalId="modal-create-team" @close="closeModal">
+                <h2 class="modal-title">Введите пользователя</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="inviteFromTeam">
+                    <div class="modal-container-input">
+                        <input type="text" placeholder="email" required class="modal-input" v-model="email"/>
+                    </div>
+                    <div class="modal-container-buttons">
+                        <button class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading">Отправить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+        </modal>
         </section>
     </template>
     
     <script>
     import HeaderView from '@/components/HeaderView.vue';
+    import api from '../../api.js';
+    import TeamMemberCard from '@/components/team/TeamMemberCard.vue';
+    import Modal from '@/components/Modal.vue';
     export default {
         components: {
-            HeaderView
+            HeaderView,
+            TeamMemberCard,
+            Modal
         },
         data() {
             return {
+                user : this.$store.getters.getUser,
+                team: {
+                    title: '',
+                    inviteCode: '',
+                    members: {}
+                },
 
+                showModal: false,
+                activeModal: '',
+
+                email: '',
+
+                isLoading: false
 
             }
         },
+
         methods: {
-            
+            async getTeam() {
+                try {
+                    const response = await api.get('/profile/team');
+                    this.team = response.data.data.team;
+                } catch (error) {
+                        
+                    }
+            },
+
+            openModal(modalId) {
+                this.showModal = true;
+                this.activeModal = modalId;
+            },
+
+            closeModal() {
+                this.showModal = false;
+                this.activeModal = '';
+            },
+
+            async inviteFromTeam() {
+                this.isLoading = true;
+                try {
+                    const response = await api.post('/profile/team/invite', {email: this.email});
+                    this.closeModal();
+
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    this.isLoading = false;
+                }
+            }
         },
-        mounted() {
+        async created() {
             if (!this.$store.getters.haveTeam){
                 this.$store.dispatch('setMessage', {
                     type : 'error',
@@ -95,11 +142,13 @@
                 this.$router.push('/profile/')
             }
 
-            try {
-
-            } catch (error) {
+            await this.getTeam();
+        },
+        computed: {
+            isTeamFull() {
+                return this.team.members.length >= 5 ;
             }
-        }
+        },
     }
     </script>
     
@@ -137,26 +186,25 @@
         color: var(--color-main);
     
     }
-    .container-team-about {
-        flex: 1 1 50%;
-    }
     .container-team-members{
         display:flex;
-        flex-direction: row;
         gap: clamp( 10px , 3vw ,30px)
     }
     
-    .container-team-member{
-        gap: clamp( 10px , 3vw ,30px);
-    }
     
-    .member-image{
-        width: clamp( 64px , 7vw , 80px);
-        border-radius: 50%;
-    }
+.container-team-items{
+    display:flex;
+    flex-direction: column;
+    gap: clamp( 10px , 3vw ,30px);
+    max-width: 450px;
 
-    .member-name {
-        font-size: var(--size-text);
-    }
+}
+
+.container-team-item{
+    font-size: var(--size-text);
+    display:flex;
+    gap: 25px;
+    align-items: center;
+}
     
     </style>

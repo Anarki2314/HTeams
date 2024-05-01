@@ -10,6 +10,7 @@ import Teams from "@/pages/Teams.vue";
 // Profile Pages
 import Profile from "@/pages/profile/Profile.vue";
 import ProfileTeam from "@/pages/profile/Team.vue";
+import ProfileTeamInvites from "@/pages/profile/Invites.vue";
 import UpcomingEvents from "@/pages/profile/UpcomingEvents.vue";
 import FinishedEvents from "@/pages/profile/FinishedEvents.vue";
 
@@ -112,6 +113,15 @@ const routes = [
         path: "/profile/team",
         name: "profile-team",
         component: ProfileTeam,
+        meta: {
+            requiresAuth: true,
+            role: "Пользователь",
+        },
+    },
+    {
+        path: "/profile/team/invites",
+        name: "profile-team-invites",
+        component: ProfileTeamInvites,
         meta: {
             requiresAuth: true,
             role: "Пользователь",

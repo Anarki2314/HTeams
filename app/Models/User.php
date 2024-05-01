@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -70,6 +71,12 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    public function invites(): HasManyThrough
+    {
+        return $this->hasManyThrough(Team::class, TeamInvites::class, 'to_user', 'id', 'id', 'team_id');
+    }
+
+
     // public function team(): BelongsTo
     // {
     //     return $this->belongsTo(Team::class, 'id', 'leader_id');
@@ -77,7 +84,7 @@ class User extends Authenticatable
 
     public function team(): HasOneThrough
     {
-        return $this->hasOneThrough(Team::class, TeamsMembers::class, 'user_id', 'id', 'id', 'team_id');
+        return $this->hasOneThrough(Team::class, TeamMembers::class, 'user_id', 'id', 'id', 'team_id'); // teamMembers.user_id = user.id and teamMembers.team_id = team.id
     }
 
     public function isLeader(): bool

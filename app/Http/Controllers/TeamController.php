@@ -6,7 +6,7 @@ use App\Http\Resources\TeamMembersCollection;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
 use App\Models\Team;
-use App\Models\TeamsMembers;
+use App\Models\TeamMembers;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
@@ -37,7 +37,7 @@ class TeamController extends Controller
         }
 
         $team = Team::create($validated);
-        $teamMembers = TeamsMembers::create([
+        $teamMembers = TeamMembers::create([
             'team_id' => $team->id,
             'user_id' => $user->id
         ]);

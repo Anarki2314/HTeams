@@ -40,7 +40,12 @@ class Team extends Model
 
     public function members(): HasManyThrough
     {
-        return $this->hasManyThrough(User::class, TeamsMembers::class, 'team_id', 'id', 'id', 'user_id');
+        return $this->hasManyThrough(User::class, TeamMembers::class, 'team_id', 'id', 'id', 'user_id'); // teamMembers.team_id = teams.id and users.id = teamMembers.user_id
+    }
+
+    public function invites(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, TeamInvites::class, 'team_id', 'id', 'id', 'to_user');
     }
 
     private static function generateInviteCode(): string
