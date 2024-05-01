@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeamController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,11 +22,18 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/sign-up', [AuthController::class, 'signUp']);
 Route::post('/auth/sign-in', [AuthController::class, 'signIn']);
 Route::post('/auth/sign-out', [AuthController::class, 'signOut'])->middleware('auth:sanctum');
-Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum', 'abilities:Пользователь');
+Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum');
 
-// Team routes
+// Team routes 
 
-Route::apiResource('/teams', \App\Http\Controllers\TeamController::class)->middleware('auth:sanctum');
+Route::apiResource('/teams', TeamController::class)->middleware(['auth:sanctum']);
+
+// Profile routes (only for logged users)
+
+Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ProfileController::class, 'getProfile']);
+    Route::post('/create-team', [ProfileController::class, 'createTeam']);
+});
 
 Route::get('/user', function (Request $request) {
     return new UserResource($request->user());

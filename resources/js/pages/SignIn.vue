@@ -35,8 +35,8 @@
 
                         </div>
                         <div class="container-submit text-center">
-                            <div class="loading" v-if="loading"><img :src="'/assets/img/loading.svg'" alt=""></div>
                             <button type="submit" class="submit-btn main-button" v-if=" !loading">Войти</button>
+                            <div class="loading" :class="{ 'd-none': !loading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
 
                         </div>
                         <div class="container-text text-center">
@@ -75,7 +75,6 @@ export default {
                 })
                 localStorage.setItem('token', response.data.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.data.user));
-                localStorage.setItem('team', JSON.stringify(response.data.data.team));
 
                 this.$store.commit('login', response.data.data);
                 this.$router.push({ name: 'home' }  );
@@ -92,6 +91,7 @@ export default {
             }
         },
     },
+
 
 
 }

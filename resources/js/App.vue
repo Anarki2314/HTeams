@@ -92,11 +92,18 @@ ul {
     cursor: pointer;
 }
 
+.button-view.info-button:hover{
+    text-decoration: underline;
+}
 .container-back {
     margin-bottom: clamp(20px, 3vw, 40px);
     font-size: var(--size-text);
 }
-
+.container-back a{
+    color: #f4f4f4;
+    cursor: pointer;
+    text-decoration: none;
+}
 .row-card {
     height: fit-content;
     display:flex;

@@ -5,41 +5,52 @@ export default createStore({
         isLoggedIn: !!localStorage.getItem('token'),
         token: localStorage.getItem('token') || null,
         user: JSON.parse(localStorage.getItem('user')) || null,
-        team: JSON.parse(localStorage.getItem('team')) || null
+        message: {
+            type: '',
+            text: '',
+        },
     },
     mutations: {
         login(state, data) {
             state.isLoggedIn = true;
             state.token = data.token;
             state.user = data.user;
-            state.team = data.team;
         },
         logout(state) {
             state.isLoggedIn = false;
             state.token = null;
             state.user = null;
-            state.team = null;
+        },
+        
+        setMessage(state, message) {
+            state.message = message;
         }
 
     },
 
     getters: {
         isLoggedIn(state) {
-            return state.isLoggedIn
+            return state.isLoggedIn;
         },
 
         getUser(state) {
-            return state.user
+            return state.user;
         },
 
-        getTeam(state) {
-            return state.team
+        getUserRole(state) {
+            return state.user.role;
         },
 
+        getMessage(state) {
+            return state.message;
+        },
         getToken(state) {
-            return state.token
+            return state.token;
         },
-
+        haveTeam(state) {
+        return state.user.haveTeam;
+        },
+        
         isAdmin(state) {
             return state.user?.isAdmin;
         },
@@ -53,7 +64,7 @@ export default createStore({
         },
 
         isLeader(state) {
-            return state.user.team?.isLeader;
+            return state.user?.isLeader;
         }
     },
     actions: {
@@ -62,8 +73,10 @@ export default createStore({
         },
         logout({ commit }) {
             commit('logout');
-
-
         },
+
+        setMessage({ commit }, message) {
+            commit('setMessage', message);
+        }
     }
 })
