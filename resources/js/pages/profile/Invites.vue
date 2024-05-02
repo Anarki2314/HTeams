@@ -3,6 +3,9 @@
     <section class="invites-section">
         <div class="container-block">
             <div class="container-invites">
+                <div class="container-back">
+                        <a @click="$router.go(-1)" class="router-link-underline">Назад</a>
+                    </div>  
                 <div class="form-search mb-3 text-end ">
                     <div class="container-search">
                         <input type="text" class="form-input" name="search" id="search" placeholder="Поиск" v-model="search">
@@ -10,15 +13,12 @@
                     </div>
                 </div>
                 <div class="container-invites-title d-flex align-items-center justify-content-between">
-                    <h3 class="block-title text-center text-lg-start">Команды</h3>
-                    <div class="container-filters">
-                        <button class="filters-btn info-button">Фильтры</button>
-                    </div>
+                    <h3 class="block-title text-center text-lg-start">Приглашения</h3>
                 </div>
                 <div class="container-sort"></div>
                 <div class="container-invites-items d-flex flex-column flex-wrap">
 
-                    <invite-card v-for="invite, index in invites" :key="index" :invite="invite"/>
+                    <invite-card v-for="invite, index in invites" :key="index" :invite="invite" @sendChoice="sendChoice"/>
 
                 </div>
             </div>
@@ -55,6 +55,21 @@ export default {
                 this.invites = response.data.data.invites;
             } catch (error) {
                 console.log(error);
+            }
+        },
+
+        async sendChoice(invite) {
+
+            try {
+                const response = await api.post('/profile/team/invite/team-choice', {
+                    choice: invite.choice,
+                    from_user: invite.id
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.getInvites();
             }
         }
     },

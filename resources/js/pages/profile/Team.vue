@@ -57,10 +57,10 @@
                         <input type="text" placeholder="email" required class="modal-input" v-model="email"/>
                     </div>
                     <div class="modal-container-buttons">
-                        <button class="button-view info-button" @click="closeModal">Отмена</button>
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
                         <div class="modal-container-button">
                             <button class="button-view dark-button" type="submit" v-if
-                            =" !isLoading">Отправить</button>
+                            =" !isLoading" >Отправить</button>
                             <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
                         </div>
                     </div>

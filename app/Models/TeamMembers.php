@@ -11,6 +11,23 @@ class TeamMembers extends Model
 {
     use HasFactory;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $userId = $model->user_id;
+
+            TeamInvites::where('to_user', $userId)->orWhere('from_user', $userId)->delete();
+
+            if (static::where('team_id', $model->team_id)->count() >= 5) {
+                TeamInvites::where('team_id', $model->team_id)->delete();
+            }
+        });
+    }
+
+
+
     public $timestamps = false;
     protected $fillable = [
         'team_id',

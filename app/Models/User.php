@@ -73,14 +73,10 @@ class User extends Authenticatable
 
     public function invites(): HasManyThrough
     {
-        return $this->hasManyThrough(Team::class, TeamInvites::class, 'to_user', 'id', 'id', 'team_id');
+        return $this->hasManyThrough(Team::class, TeamInvites::class, 'to_user', 'id', 'id', 'team_id')->where('to_user', '=', $this->id);
     }
 
 
-    // public function team(): BelongsTo
-    // {
-    //     return $this->belongsTo(Team::class, 'id', 'leader_id');
-    // }
 
     public function team(): HasOneThrough
     {

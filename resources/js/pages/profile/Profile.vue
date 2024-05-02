@@ -52,7 +52,7 @@
                         <input type="text" placeholder="Название команды" required class="modal-input" v-model="teamname"/>
                     </div>
                     <div class="modal-container-buttons">
-                        <button class="button-view info-button" @click="closeModal">Отмена</button>
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
                         <div class="modal-container-button">
                             <button class="button-view dark-button" type="submit" v-if
                             =" !isLoading">Создать</button>
@@ -70,8 +70,13 @@
                         <input type="text" placeholder="Код команды" required class="modal-input" v-model="inviteCode"/>
                     </div>
                     <div class="modal-container-buttons">
-                        <button class="button-view info-button" @click="closeModal">Отмена</button>
-                        <button type="submit" class="button-view dark-button">Вступить</button>
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading">Отправить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+
 
                     </div>
                     </form>
@@ -117,6 +122,19 @@ export default {
                 this.user = response.data.data.user;
                 this.closeModal();
 
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.isLoading = false;
+            }
+
+        },
+
+        async joinTeam() {
+            this.isLoading = true;
+            try {
+                const response = await api.post('/profile/join-team', {invite_code: this.inviteCode});
+                this.closeModal();
             } catch (error) {
                 console.log(error);
             } finally {

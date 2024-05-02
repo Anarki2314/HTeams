@@ -30,6 +30,7 @@ return new class extends Migration
             $table->dropForeign(['leader_id']);
         });
 
+
         Schema::dropIfExists('teams');
     }
 };
