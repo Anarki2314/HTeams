@@ -1,4 +1,5 @@
 <template>
+
     <div class="wrapper">
 
         <router-view v-slot="{ Component, route }">
@@ -7,8 +8,34 @@
             </div>
         </router-view>
     </div>
+    <Notivue v-slot="item">
+    <NotivueSwipe :item="item">
+        <Notification :item="item" :theme="pastelTheme" >
+            <NotificationProgress :item="item"/>
+        
+        </Notification>
+    </NotivueSwipe>
+</Notivue>
 </template>
 
+<script>
+
+import {Notivue, Notification, NotificationProgress, NotivueSwipe, pastelTheme}  from 'notivue';
+export default {
+    components: {
+        Notivue,
+        Notification,
+        NotificationProgress,
+        NotivueSwipe
+    },
+
+    data() {
+        return {
+            pastelTheme
+        }
+    }
+}
+</script>
 
 <style>
 

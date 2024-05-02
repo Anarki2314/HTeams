@@ -32,7 +32,12 @@ import AdminRequest from "@/pages/_admin/Request.vue";
 
 import api from "@/api";
 import store from "@/store/Auth-store.js";
+import { push } from "notivue";
 async function checkToken() {
+    if (!store.getters.getToken){
+        push.error("Войдите в аккаунт");
+        return false;
+    }
     try {
         const response = await api.post("/auth/refresh");
         store.commit("login", response.data.data);
@@ -42,6 +47,7 @@ async function checkToken() {
         return true;
     } catch (error) {
         if (error.status === 401) {
+            push.error("Сессия истекла. Пожалуйста, войдите в систему еще раз");
             store.dispatch("logout");
             localStorage.removeItem("token");
             localStorage.removeItem("user");
@@ -264,10 +270,7 @@ router.beforeEach( async (to, from, next) => {
     if (to.meta.requiresAuth && !await checkToken()) {
         next("/signIn");
     } else if (to.meta.role && getCurrentUserRole() !== to.meta.role) {
-        store.dispatch("setMessage", {
-            'type': 'error',
-            'text': 'У вас нет прав для просмотра этой страницы',
-        });
+        push.error("У вас нет доступа к этой странице");
         next("/");
     } else {
         next();

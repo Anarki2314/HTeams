@@ -54,6 +54,7 @@
 
 <script>
 import api from '../api.js';
+import {push} from 'notivue'
 export default {
     data() {
         return {
@@ -79,19 +80,12 @@ export default {
                 this.$store.commit('login', response.data.data);
                 this.$router.push({ name: 'home' }  );
             } catch (error) {
-                if (error.status === 401) {
-                    console.log(error.data.message);
-                }
-                if (error.status === 422) {
-                    console.log(error.data.errors);
-                }
-
+                push.error(error.data.message)
             } finally {
                 this.loading = false;
             }
         },
     },
-
 
 
 }

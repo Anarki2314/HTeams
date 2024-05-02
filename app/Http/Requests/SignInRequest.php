@@ -23,7 +23,17 @@ class SignInRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:8',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.required' => 'Поле `Электронная почта` обязательно.',
+            'email.email' => 'Поле `Электронная почта` должно содержать действительную электронную почту.',
+            'password.required' => 'Поле `Пароль` обязательно.',
+            'password.min' => 'Поле `Пароль` должно содержать не менее 8 символов.',
         ];
     }
 }

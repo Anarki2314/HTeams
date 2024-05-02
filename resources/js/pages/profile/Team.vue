@@ -72,9 +72,11 @@
     
     <script>
     import HeaderView from '@/components/HeaderView.vue';
-    import api from '../../api.js';
     import TeamMemberCard from '@/components/team/TeamMemberCard.vue';
     import Modal from '@/components/Modal.vue';
+
+    import api from '../../api.js';
+    import {push} from 'notivue';
     export default {
         components: {
             HeaderView,
@@ -125,9 +127,10 @@
                 try {
                     const response = await api.post('/profile/team/invite', {email: this.email});
                     this.closeModal();
-
+                    this.email = '';
+                    push.success(response.data.message);
                 } catch (error) {
-                    console.log(error);
+                    push.error(error.data.message);
                 } finally {
                     this.isLoading = false;
                 }
@@ -135,10 +138,7 @@
         },
         async created() {
             if (!this.$store.getters.haveTeam){
-                this.$store.dispatch('setMessage', {
-                    type : 'error',
-                    text : 'Вы не состоите ни в одной команде'
-                })
+                push.info('Вы не состоите в команде');
                 this.$router.push('/profile/')
             }
 

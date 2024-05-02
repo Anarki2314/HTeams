@@ -60,7 +60,7 @@
                         </div>
                         <div class="container-submit text-center">
                             <button type="submit" class="submit-btn main-button " v-if="!loading">Зарегистрироваться</button>
-                            <div class="loading" v-if="loading"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                            <div class="loading" :class="{ 'd-none': !loading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
                         </div>
                         <div class="container-text text-center">
                             <div class="sign-up-text"  v-if ="organizer"><span class="sign-up-organization" @click="organizer = false">Зарегистрироваться как участник</span></div>
@@ -79,6 +79,7 @@
 
 <script>
 import api from '../api.js';
+import {push} from 'notivue'
 export default {
 
     data() {
@@ -124,13 +125,20 @@ async signUp() {
             localStorage.setItem('user', JSON.stringify(response.data.data.user));
     
             this.$store.commit('login', response.data.data);
+            push.success(response.data.message);
             this.$router.push({ name: 'home' }  );
         } catch (error) {
             if (error.status === 401) {
+                push.error(error.data.message);
                 console.log(error.data.message);
             }
             if (error.status === 422) {
-                console.log(error.data.errors);
+                const errors = error.data.errors
+                for (const errorInput in errors) {
+                    if (Object.hasOwnProperty.call(errors, errorInput)) {
+                        push.error(errors[errorInput][0]);
+                    }
+                }
             }
     } finally {
         this.loading = false;

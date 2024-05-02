@@ -34,6 +34,7 @@ import EventCard from '@/components/event/EventCard.vue';
 import InviteCard from '@/components/profile/InviteCard.vue';
 
 import api from '../../api.js';
+import {push} from 'notivue';
 export default {
     components: {
         HeaderView,
@@ -65,9 +66,9 @@ export default {
                     choice: invite.choice,
                     from_user: invite.id
                 });
-                console.log(response.data);
+                push.info(response.data.message);
             } catch (error) {
-                console.log(error);
+                push.error(error.data.message);
             } finally {
                 this.getInvites();
             }

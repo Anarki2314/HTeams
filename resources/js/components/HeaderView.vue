@@ -44,6 +44,7 @@
 <script>
 
 import api from '../api.js';
+import { push } from 'notivue';
 export default {
 
     computed: {
@@ -55,6 +56,7 @@ export default {
     methods: {
 
         async logout() {
+            const notification = push.promise('Выход из аккаунта...')
             try{
                 const response = await api.post('/auth/sign-out')
                 localStorage.removeItem('token');
@@ -66,8 +68,10 @@ export default {
                 localStorage.removeItem('user');
                 this.$store.dispatch('logout')
                 this.$router.replace('/')
+            } finally {
+                notification.resolve('Вы вышли из аккаунта')
             }
-        }
+        } 
 
     }
 }

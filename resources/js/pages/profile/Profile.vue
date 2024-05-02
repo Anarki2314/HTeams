@@ -90,6 +90,7 @@ import HeaderView from '@/components/HeaderView.vue';
 import Modal from '@/components/Modal.vue';
 
 import api from '../../api.js';
+import {push} from 'notivue';
 export default {
     components: {
         HeaderView,
@@ -117,13 +118,14 @@ export default {
 
         async createTeam() {
             this.isLoading = true;
+
             try {
                 const response = await api.post('/profile/create-team', {title: this.teamname});
                 this.user = response.data.data.user;
                 this.closeModal();
-
+                push.success(response.data.message);
             } catch (error) {
-                console.log(error);
+                push.error(error.data.message);
             } finally {
                 this.isLoading = false;
             }
@@ -135,8 +137,10 @@ export default {
             try {
                 const response = await api.post('/profile/join-team', {invite_code: this.inviteCode});
                 this.closeModal();
+                push.success(response.data.message);
             } catch (error) {
                 console.log(error);
+                push.error(error.data.message);
             } finally {
                 this.isLoading = false;
             }
@@ -147,7 +151,6 @@ export default {
             const response = await api.get('/profile/');
             this.user = response.data.data.user;
         } catch (error) {
-            
         }
         }
     },
