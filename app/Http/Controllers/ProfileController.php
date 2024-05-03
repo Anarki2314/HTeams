@@ -90,6 +90,10 @@ class ProfileController extends Controller
         if ($toUser->team) {
             return response()->json(['message' => 'Пользователь уже состоит в другой команде'], 409);
         }
+
+        if ($toUser->role->title != 'Пользователь') {
+            return response()->json(['message' => 'Пользователь не может быть приглашен'], 409);
+        }
         if ($toUser->invites->where('id', $team->id)->count() > 0) {
             return response()->json(['message' => 'Пользователь уже приглашен в команду'], 409);
         }
@@ -183,7 +187,7 @@ class ProfileController extends Controller
         $fromUser = User::where('id', $validated['from_user'])->first();
         $invite = TeamInvites::where('from_user', $validated['from_user'])->where('to_user', $user->team->leader_id)->first();
         if (!$invite) {
-            return response()->json(['message' => 'Приглашение не найдено'], 409);
+            return response()->json(['message' => 'Запрос не найден'], 409);
         }
         $invite->delete();
         if ($fromUser->team) {
@@ -201,10 +205,10 @@ class ProfileController extends Controller
                 'user_id' => $validated['from_user'],
             ]);
 
-            $responseData['message'] = 'Приглашение одобрено';
+            $responseData['message'] = 'Запрос одобрен';
         } else {
 
-            $responseData['message'] = 'Приглашение отклонено';
+            $responseData['message'] = 'Запрос отклонен';
         }
 
         return response()->json($responseData, 200);

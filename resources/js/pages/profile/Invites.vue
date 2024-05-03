@@ -64,7 +64,7 @@ export default {
             try {
                 const response = await api.post('/profile/team/invite/team-choice', {
                     choice: invite.choice,
-                    from_user: invite.id
+                    from_user: invite.userId
                 });
                 push.info(response.data.message);
             } catch (error) {

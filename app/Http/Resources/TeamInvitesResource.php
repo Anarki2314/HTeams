@@ -15,7 +15,7 @@ class TeamInvitesResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = [
-            'id' => $this->id,
+            'userId' => $this->id,
 
         ];
         if ($this->email) {

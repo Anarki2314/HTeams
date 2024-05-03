@@ -83,6 +83,19 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0;
 
 }
+
+::-webkit-scrollbar-track{
+    background: #1B1B1B;
+}
+
+::-webkit-scrollbar-thumb{
+    background: #DEAC35;
+}
+::-webkit-scrollbar{
+    width: 5px;
+    height: 10px;
+
+}
 .router-link-underline:hover{
     border-bottom: #f4f4f4 1px solid ;
 }
@@ -158,6 +171,38 @@ ul {
     font-size: var(--size-text);
 }
 
+.notif-row-card {
+    height: fit-content;
+    display:flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(5px, 1.5vw, 10px) clamp(15px, 3vw, 30px);
+    border: #1B1B1B 2px solid;
+    gap: clamp(10px, 1.5vw, 15px);
+    border-radius: 5px;
+}
+.notif-row-card-image {
+    width: clamp(48px, 5vw, 80px);
+    border-radius: 50%;
+}
+
+.notif-row-card-container-name {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 3vw, 30px);
+}
+
+.notif-row-card-name {
+    font-size: clamp(12px, 1.5vw, 20px);
+    width: clamp(280px, 100%, 400px);
+}
+
+.notif-row-card-container-buttons{
+    gap: clamp(10px, 3vw, 20px);
+}
+
 .button-view {
     padding: clamp(5px, 1.5vw, 10px) clamp(15px, 3vw, 40px);
     background:none;
@@ -168,6 +213,13 @@ ul {
     cursor: pointer;
     border-radius: 5px;
     text-align: center;
+    transition: all 0.3s ease;
+}
+.notif-button {
+    padding: clamp(2px, 1.5vw, 5px) clamp(5px, 1.5vw, 20px);
+    color: #f4f4f4;
+    font-size: clamp(12px, 1.5vw, 18px);
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 .main-button, .main-button:any-link{
@@ -239,6 +291,25 @@ ul {
 }
 
 .dark-button:active{
+    background-color: rgb(27, 27, 27, 0.8);
+}
+.dark-outline-button{
+    border: 2px solid #1B1B1B;
+    color: #1B1B1B;
+}
+
+.dark-outline-button:hover{
+    background-color: rgb(27, 27, 27, 0.7);
+    color: #f4f4f4;
+}
+
+.dark-outline-button:focus-visible{
+    color: #f4f4f4;
+    background-color: rgb(27, 27, 27, 0.7);
+}
+
+.dark-outline-button:active{
+    color: #f4f4f4;
     background-color: rgb(27, 27, 27, 0.8);
 }
 

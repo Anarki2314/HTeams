@@ -29,23 +29,44 @@
                     <!-- <router-link to="/profile" class="profile-link">example@example.com</router-link>
                     <button class="logout-button">Выйти</button> -->
                 </div>
-                <div class="container-auth  d-none d-lg-flex" v-if="isAuth">
+                <div class="container-auth  d-none d-lg-flex align-items-center" v-if="isAuth">
+                    <div class="container-notif-info d-flex align-items-center" @click="openModal('notif-modal')">
+                        <div class="container-notif-img">
+                            <img :src="'/assets/img/notif.png'" alt="" class="notif-img">
+                        </div>
+                        <div class="container-notif-count">{{ count }}</div>
+                    </div>
                     <router-link to="/profile" class="profile-link">{{ $store.getters.getUser.email }}</router-link>
                     <button class="logout-button" @click="logout">Выйти</button>
                 </div>
             </div>
         </div>
+        <NotifModal :notifications="notifications" @getNotifications="getNotifications"  v-if="showModal && activeModal=='notif-modal'" @close="closeModal" modalId="notif-modal"/>
     </header>
+
+
 
 
 
 </template>
 
 <script>
-
+import NotifModal from './NotifModal.vue';
 import api from '../api.js';
 import { push } from 'notivue';
 export default {
+
+    components: {
+        NotifModal
+    },
+    data() {
+        return {
+            notifications: [],
+            count: 0,
+            showModal: false,
+            activeModal: ''
+        }
+    },
 
     computed: {
         isAuth() {
@@ -54,6 +75,30 @@ export default {
     },
 
     methods: {
+        openModal(modalId) {
+            this.showModal = true;
+            this.activeModal = modalId;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.activeModal = '';
+        },
+        async getNotifications() {
+            try{
+                const response = await api.get('/notifications');
+                this.notifications = response.data.data;
+                this.count = response.data.count;
+            } catch (error) {
+                if (error.status === 401) {
+                    this.$store.dispatch('logout')
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    push.error('Срок действия сессии истек. Пожалуйста, войдите в аккаунт еще раз');
+                    this.$router.replace('/signIn')
+
+                }
+            }
+        }, 
 
         async logout() {
             const notification = push.promise('Выход из аккаунта...')
@@ -73,6 +118,13 @@ export default {
             }
         } 
 
+    },
+
+    created() {
+        if (this.isAuth) {
+            this.getNotifications();
+            
+        }
     }
 }
 </script>
@@ -123,6 +175,12 @@ header{
 
 .profile-link:hover{
     border-bottom: 1px solid var(--color-main);
+}
+
+.container-notif-info{
+    gap: 10px;
+    font-size: var(--size-text);
+    cursor: pointer;
 }
 .logout-button {
     padding: 0;

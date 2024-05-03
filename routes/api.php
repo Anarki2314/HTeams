@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
 use App\Http\Resources\UserResource;
@@ -32,15 +33,18 @@ Route::apiResource('/teams', TeamController::class)->middleware(['auth:sanctum']
 
 Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [ProfileController::class, 'getProfile']);
-    Route::post('/create-team', [ProfileController::class, 'createTeam']);
-    Route::post('/join-team', [ProfileController::class, 'inviteToTeam']);
-    Route::get('/team', [ProfileController::class, 'getTeam']);
-    Route::post('/team/invite', [ProfileController::class, 'inviteFromTeam']);
-    Route::post('/team/invite/team-choice', [ProfileController::class, 'teamChoiceInvite']);
-    Route::post('/team/join', [ProfileController::class, 'inviteToTeam']);
-    Route::get('/team/invites', [ProfileController::class, 'getTeamInvites']);
-});
+    Route::post('/create-team', [ProfileController::class, 'createTeam'])->middleware('ability:Пользователь');
+    Route::post('/join-team', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь');
+    Route::get('/team', [ProfileController::class, 'getTeam'])->middleware('ability:Пользователь');
+    Route::post('/team/invite', [ProfileController::class, 'inviteFromTeam'])->middleware('ability:Пользователь');
+    Route::post('/team/invite/team-choice', [ProfileController::class, 'teamChoiceInvite'])->middleware('ability:Пользователь');
+    Route::post('/team/invite/user-choice', [ProfileController::class, 'userChoiceInvite'])->middleware('ability:Пользователь');
+    Route::post('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
 
+    Route::post('/team/join', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь');
+    Route::get('/team/invites', [ProfileController::class, 'getTeamInvites'])->middleware('ability:Пользователь');
+});
+Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
 Route::get('/user', function (Request $request) {
     return new UserResource($request->user());
 })->middleware('auth:sanctum');
