@@ -195,7 +195,7 @@ class ProfileController extends Controller
         }
         $responseData = [];
         if ($validated['choice']) {
-            if ($user->team->members->count() >= 5) {
+            if ($user->team->members()->count() >= 5) {
                 $responseData['message'] = 'Команда переполнена';
                 return response()->json($responseData, 409);
             }
@@ -232,5 +232,25 @@ class ProfileController extends Controller
         return response()->json([
             'data' => ['invites' => TeamInvitesResource::collection($user->invites)],
         ], 200);
+    }
+
+    public function leaveTeam(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->team) {
+            return response()->json(['message' => 'Вы не состоите в команде'], 409);
+        }
+        TeamMembers::where('team_id', $user->team->id)->where('user_id', $user->id)->delete();
+        return response()->json(['message' => 'Вы покинули команду'], 200);
+    }
+
+    public function deleteTeam(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->isLeader()) {
+            return response()->json(['message' => 'Вы не являетесь лидером команды'], 409);
+        }
+        $user->team->delete();
+        return response()->json(['message' => 'Команда удалена'], 200);
     }
 }

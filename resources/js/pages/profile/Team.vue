@@ -8,7 +8,10 @@
                     </div>
                     <div class="container-team-title d-flex justify-content-center justify-content-md-between flex-wrap">
                         <h3 class="block-title text-center text-lg-start">{{ team.title }}</h3>
-
+                        <div class="container-team-title-buttons d-flex">
+                            <button class="button-view secondary-button" @click="openModal('modal-delete-team')" v-if="user.isLeader">Удалить</button>
+                            <button class="button-view secondary-button" @click="openModal('modal-leave-team')" v-if="!user.isLeader">Покинуть команду</button>
+                        </div>
                     </div>
                     <div class="container-team-content mb-5 d-flex justify-content-center justify-content-lg-between flex-wrap">
     
@@ -34,9 +37,9 @@
                                 <div class="container-team-item">
                                     Код приглашения: <span>{{ team.inviteCode }}</span>
                                 </div>
-                                <div class="container-team-item"> 
-                                    <router-link to="/profile/team/invites">
-                                    Заявки на вступление: <span class="info-button">0</span> 
+                                <div class="container-team-item" v-if="user.isLeader"> 
+                                <router-link to="/profile/team/invites" class="info-button" >
+                                        Заявки на вступление  
                                 </router-link>
                                 </div>
                                 <div class="container-team-item"><span to="/profile/team" class="info-button" @click="openModal('modal-invite-team')" v-if="!isTeamFull">Пригласить в команду</span></div>
@@ -49,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <modal v-if="showModal && activeModal === 'modal-invite-team'" modalId="modal-create-team" @close="closeModal">
+            <modal v-if="showModal && activeModal === 'modal-invite-team'" modalId="modal-invite-team" @close="closeModal">
                 <h2 class="modal-title">Введите пользователя</h2>
                 <div class="modal-content">
                     <form @submit.prevent="inviteFromTeam">
@@ -61,6 +64,36 @@
                         <div class="modal-container-button">
                             <button class="button-view dark-button" type="submit" v-if
                             =" !isLoading" >Отправить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+        </modal>
+            <modal v-if="showModal && activeModal === 'modal-delete-team'" modalId="modal-delete-team" @close="closeModal">
+                <h2 class="modal-title">Вы уверены, что хотите удалить команду?</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="deleteTeam">
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading" >Удалить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+        </modal>
+            <modal v-if="showModal && activeModal === 'modal-leave-team'" modalId="modal-leave-team" @close="closeModal">
+                <h2 class="modal-title">Вы уверены, что хотите покинуть команду?</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="leaveTeam">
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading" >Покинуть</button>
                             <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
                         </div>
                     </div>
@@ -134,6 +167,34 @@
                 } finally {
                     this.isLoading = false;
                 }
+            },
+
+            async deleteTeam() {
+                this.isLoading = true;
+                try {
+                    const response = await api.delete('/profile/team');
+                    this.closeModal();
+                    push.success(response.data.message);
+                    this.$router.push('/profile/');
+                } catch (error) {
+                    push.error(error.data.message);
+                } finally {
+                    this.isLoading = false;
+                }
+            },
+
+            async leaveTeam() {
+                this.isLoading = true;
+                try {
+                    const response = await api.delete('/profile/team/leave');
+                    this.closeModal();
+                    push.success(response.data.message);
+                    this.$router.push('/profile/');
+                } catch (error) {
+                    push.error(error.data.message);
+                } finally {
+                    this.isLoading = false;
+                }
             }
         },
         async created() {
@@ -148,6 +209,7 @@
             isTeamFull() {
                 return this.team.members.length >= 5 ;
             }
+
         },
     }
     </script>
@@ -175,6 +237,10 @@
         gap: clamp(15px, 3vw , 30px);
         margin-bottom: clamp( 20px , 3vw , 40px );
 
+    }
+
+    .container-team-title-buttons{
+        gap: clamp( 15px , 3vw , 30px);
     }
     .container-team-content{
         gap: clamp(  40px , 4vw , 100px)

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('team_invites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrained('teams');
-            $table->foreignId('to_user')->constrained('users');
-            $table->foreignId('from_user')->constrained('users');
+            $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
+            $table->foreignId('to_user')->constrained('users')->onDelete('cascade');
+            $table->foreignId('from_user')->constrained('users')->onDelete('cascade');
         });
     }
 

@@ -43,6 +43,10 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
 
     Route::post('/team/join', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь');
     Route::get('/team/invites', [ProfileController::class, 'getTeamInvites'])->middleware('ability:Пользователь');
+
+    Route::delete('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
+
+    Route::delete('/team', [ProfileController::class, 'deleteTeam'])->middleware('ability:Пользователь');
 });
 Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
 Route::get('/user', function (Request $request) {
