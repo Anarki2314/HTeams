@@ -253,4 +253,11 @@ class ProfileController extends Controller
         $user->team->delete();
         return response()->json(['message' => 'Команда удалена'], 200);
     }
+
+    public function deleteProfile(Request $request)
+    {
+        $user = $request->user();
+        $user->delete();
+        return response()->json(['message' => 'Аккаунт удален'], 200);
+    }
 }

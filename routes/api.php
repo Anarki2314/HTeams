@@ -27,7 +27,7 @@ Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('au
 
 // Team routes 
 
-Route::apiResource('/teams', TeamController::class)->middleware(['auth:sanctum']);
+Route::apiResource('/teams', TeamController::class);
 
 // Profile routes (only for logged users)
 
@@ -47,6 +47,8 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
     Route::delete('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
 
     Route::delete('/team', [ProfileController::class, 'deleteTeam'])->middleware('ability:Пользователь');
+
+    Route::delete('/', [ProfileController::class, 'deleteProfile']);
 });
 Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
 Route::get('/user', function (Request $request) {

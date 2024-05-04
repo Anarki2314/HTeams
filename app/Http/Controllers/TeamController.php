@@ -16,7 +16,10 @@ class TeamController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'data' => TeamResource::collection(Team::all()),
+            'count' => Team::count()
+        ], 200);
     }
 
     /**

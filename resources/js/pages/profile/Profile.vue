@@ -1,5 +1,7 @@
 <template>
+<loading-screen v-if="contentLoading"/>
 <header-view class=""/>
+
     <section class="profile-section ">
         <div class="container-block">
             <div class="container-profile ">
@@ -24,7 +26,7 @@
                             <div class="container-profile-item">Телефон: <span class="profile-info-text">{{ user.phone }}</span></div>
                             <div class="container-profile-item">Дата регистрации: <span class="profile-info-text">{{ user.createdAt }}</span></div>
                             <div class="container-profile-item"><span class="info-button">Сменить пароль</span></div>
-                            <div class="container-profile-item"><span class="info-button">Удалить аккаунт</span></div>
+                            <div class="container-profile-item"><span class="info-button" @click="openModal('modal-delete-profile')">Удалить аккаунт</span></div>
                         </div>
                     </div>
                     <div class="container-profile-stats" v-if="!user.isAdmin">
@@ -82,28 +84,48 @@
                     </form>
                 </div>
         </modal>
+        <modal v-if="showModal && activeModal === 'modal-delete-profile'" modalId="modal-delete-profile" @close="closeModal">
+                <h2 class="modal-title">Вы уверены, что хотите удалить свой аккаунт?</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="deleteProfile">
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading">Удалить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+
+
+                    </div>
+                    </form>
+                </div>
+        </modal>
     </section>
 </template>
 
 <script>
 import HeaderView from '@/components/HeaderView.vue';
 import Modal from '@/components/Modal.vue';
-
+import LoadingScreen from '@/components/LoadingScreen.vue';
 import api from '../../api.js';
 import {push} from 'notivue';
 export default {
     components: {
         HeaderView,
-        Modal
+        Modal,
+        LoadingScreen
     },
     data() {
         return {
+
             user : {},
             teamname: '',
             showModal: false,
             activeModal: '',
             inviteCode: '',
-            isLoading: false
+            isLoading: false,
+            contentLoading: true,
         }
     },
     methods: {
@@ -147,15 +169,35 @@ export default {
         },
 
         async getProfile() {
+            this.contentLoading = true;
             try {
             const response = await api.get('/profile/');
             this.user = response.data.data.user;
         } catch (error) {
+        } finally {
+            this.contentLoading = false;
         }
+        },
+
+        async deleteProfile() {
+            this.isLoading = true;
+            try {
+                const response = await api.delete('/profile/');
+                this.closeModal();
+                push.success(response.data.message);
+                this.$store.dispatch('logout');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                this.$router.push('/');
+            } catch (error) {
+                push.error(error.data.message);
+            } finally {
+                this.isLoading = false;
+            }
         }
     },
 
-    beforeMount() {
+    created() {
         this.getProfile();
 
     }

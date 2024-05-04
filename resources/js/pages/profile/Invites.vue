@@ -1,4 +1,5 @@
 <template>
+    <loading-screen v-if="contentLoading"/>
     <header-view/>
     <section class="invites-section">
         <div class="container-block">
@@ -32,6 +33,7 @@ import HeaderView from '@/components/HeaderView.vue';
 import FooterView from '@/components/FooterView.vue'
 import EventCard from '@/components/event/EventCard.vue';
 import InviteCard from '@/components/profile/InviteCard.vue';
+import LoadingScreen from '@/components/LoadingScreen.vue';
 
 import api from '../../api.js';
 import {push} from 'notivue';
@@ -40,22 +42,27 @@ export default {
         HeaderView,
         FooterView,
         EventCard,
-        InviteCard
+        InviteCard,
+        LoadingScreen
     },
     data() {
         return {
             search: '',
             invites: [  
-            ]
+            ],
+            contentLoading: true
         }
     },
     methods: {
         async getInvites() {
+            this.contentLoading = true;
             try {
                 const response = await api.get('profile/team/invites');
                 this.invites = response.data.data.invites;
             } catch (error) {
                 console.log(error);
+            } finally {
+                this.contentLoading = false;
             }
         },
 
@@ -98,27 +105,6 @@ export default {
         position: relative;
     }
 
-    #search {
-        background: transparent;
-        padding: 5px 45px 5px 10px;
-        border: 1px solid var(--color-main);
-        border-radius: 5px;
-        width: clamp( 280px , 95% , 400px);
-        color: #f4f4f4;
-        font-size: var(--size-text);
-    }
-    #search::placeholder {
-        color: #313131;
-    }
-
-    .search-btn {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        background: transparent;
-        border: none;
-        transform: translateY(-50%);
-    }
 
     .filters-btn {
         background: none;

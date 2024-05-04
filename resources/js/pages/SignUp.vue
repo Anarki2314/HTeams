@@ -53,7 +53,7 @@
                             </div>
 
                             <div class="container-input">
-                                <input type="checkbox" name="terms" v-model="terms" class="d-none" id="terms">
+                                <input type="checkbox" name="terms" v-model="terms" class="terms-checkbox" id="terms">
                                 <label for="terms" class="terms-label">Пользовательское соглашение</label>
                             </div>
 
@@ -222,6 +222,14 @@ header {
 .input-label.active {
     top: 0;
     z-index: 1;
+}
+
+.terms-checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 .terms-label {

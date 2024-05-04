@@ -1,4 +1,5 @@
-<template #default>
+<template>
+    <loading-screen v-if="contentLoading"/> 
     <header-view class=""/>
         <section class="team-section ">
             <div class="container-block">
@@ -9,7 +10,7 @@
                     <div class="container-team-title d-flex justify-content-center justify-content-md-between flex-wrap">
                         <h3 class="block-title text-center text-lg-start">{{ team.title }}</h3>
                         <div class="container-team-title-buttons d-flex">
-                            <button class="button-view secondary-button" @click="openModal('modal-delete-team')" v-if="user.isLeader">Удалить</button>
+                            <button class="button-view secondary-button" @click="openModal('modal-delete-team')" v-if="user.isLeader">Удалить команду</button>
                             <button class="button-view secondary-button" @click="openModal('modal-leave-team')" v-if="!user.isLeader">Покинуть команду</button>
                         </div>
                     </div>
@@ -107,6 +108,7 @@
     import HeaderView from '@/components/HeaderView.vue';
     import TeamMemberCard from '@/components/team/TeamMemberCard.vue';
     import Modal from '@/components/Modal.vue';
+    import LoadingScreen from '@/components/LoadingScreen.vue';
 
     import api from '../../api.js';
     import {push} from 'notivue';
@@ -114,7 +116,8 @@
         components: {
             HeaderView,
             TeamMemberCard,
-            Modal
+            Modal,
+            LoadingScreen
         },
         data() {
             return {
@@ -130,18 +133,22 @@
 
                 email: '',
 
-                isLoading: false
+                isLoading: false,
+                contentLoading: true,
 
             }
         },
 
         methods: {
             async getTeam() {
+                this.contentLoading = true;
                 try {
                     const response = await api.get('/profile/team');
                     this.team = response.data.data.team;
                 } catch (error) {
                         
+                    } finally {
+                        this.contentLoading = false;
                     }
             },
 

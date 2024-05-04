@@ -81,22 +81,6 @@ export default {
         margin-bottom: 0;
     }
 
-    .container-search{
-        position: relative;
-    }
-
-    #search {
-        background: transparent;
-        padding: 5px 45px 5px 10px;
-        border: 1px solid var(--color-main);
-        border-radius: 5px;
-        width: clamp( 280px , 95% , 400px);
-        color: #f4f4f4;
-        font-size: var(--size-text);
-    }
-    #search::placeholder {
-        color: #313131;
-    }
 
     .search-btn {
         position: absolute;
