@@ -99,6 +99,7 @@ h1, h2, h3, h4, h5, h6 {
     border-bottom: #f4f4f4 1px solid ;
 }
 ul {
+    list-style: none;
     margin: 0;
     padding: 0;
 }
@@ -171,6 +172,46 @@ ul {
 .container-filters{
     position: relative;
 }
+.filters-open-btn {
+        background: none;
+    }
+
+.container-page {
+    overflow: auto;
+    height: 90dvh;
+}
+.empty-page {
+    font-size: var(--size-text);
+    margin:0 auto;
+}
+
+.container-pagination {
+    background-color: #313131;
+    cursor: pointer;
+    outline: none;
+    transition: all .3s ease;
+}
+
+.container-pagination:hover, .container-pagination:focus, .container-pagination:active {
+    background-color: rgb(49, 49, 49, 0.8);
+    border-color: rgb(49, 49, 49, 0.8);
+    
+}
+.pagination-btn {
+    color: #f4f4f4;
+    outline: none;
+    font-size: var(--size-text);
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+
 
 .row-card {
     height: fit-content;

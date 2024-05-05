@@ -58,17 +58,29 @@
   }
   .modal-filters-container-content {
     position: absolute;
-    overflow: auto;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: clamp(280px, 100%, 400px);
+    display: flex;
+    width: 70%;
+    flex-direction: column;
+    gap: clamp( 10px, 1.5vw ,25px);
+  }
+  .container-filters-types{
+    display: flex;
+    gap: clamp( 10px, 1.5vw ,25px);
   }
  
   .container-filters-items {
+    overflow: auto;
     display: flex;
+    height: clamp( 180px, 100%, 180px);
     flex-direction: column;
     gap: clamp( 10px, 1.5vw ,25px);
+  }
+
+  .container-filters-item{
+    display: flex;
   }
   .filters-checkbox{
     position: absolute;
@@ -82,7 +94,9 @@
     position: relative;
     display: flex;
     align-items: center;
+    font-size: var(--size-text);
     gap: 10px;
+    cursor: pointer;
   }
 
   .filters-checkbox-label::before {
@@ -93,20 +107,60 @@
     border: 1px solid #1B1B1B;
     border-radius: 5px;
   }
+  .filters-radio-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: var(--size-text);
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .filters-radio-label::before {
+    content: "";
+    display: block;
+    width: clamp(24px, 3vw, 30px);
+    aspect-ratio: 1 / 1;
+    border: 1px solid #1B1B1B;
+    border-radius: 50%;
+  }
 
   .filters-checkbox:checked + .filters-checkbox-label::before {
-    background: url('/assets/img/filters-mark.png') no-repeat center;
+    background: url('/assets/img/filters-mark.png') no-repeat center / 75%;
+  }
+  .filters-checkbox:checked + .filters-radio-label::before {
+    background: url('/assets/img/filters-mark.png') no-repeat center / 75%;
   }
   .modal-filters-image {
     width: clamp(280px, 50dvw, 550px);
+    filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.25));
   }
-  .modal-content *{
-    font-size: clamp(12px, 1.5vw, 18px);  
+
+  .container-filters-buttons{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
   }
-  .modal-title {
-    font-size: clamp(20px, 3vw, 30px);
-    margin-bottom: clamp(15px, 3vw, 30px);
-    text-align:center;
+
+  .filters-btn {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    font-size: clamp(12px, 1.5vw, 18px);
+    font-size: var(--size-text);
+  }
+
+  .filters-btn:hover, .filters-btn:focus, .filters-btn:active {
+    text-decoration: underline;
+    
+  }
+  .filters-btn-reset {
+    color: #f4f4f4;
+  }
+
+  .filters-btn-apply {
+    color: var(--color-main);
   }
 
 </style>

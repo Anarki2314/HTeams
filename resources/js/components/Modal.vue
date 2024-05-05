@@ -1,9 +1,11 @@
 <template>
     <div class="modal-container" @click.self="closeModal">
-        <div class="modal-container-image">
-          <img :src="'/assets/img/modal-bg.png'" alt="" class="modal-image">
-
-          <div class="modal-container-content">
+      
+      <div class="modal-container-image">
+        <img :src="'/assets/img/modal-bg.png'" alt="" class="modal-image">
+        
+        <div class="close modal-close" @click="closeModal">+</div>
+        <div class="modal-container-content">
             <slot></slot>
 
           </div>
@@ -48,6 +50,15 @@
     justify-content: center;
     align-items: center;
   }
+  
+.modal-close{
+    position: absolute;
+    transform: rotate(45deg);
+    top : 25px;
+    right: 10%;
+    font-size: 50px;
+    cursor: pointer;
+}
   .modal-container-image{
     position: relative;
     overflow: hidden;

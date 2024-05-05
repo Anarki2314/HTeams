@@ -5,10 +5,6 @@ export default createStore({
         isLoggedIn: !!localStorage.getItem('token'),
         token: localStorage.getItem('token') || null,
         user: JSON.parse(localStorage.getItem('user')) || null,
-        message: {
-            type: '',
-            text: '',
-        },
     },
     mutations: {
         login(state, data) {
@@ -22,10 +18,6 @@ export default createStore({
             state.user = null;
         },
         
-        setMessage(state, message) {
-            state.message = message;
-        }
-
     },
 
     getters: {
@@ -41,14 +33,11 @@ export default createStore({
             return state.user.role;
         },
 
-        getMessage(state) {
-            return state.message;
-        },
         getToken(state) {
             return state.token;
         },
         haveTeam(state) {
-        return state.user.haveTeam;
+        return state.user?.haveTeam;
         },
         
         isAdmin(state) {
@@ -75,8 +64,5 @@ export default createStore({
             commit('logout');
         },
 
-        setMessage({ commit }, message) {
-            commit('setMessage', message);
-        }
     }
 })

@@ -161,7 +161,6 @@ export default {
                 this.closeModal();
                 push.success(response.data.message);
             } catch (error) {
-                console.log(error);
                 push.error(error.data.message);
             } finally {
                 this.isLoading = false;

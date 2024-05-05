@@ -6,20 +6,29 @@ use App\Http\Resources\TeamMembersCollection;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
 use App\Models\Team;
+use App\Models\TeamInvites;
 use App\Models\TeamMembers;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json([
-            'data' => TeamResource::collection(Team::all()),
-            'count' => Team::count()
-        ], 200);
+
+        $teams = QueryBuilder::for(Team::class)
+            ->defaultSort('-id')
+            ->select('id', 'title')
+            ->withCount('members')
+            ->allowedFilters(['title', AllowedFilter::custom('isFull', new \App\Filters\IsFullFilter())->nullable()])
+
+
+            ->paginate($request->get('perPage', 10));
+        return response()->json($teams);
     }
 
     /**
@@ -77,5 +86,35 @@ class TeamController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function joinTeam(Request $request)
+    {
+        $validated = $request->validate([
+            'team_id' => 'required|exists:teams,id',
+
+        ], [
+
+            'team_id.required' => 'Поле `Id команды` обязательно.',
+            'team_id.exists' => 'Команда не найдена.',
+        ]);
+
+        $user = $request->user();
+        if ($user->team) {
+            return response()->json(['message' => 'Вы уже состоите в команде'], 409);
+        }
+
+        $team = Team::where('id', $validated['id'])->first();
+        if ($team->members->count() >= 5) {
+            return response()->json(['message' => 'Команда переполнена'], 409);
+        }
+
+        $teamInvites = TeamInvites::create([
+            'team_id' => $team->id,
+            'from_user' => $user->id,
+            'to_user' => $team->leader_id,
+        ]);
+
+        return response()->json(['message' => 'Приглашение отправлено'], 201);
     }
 }

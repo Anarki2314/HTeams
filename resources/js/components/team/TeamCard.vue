@@ -7,7 +7,7 @@
             <h4 class="team-name row-card-name">{{ team.title }}</h4>
         </router-link>
         <div class="container-team-apply-button row-card-container-button">
-            <button class="button-view secondary-button apply-button">Подать заявку на вступление</button>
+            <button class="button-view secondary-button apply-button" @click="sendApplication" v-if="!haveTeam && team.members_count < 5">Подать заявку на вступление</button>
         </div>
     </div>
 </template>
@@ -16,10 +16,37 @@
 <script>
 
 export default {
+    data() {
+
+        return {
+
+        }
+    },
     props: {
         team: {
             type: Object,
             required: true
+
+        }
+    },
+
+    computed: {
+        isAuth() {
+            return this.$store.getters.isLoggedIn
+        },
+
+        haveTeam(){
+            return this.$store.getters.haveTeam
+        }
+
+    },
+    methods: {
+        async sendApplication() {
+            if (!this.isAuth) {
+                this.$emit('openModal', 'modal-auth');
+                return
+            }
+            this.$emit('join', this.team.id);
 
         }
     },
