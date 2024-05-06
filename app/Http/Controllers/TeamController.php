@@ -11,6 +11,7 @@ use App\Models\TeamMembers;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TeamController extends Controller
 {
@@ -67,8 +68,13 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, $id)
     {
+        if ((int)$id == 0) {
+            return throw new NotFoundHttpException('Команда не найдена');
+        }
+        $team = Team::findOrFail($id);
+        return response()->json(['data' => new TeamResource($team)]);
         //
     }
 
@@ -104,7 +110,7 @@ class TeamController extends Controller
             return response()->json(['message' => 'Вы уже состоите в команде'], 409);
         }
 
-        $team = Team::where('id', $validated['id'])->first();
+        $team = Team::where('id', $validated['team_id'])->first();
         if ($team->members->count() >= 5) {
             return response()->json(['message' => 'Команда переполнена'], 409);
         }

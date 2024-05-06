@@ -187,9 +187,11 @@ ul {
 
 .container-pagination {
     background-color: #313131;
+    position: relative;
     cursor: pointer;
     outline: none;
     transition: all .3s ease;
+    display: flex;
 }
 
 .container-pagination:hover, .container-pagination:focus, .container-pagination:active {
@@ -197,6 +199,7 @@ ul {
     border-color: rgb(49, 49, 49, 0.8);
     
 }
+
 .pagination-btn {
     color: #f4f4f4;
     outline: none;
@@ -209,6 +212,9 @@ ul {
     justify-content: center;
     height: 100%;
     width: 100%;
+}
+.pagination-loading {
+    width: clamp(24px, 3vw, 40px);
 }
 
 

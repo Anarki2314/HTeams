@@ -30,6 +30,9 @@ import AdminUser from "@/pages/_admin/User.vue";
 import AdminTeam from "@/pages/_admin/Team.vue";
 import AdminRequest from "@/pages/_admin/Request.vue";
 
+// 404 Page
+import NotFound from "@/pages/NotFound.vue";
+
 import api from "@/api";
 import store from "@/store/Auth-store.js";
 import { push } from "notivue";
@@ -257,6 +260,13 @@ const routes = [
             requiresAuth: true,
             role: "Админ",
         },
+    },
+
+    // 404
+    {
+        path: "/:pathMatch(.*)*",
+        name: "404",
+        component: NotFound,
     },
 ];
 

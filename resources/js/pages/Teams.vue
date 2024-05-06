@@ -57,7 +57,9 @@
                     <team-card v-for="team, index in teams" :key="index" :team="team" @openModal="openModal" @join="joinTeam"/>
 
                     <button class="container-pagination row-card d-flex justify-content-center "@click="loadNextPage" v-if="nextPage">
-                        <span class="pagination-btn"  >Показать еще</span>
+
+                            <span class="pagination-btn" v-if="!pageLoading">Показать еще</span>
+                            <img :src="'/assets/img/loading.svg'" alt="" v-if="pageLoading" class="pagination-loading">
                     </button>
                 </div>
             </div>

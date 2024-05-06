@@ -27,8 +27,8 @@ Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('au
 
 // Team routes 
 
-Route::apiResource('/teams', TeamController::class);
 Route::post('/teams/join', [TeamController::class, 'joinTeam'])->middleware(['auth:sanctum', 'ability:Пользователь']);
+Route::apiResource('/teams', TeamController::class);
 
 // Profile routes (only for logged users)
 
