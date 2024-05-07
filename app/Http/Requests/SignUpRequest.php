@@ -37,7 +37,7 @@ class SignUpRequest extends FormRequest
             $rules['name'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
             $rules['surname'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
         } elseif ($this->roleIsOrganizer()) {
-            $rules['orgName'] = 'required|min:2|regex:/^[а-яА-ЯёЁ\s]+$/u';
+            $rules['orgName'] = 'required|min:2|regex:/^[а-яА-ЯёЁA-Za-z\s]+[а-яА-ЯёЁA-Za-z]+$/u';
         }
         return $rules;
     }
@@ -56,17 +56,28 @@ class SignUpRequest extends FormRequest
     {
         return [
             'name.regex' => 'Имя должно содержать только кириллицу.',
+            'name.required' => 'Поле `Имя` обязательно.',
+
             'surname.regex' => 'Фамилия должна содержать только кириллицу.',
-            'orgName.regex' => 'Название организации должно содержать только кириллицу.',
-            'password.regex' => 'Пароль должен содержать цифры, строчные и заглавные буквы.',
+            'surname.required' => 'Поле `Фамилия` обязательно.',
+
+            'orgName.regex' => 'Название организации должно содержать только кириллицу и латиницу.',
+            'orgName.required' => 'Поле `Название организации` обязательно.',
+
+            'email.required' => 'Поле `Email` обязательно.',
             'email.unique' => 'Пользователь с таким email уже существует.',
-            'phone.unique' => 'Пользователь с таким номером телефона уже существует.',
-            'phone.regex' => 'Неверный формат номера телефона (+7(000)000-00-00).',
+
             'phone.required' => 'Поле `Телефон`обязателено.',
+            'phone.unique' => 'Пользователь с таким номером телефона уже существует.',
+            'phone.regex' => 'Неверный формат номера телефона (+7(###)###-##-##).',
+
             'password.required' => 'Поле `Пароль` обязательно.',
+            'password.regex' => 'Пароль должен содержать цифры, строчные и заглавные буквы.',
             'password.confirmed' => 'Поле `Повтор пароля` должно совпадать с полем `Пароль`.',
             'password.min' => 'Поле `Пароль` должно содержать не менее 8 символов.',
+
             'role_id.in' => 'Неверно указана роль.',
+
 
 
         ];

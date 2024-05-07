@@ -54,20 +54,45 @@
 
 <script>
 import api from '../api.js';
-import {push} from 'notivue'
+import {push} from 'notivue';
+import {useVuelidate} from '@vuelidate/core';
+import {required, email, helpers,minLength} from '@vuelidate/validators';
+
 export default {
+    setup() {
+        return { v$: useVuelidate() }
+    },
     data() {
         return {
             loading: false,
             email: '',
             password: '',
+        }
+    },
 
+    validations() {
+        return {
+            email: {
+                required: helpers.withMessage('Поле `Email` обязательно', required),
+                email: helpers.withMessage('Поле `Email` должно быть валидным email адресом.', email),
+            },
+
+            password: {
+                required: helpers.withMessage('Поле `Пароль` обязательно', required),
+                minLength: helpers.withMessage('Поле `Пароль` должно содержать не менее 8 символов', minLength(8))
+            },
         }
     },
 
     methods: {
-
         async signIn() {
+            const isFormCorrect = await this.v$.$validate();
+            if (!isFormCorrect) {
+                this.v$.$errors.forEach((error) => {
+                    push.error(error.$message)
+                });
+                return
+            }
             this.loading = true;
             try {
                 const response = await api.post('/auth/sign-in', {
@@ -84,11 +109,11 @@ export default {
             } finally {
                 this.loading = false;
             }
-        },
-    },
-
+        }
+    }
 
 }
+
 </script>
 
 <style scoped>
