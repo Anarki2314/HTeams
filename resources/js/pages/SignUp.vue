@@ -39,7 +39,7 @@
                                 <label for="" class="input-label" :class="{ 'active': orgName }">Название организации</label>
                             </div>
                             <div class="container-input">
-                                <input type="text" v-model="phone" name="tel" required class="form-input">
+                                <input type="text" v-model="phone" v-mask="'+7(###)###-##-##'" name="tel" required masked='true'class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': phone }">Телефон</label>
                             </div>
                             <div class="container-input">
@@ -78,10 +78,11 @@
 </template>
 
 <script>
+import {mask} from 'vue-the-mask';
 import api from '../api.js';
 import {push} from 'notivue'
 export default {
-
+    directives: { mask },
     data() {
         return {
             loading: false,

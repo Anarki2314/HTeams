@@ -58,6 +58,7 @@
     right: 10%;
     font-size: 50px;
     cursor: pointer;
+    user-select: none;
 }
   .modal-container-image{
     position: relative;

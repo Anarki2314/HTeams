@@ -8,7 +8,7 @@
             />
         </div>
         <div class="member-name d-flex align-items-center">{{ member.surname }} {{ member.name }}
-        <img :src="'/assets/img/leader-mark.png'" alt="" v-if ="member.isLeader">
+        <img :src="'/assets/img/leader-mark.png'" alt="" v-if ="member.isLeader" class="leader-mark">
         </div>
     </div>
 </template>
@@ -41,4 +41,7 @@ export default {
         gap: clamp( 10px , 3vw ,30px);
     }
 
+    .leader-mark {
+        width: clamp( 24px , 3vw , 30px);
+    }
 </style>

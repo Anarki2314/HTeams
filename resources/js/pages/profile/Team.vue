@@ -236,6 +236,9 @@
         width: clamp( 280px , 95% , 1200px);
     }
     
+    .container-team-about, .container-team-stats{
+    flex: 1;        
+    }
 
     .block-title {
         margin-bottom: 0;
