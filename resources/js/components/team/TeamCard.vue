@@ -7,7 +7,7 @@
             <h4 class="team-name row-card-name">{{ team.title }}</h4>
         </router-link>
         <div class="container-team-apply-button row-card-container-button">
-            <button class="button-view secondary-button apply-button" @click="sendApplication" v-if="!haveTeam && team.members_count < 5">Подать заявку на вступление</button>
+            <button class="button-view secondary-button apply-button" @click="sendApplication" v-if="!haveTeam && team.members_count < 5 && (isUser || !isAuth)">Подать заявку на вступление</button>
         </div>
     </div>
 </template>
@@ -37,7 +37,11 @@ export default {
 
         haveTeam(){
             return this.$store.getters.haveTeam
-        }
+        },
+
+        isUser() {
+            return this.$store.getters.isUser
+        },
 
     },
     methods: {

@@ -52,7 +52,7 @@ export default {
 }
 .event-card-image{
     width: clamp( 280px, 100% , 500px);
-    aspect-ratio: 2/1;
+    aspect-ratio: 1.8/1;
     object-fit: cover;
 }
 .event-card-body{

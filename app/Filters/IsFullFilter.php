@@ -10,7 +10,7 @@ class IsFullFilter implements Filter
     {
         if ($value) {
             $query->whereHas('members', null, '=', 5);
-        } elseif (!$value) {
+        } elseif ($value === false) {
             $query->whereHas('members', null, '<', 5);
         }
     }

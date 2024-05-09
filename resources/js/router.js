@@ -13,6 +13,7 @@ import ProfileTeam from "@/pages/profile/Team.vue";
 import ProfileTeamInvites from "@/pages/profile/Invites.vue";
 import UpcomingEvents from "@/pages/profile/UpcomingEvents.vue";
 import FinishedEvents from "@/pages/profile/FinishedEvents.vue";
+import CreateEvent from "@/pages/events/CreateEvent.vue";
 
 // Team view pages
 import Team from "@/pages/teams/Team.vue";
@@ -153,6 +154,16 @@ const routes = [
             requiresAuth: true,
         }
         // beforeEnter: requireAuth
+    },
+
+    {
+        path: "/profile/create-event",
+        name: "create-event",
+        component: CreateEvent,
+        meta: {
+            requiresAuth: true,
+            role: "Организатор",
+        },
     },
 
     // Team Routes

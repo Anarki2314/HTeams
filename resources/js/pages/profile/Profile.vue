@@ -39,7 +39,7 @@
                             <div class="container-profile-item">Завершенные: <router-link to="/profile/finished" class="profile-info-text info-button">{phone}</router-link></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
-                            <div class="container-profile-item" v-if="user.isOrganizer"><span class="info-button">Создать мероприятие</span></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/create-event" class="info-button">Создать мероприятие</router-link></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && user.haveTeam"><router-link to="/profile/team" class="info-button">Ваша команда</router-link></div>
                         </div>
                     </div>

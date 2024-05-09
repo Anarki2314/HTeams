@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "./router.js";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const api = axios.create({
@@ -22,6 +23,9 @@ api.interceptors.response.use(
       return Promise.resolve(response);
     },
     async (err) => {
+      if (err.response.status == 404) {
+        return router.push('/404')
+      }
       return Promise.reject(err.response);
     }
   );

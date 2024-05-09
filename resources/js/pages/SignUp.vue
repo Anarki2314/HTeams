@@ -23,25 +23,24 @@
                                 <label for="" class="input-label" :class="{ active: email }">Email</label>
                             </div>
                             <div class="container-input" v-if="!organizer">
-                                <input type="text" v-model.lazy="name" name="name" required class="form-input" />
+                                <input type="text" v-model.lazy="name" name="name" required class="form-input" pattern="^[а-яА-ЯёЁ]+$" title="Только кириллица" minlength="2"/>
                                 <label for="" class="input-label" :class="{ active: name }">Имя</label>
                             </div>
                             <div class="container-input" v-if="!organizer">
-                                <input type="text" v-model.lazy="surname" name="surname" required class="form-input" />
+                                <input type="text" v-model.lazy="surname" name="surname" required class="form-input" pattern="^[а-яА-ЯёЁ]+$" title="Только кириллица" minlength="2"/>
                                 <label for="" class="input-label" :class="{ active: surname }">Фамилия</label>
                             </div>
                             <div class="container-input" v-if="organizer">
-                                <input type="text" v-model.lazy="orgName" name="orgName" required class="form-input" />
+                                <input type="text" v-model.lazy="orgName" name="orgName" required class="form-input" pattern="^[а-яА-ЯёЁA-Za-z\s]+[а-яА-ЯёЁA-Za-z]+$" title="Только кириллица и латиница"/>
                                 <label for="" class="input-label" :class="{ active: orgName }">Название
                                     организации</label>
                             </div>
                             <div class="container-input">
-                                <input type="text" v-model.lazy="phone" v-mask="'+7(###)###-##-##'" name="tel" required
-                                    masked="true" class="form-input" />
+                                <input type="text" v-model.lazy="phone" v-mask="'+7(###)###-##-##'" name="tel" required masked="true" class="form-input" pattern="\+7\(\d{3}\)\d{3}-\d{2}-\d{2}" title="Телефон в формате +7(###)###-##-##"/>
                                 <label for="" class="input-label" :class="{ active: phone }">Телефон</label>
                             </div>
                             <div class="container-input">
-                                <input type="password" v-model.lazy="password" name="password" required class="form-input" />
+                                <input type="password" v-model.lazy="password" name="password" required class="form-input" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).+" title="Пароль должен содержать цифру, строчную и прописную букву"/>
                                 <label for="" class="input-label" :class="{ active: password }">Пароль</label>
                             </div>
                             <div class="container-input">
@@ -52,7 +51,7 @@
                             </div>
 
                             <div class="container-input">
-                                <input type="checkbox" name="terms" v-model="terms" class="terms-checkbox" id="terms" />
+                                <input type="checkbox" name="terms" v-model="terms" class="terms-checkbox" id="terms"/>
                                 <label for="terms" class="terms-label">Пользовательское соглашение</label>
                             </div>
                         </div>

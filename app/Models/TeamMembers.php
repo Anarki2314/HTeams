@@ -24,6 +24,7 @@ class TeamMembers extends Model
 
             if (static::where('team_id', $model->team_id)->count() >= 5) {
                 TeamInvites::where('team_id', $model->team_id)->delete();
+                NotificationInvites::where('team_id', $model->team_id)->delete();
             }
         });
     }

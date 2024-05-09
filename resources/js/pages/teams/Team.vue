@@ -12,7 +12,7 @@
                         {{ team.title }}
                     </h3>
                     <div class="container-team-apply-button">
-                        <div class="button-view secondary-button" v-if="!isFull && !haveTeam && (this.isUser || !this.isAuth)"
+                        <div class="button-view secondary-button" v-if="!isFull && !haveTeam && (isUser || !isAuth)"
                             @click="joinTeam">
                             Подать заявку на вступление
                         </div>
