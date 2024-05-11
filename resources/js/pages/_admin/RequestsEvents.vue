@@ -53,14 +53,14 @@ export default {
                     image: 'https://via.placeholder.com/500x250',
                     tags: ['Тег 1', 'Тег 2', 'Тег 3', 'Тег 4'],
                     date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-                    title: 'Название мероприятия'
+                    title: 'Название соревнования'
                 },
                 {
                     id: 2,
                     image: 'https://via.placeholder.com/500x250',
                     tags: ['Тег A', 'Тег B', 'Тег C', 'Тег D', 'Тег E', 'Тег F', 'Тег G'],
                     // date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-                    title: 'Другое название мероприятия'
+                    title: 'Другое название соревнования'
                 },
             ]
         }

@@ -128,7 +128,7 @@ export default {
             isOrganizer: false, 
             event: {
                 id: 1,
-                title: 'Название мероприятия',
+                title: 'Название соревнования',
                 image: 'https://via.placeholder.com/900x500',
                 tags:[
                     'asd',
@@ -141,7 +141,7 @@ export default {
                     'asd',
                     'asd',
                 ],
-                description: 'Описание мероприятия',
+                description: 'Описание соревнования',
                 dates:{
                     registration: '01.01.2022',
                     start: '01.01.2022',

@@ -33,13 +33,13 @@
                     <h4 class="profile-subtitle text-center text-md-start">Статистика:</h4>
 
                     <div class="container-profile-items ">
-                            <div class="container-profile-item" v-if="!user.isOrganizer">Всего мероприятий: <span class="profile-info-text">{name}</span></div>
-                            <div class="container-profile-item" v-if="user.isOrganizer">Создано мероприятий: <span class="profile-info-text">{name}</span></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer">Всего соревнований: <span class="profile-info-text">{name}</span></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer">Создано соревнований: <span class="profile-info-text">{name}</span></div>
                             <div class="container-profile-item">Предстоящие: <router-link to="/profile/upcoming" class="profile-info-text info-button">{surname}</router-link></div>
                             <div class="container-profile-item">Завершенные: <router-link to="/profile/finished" class="profile-info-text info-button">{phone}</router-link></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
-                            <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/create-event" class="info-button">Создать мероприятие</router-link></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/create-event" class="info-button">Создать соревнование</router-link></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && user.haveTeam"><router-link to="/profile/team" class="info-button">Ваша команда</router-link></div>
                         </div>
                     </div>

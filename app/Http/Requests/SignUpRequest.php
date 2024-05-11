@@ -37,7 +37,7 @@ class SignUpRequest extends FormRequest
             $rules['name'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
             $rules['surname'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
         } elseif ($this->roleIsOrganizer()) {
-            $rules['orgName'] = 'required|min:2|regex:/^[а-яА-ЯёЁA-Za-z\s]+[а-яА-ЯёЁA-Za-z]+$/u';
+            $rules['orgName'] = 'required|min:2|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/u';
         }
         return $rules;
     }

@@ -62,8 +62,8 @@
     <section class="events-section">
         <div class="container-block">
             <div class="container-events-title d-flex justify-content-between align-items-end">
-                <h3 class="block-title text-center text-lg-start">Ближайшие мероприятия</h3>
-                <router-link to="/events" class="events-link info-button">Все мероприятия</router-link>
+                <h3 class="block-title text-center text-lg-start">Ближайшие соревнования</h3>
+                <router-link to="/events" class="events-link info-button">Все соревнования</router-link>
             </div>
 
             <div class="container-events d-flex justify-content-center justify-content-lg-around align-items-center flex-wrap">
@@ -76,7 +76,7 @@
                             <img :src="'/assets/img/main-test-event.png'" alt="">
                         </div>
                         <div class="container-event-content">
-                            <h4 class="event-title"> {Название мероприятия}</h4>
+                            <h4 class="event-title"> {Название соревнования}</h4>
                             
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                             <img :src="'/assets/img/main-test-event.png'" alt="">
                         </div>
                         <div class="container-event-content">
-                            <h4 class="event-title"> {Название мероприятия}</h4>
+                            <h4 class="event-title"> {Название соревнования}</h4>
                             
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                             <img :src="'/assets/img/main-test-event.png'" alt="">
                         </div>
                         <div class="container-event-content">
-                            <h4 class="event-title"> {Название мероприятия}</h4>
+                            <h4 class="event-title"> {Название соревнования}</h4>
                             
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             <img :src="'/assets/img/main-test-event.png'" alt="">
                         </div>
                         <div class="container-event-content">
-                            <h4 class="event-title"> {Название мероприятия}</h4>
+                            <h4 class="event-title"> {Название соревнования}</h4>
                             
                         </div>
                     </div>

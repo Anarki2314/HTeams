@@ -12,7 +12,7 @@
                     <h3 class="block-title">Навигация</h3>
                     <ul>
                         <li><router-link to="/" class="router-link-underline">Главная</router-link></li>
-                        <li><router-link to="/events" class="router-link-underline">Мероприятия</router-link></li>
+                        <li><router-link to="/events" class="router-link-underline">Соревнования</router-link></li>
                         <li><router-link to="/teams" class="router-link-underline">Команды</router-link></li>
                     </ul>
                 </div>

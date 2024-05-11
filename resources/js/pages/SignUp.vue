@@ -140,7 +140,7 @@ export default {
         if (this.organizer) {
             rules.orgName = {
                 required: helpers.withMessage('Поле `Название организации` обязательно.', required),
-                regex: helpers.withMessage('Поле `Название организации` должно содержать только кириллицу и латиницу.', helpers.regex(/^[а-яА-ЯёЁA-Za-z\s]+[а-яА-ЯёЁA-Za-z]+$/)),
+                regex: helpers.withMessage('Поле `Название организации` должно содержать только кириллицу и латиницу.', helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/)),
                 minLengthValue: helpers.withMessage('Поле `Название организации` должно содержать не менее 2 букв.', minLength(2))
             }
         } else {

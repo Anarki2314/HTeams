@@ -45,35 +45,35 @@ export default {
     image: 'https://via.placeholder.com/500x250',
     tags: ['Тег 1', 'Тег 2', 'Тег 3', 'Тег 4'],
     // date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-    title: 'Название мероприятия'
+    title: 'Название соревнования'
   },
   {
     id: 2,
     image: 'https://via.placeholder.com/500x250',
     tags: ['Тег A', 'Тег B', 'Тег C', 'Тег D', 'Тег E', 'Тег F', 'Тег G'],
     // date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-    title: 'Другое название мероприятия'
+    title: 'Другое название соревнования'
   },
   {
     id: 3,
     image: 'https://via.placeholder.com/500x250',
     tags: ['Тег X', 'Тег Y', 'Тег Z'],
     // date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-    title: 'Еще одно название мероприятия'
+    title: 'Еще одно название соревнования'
   },
   {
     id: 4,
     image: 'https://via.placeholder.com/500x250',
     tags: ['Тег M', 'Тег N', 'Тег O', 'Тег P', 'Тег Q', 'Тег R', 'Тег S', 'Тег T'],
     // date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-    title: 'Еще одно название мероприятия 2'
+    title: 'Еще одно название соревнования 2'
   },
   {
     id: 5,
     image: 'https://via.placeholder.com/500x250',
     tags: ['Тег U', 'Тег V', 'Тег W', 'Тег X', 'Тег Y', 'Тег Z'],
     // date: new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-    title: 'Еще одно название мероприятия 3'
+    title: 'Еще одно название соревнования 3'
   }
                 
                 

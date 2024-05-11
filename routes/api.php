@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
@@ -28,7 +29,11 @@ Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('au
 // Team routes 
 
 Route::post('/teams/join', [TeamController::class, 'joinTeam'])->middleware(['auth:sanctum', 'ability:Пользователь']);
-Route::apiResource('/teams', TeamController::class);
+Route::apiResource('/teams', TeamController::class)->only(['index', 'store', 'show']);
+
+// Event routes
+Route::post('/events/', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
+Route::apiResource('/events', EventController::class)->only(['index', 'show']);
 
 // Profile routes (only for logged users)
 
@@ -51,7 +56,5 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
 
     Route::delete('/', [ProfileController::class, 'deleteProfile']);
 });
+
 Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
-Route::get('/user', function (Request $request) {
-    return new UserResource($request->user());
-})->middleware('auth:sanctum');

@@ -26,6 +26,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('notification_invites', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['from_user']);
+            $table->dropForeign(['team_id']);
+        });
         Schema::dropIfExists('events');
     }
 };

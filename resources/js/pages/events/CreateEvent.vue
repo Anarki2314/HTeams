@@ -10,66 +10,14 @@
                 </div>
                 <div class="container-create-event-title d-flex justify-content-center justify-content-md-between flex-wrap">
                     <h3 class="block-title text-center text-lg-start">
-                        Создание мероприятия
+                        Создание соревнования
                     </h3>
                 </div>
                 <div class="container-event-form">
                     
                     <form action="" class="event-form" @submit.prevent="createEvent">
                         <div class="form-block">
-        
-                            <div class="container-input date-registration-input">
-                                <h4 class="input-title">Начало регистрации</h4>
-                                <div class="input-content">
-                                    <input
-                                    type="datetime-local"
-                                    v-model="form.date_registration"
-                                    name="date_registration"
-                                    required
-                                    class="form-input"
-                                    :min="dateRegistrationMin" 
-                                    :max="dateRegistrationMax"
-                                    />
-                                </div>
-                            </div>
-        
-                            <div class="container-input date-start-input">
-                                <h4 class="input-title">Начало мероприятия</h4>
-                                <div class="input-content">
-                                    <input
-                                    type="datetime-local"
-                                    v-model="form.date_start" 
-                                    name="date_start" 
-                                    required 
-                                    class="form-input" 
-                                    :min="dateStartMin"
-                                    :max="dateStartMax"
-                                    />
-                                </div>
-                            </div>
                             
-                            <div class="container-input date-end-input">
-                                <h4 class="input-title">Конец мероприятия</h4>
-                                <div class="input-content">
-                                    <input 
-                                    type="datetime-local" 
-                                    v-model="form.date_end" 
-                                    name="date_end" 
-                                    required 
-                                    class="form-input" 
-                                    :min="dateEndMin"
-                                    :max="dateEndMax"
-                                    />
-                                </div>
-                            </div>
-        
-                            <div class="container-submit">
-                                <button type="submit" class="button-view main-button">Создать</button>
-                            </div>
-        
-                        </div>
-                        <div class="form-block">
-
                             <div class="container-input image-input">
                                 <h4 class="input-title">Изображение</h4>
                                 <div class="input-content">
@@ -125,7 +73,60 @@
 
                         </div>
 
-
+                        
+                        <div class="form-block">
+        
+                            <div class="container-input date-registration-input">
+                                <h4 class="input-title">Начало регистрации</h4>
+                                <div class="input-content">
+                                    <input
+                                    type="datetime-local"
+                                    v-model="form.date_registration"
+                                    name="date_registration"
+                                    required
+                                    class="form-input"
+                                    :min="dateRegistrationMin" 
+                                    :max="dateRegistrationMax"
+                                    />
+                                </div>
+                            </div>
+        
+                            <div class="container-input date-start-input">
+                                <h4 class="input-title">Начало события</h4>
+                                <div class="input-content">
+                                    <input
+                                    type="datetime-local"
+                                    v-model="form.date_start" 
+                                    name="date_start" 
+                                    required 
+                                    class="form-input" 
+                                    :min="dateStartMin"
+                                    :max="dateStartMax"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div class="container-input date-end-input">
+                                <h4 class="input-title">Конец события</h4>
+                                <div class="input-content">
+                                    <input 
+                                    type="datetime-local" 
+                                    v-model="form.date_end" 
+                                    name="date_end" 
+                                    required 
+                                    class="form-input" 
+                                    :min="dateEndMin"
+                                    :max="dateEndMax"
+                                    />
+                                </div>
+                            </div>
+        
+                            <div class="container-submit">
+                                <button type="submit" class="button-view main-button">Создать</button>
+                                <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                            </div>
+        
+                        </div>
                     </form>
                 </div>
             </div>
@@ -162,7 +163,7 @@ export default {
             imageUrl: null,
             taskName: 'Выберите задание',
             contentLoading: true,
-
+            isLoading: false,
 
 
             form: {
@@ -225,7 +226,36 @@ export default {
         },
 
         async createEvent() {
+            const isFormCorrect = await this.v$.$validate();
+            if (!isFormCorrect) {
+                this.v$.$errors.forEach(error => {
+                    push.error(error.$message);
+                });
+                return
+            }
+            this.isLoading = true;
 
+            try {
+
+                const response = await api.post('/events/', this.form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                console.log(response);
+                // this.$router.push({ name: 'event', params: { id: response.data.id } })
+            } catch (error) {
+                console.log(error);
+                // const errors = error.response.data.errors
+                //     for (const errorInput in errors) {
+                //         if (Object.hasOwnProperty.call(errors, errorInput)) {
+                //             push.error(errors[errorInput][0]);
+                //         }
+                //     }
+            } finally {
+
+                this.isLoading = false;
+            }
         }
     },
 

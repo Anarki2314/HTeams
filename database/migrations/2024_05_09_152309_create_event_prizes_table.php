@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events_tags', function (Blueprint $table) {
+        Schema::create('event_prizes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained('events');
-            $table->foreignId('tag_id')->constrained('tags');
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->integer('place');
+            $table->integer('prize');
         });
     }
 
@@ -23,10 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('events_tags', function (Blueprint $table) {
+        Schema::table('event_prizes', function (Blueprint $table) {
             $table->dropForeign(['event_id']);
-            $table->dropForeign(['tag_id']);
         });
-        Schema::dropIfExists('events_tags');
+        Schema::dropIfExists('event_prizes');
     }
 };
