@@ -6,7 +6,7 @@
         <div class="container-block">
             <div class="container-profile ">
                 <h3 class="block-title text-center text-lg-start">{{ user.email }}</h3>
-                <div class="container-profile-content mb-5 d-flex justify-content-center justify-content-lg-between flex-wrap">
+                <div class="container-profile-content mb-5 d-flex justify-content-center justify-content-lg-start flex-wrap">
 
                     <div class="container-profile-image d-flex flex-column">
                         <!-- <img :src="'/assets/img/profile.png'" alt=""> -->
@@ -253,9 +253,15 @@ section{
 .container-profile-item{
     font-size: var(--size-text);
     display:flex;
-    gap: 25px;
+
+    gap: 10px clamp( 10px , 2.5vw , 25px);
     align-items: center;
+    flex-wrap: wrap;
 }
 
+.profile-info-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 </style>

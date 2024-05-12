@@ -17,7 +17,7 @@
                             <ul class="container-filters-items">
                                 <li class="container-filters-item">
                                     <label class="filters-label">
-                                        <input type="radio" name="isFull" class="filters-checkbox" value="" :checked="query['filter[isFull]'] == ''" v-model="query['filter[isFull]']">
+                                        <input type="radio" name="isFull" class="filters-checkbox" value="" :checked="query['filter[isFull]'] == ''" v-model="filterIsFull">
                                         <span class="filters-radio-label">Все</span>
                                     </label>
                                     
@@ -25,7 +25,7 @@
                                 </li>
                                 <li class="container-filters-item">
                                     <label class="filters-label">
-                                        <input type="radio" name="isFull" class="filters-checkbox" value="true" :checked="query['filter[isFull]'] == 'true'" v-model="query['filter[isFull]']">
+                                        <input type="radio" name="isFull" class="filters-checkbox" value="true" :checked="query['filter[isFull]'] == 'true'" v-model="filterIsFull">
                                         <span class="filters-radio-label">Полная</span>
                                     </label>
                                     
@@ -33,7 +33,7 @@
                                 </li>
                                 <li class="container-filters-item">
                                     <label class="filters-label">
-                                        <input type="radio" name="isFull" class="filters-checkbox" value="false" :checked="query['filter[isFull]'] == 'false'" v-model="query['filter[isFull]']">
+                                        <input type="radio" name="isFull" class="filters-checkbox" value="false" :checked="query['filter[isFull]'] == 'false'" v-model="filterIsFull">
                                         <span class="filters-radio-label">Не полная</span>
                                     </label>
                                     
@@ -108,15 +108,15 @@ export default {
             query: {
                 "filter[title]": '',
                 "filter[isFull]": '',
-                perPage: 1,
+                perPage: 10,
                 ...this.$route.query
             },
             page: 1,
 
+            filterIsFull: this.$route.query['filter[isFull]'] ?? '',
             nextPage: null,
             contentLoading: true,
             pageLoading: false,
-            search: '',
             teams: [],
 
             showModal: false,
@@ -146,6 +146,7 @@ export default {
         async getTeams() {
             this.contentLoading = true;
             try {
+                this.query['filter[isFull]'] = this.filterIsFull;
                 const response = await api.get('/teams?page=' + this.page + '&' + new URLSearchParams(this.query).toString());
                 this.teams = response.data.data;
                 this.nextPage = (response.data.next_page_url) ? response.data.next_page_url.split('page=')[1] : null;
@@ -176,7 +177,7 @@ export default {
 
 
         resetFilters() {
-            this.query['filter[isFull]'] = '';
+            this.filterIsFull = '';
             this.getTeams();
             this.closeModal();
         },

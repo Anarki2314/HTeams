@@ -34,10 +34,10 @@ class SignUpRequest extends FormRequest
         ];
 
         if ($this->roleIsUser()) {
-            $rules['name'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
-            $rules['surname'] = 'required|min:2|regex:/^[а-яА-ЯёЁ]+$/u';
+            $rules['name'] = 'required|min:2|max:32|regex:/^[а-яА-ЯёЁ]+$/u';
+            $rules['surname'] = 'required|min:2|max:32|regex:/^[а-яА-ЯёЁ]+$/u';
         } elseif ($this->roleIsOrganizer()) {
-            $rules['orgName'] = 'required|min:2|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/u';
+            $rules['orgName'] = 'required|min:2|max:50|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/u';
         }
         return $rules;
     }

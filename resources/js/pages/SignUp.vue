@@ -23,11 +23,11 @@
                                 <label for="" class="input-label" :class="{ active: email }">Email</label>
                             </div>
                             <div class="container-input" v-if="!organizer">
-                                <input type="text" v-model.lazy="name" name="name" required class="form-input" pattern="^[а-яА-ЯёЁ]+$" title="Только кириллица" minlength="2"/>
+                                <input type="text" v-model.lazy="name" name="name" required class="form-input" pattern="^[а-яА-ЯёЁ]+$" title="Только кириллица"/>
                                 <label for="" class="input-label" :class="{ active: name }">Имя</label>
                             </div>
                             <div class="container-input" v-if="!organizer">
-                                <input type="text" v-model.lazy="surname" name="surname" required class="form-input" pattern="^[а-яА-ЯёЁ]+$" title="Только кириллица" minlength="2"/>
+                                <input type="text" v-model.lazy="surname" name="surname" required class="form-input" pattern="^[а-яА-ЯёЁ]+$" title="Только кириллица"/>
                                 <label for="" class="input-label" :class="{ active: surname }">Фамилия</label>
                             </div>
                             <div class="container-input" v-if="organizer">
@@ -89,7 +89,7 @@ import { mask } from 'vue-the-mask';
 import api from '../api.js';
 import { push } from 'notivue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, email, helpers, sameAs, minLength } from '@vuelidate/validators';
+import { required, email, helpers, sameAs, minLength, maxLength } from '@vuelidate/validators';
 export default {
     setup() {
         return { v$: useVuelidate() }
@@ -141,19 +141,23 @@ export default {
             rules.orgName = {
                 required: helpers.withMessage('Поле `Название организации` обязательно.', required),
                 regex: helpers.withMessage('Поле `Название организации` должно содержать только кириллицу и латиницу.', helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/)),
-                minLengthValue: helpers.withMessage('Поле `Название организации` должно содержать не менее 2 букв.', minLength(2))
+                minLengthValue: helpers.withMessage('Поле `Название организации` должно содержать не менее 2 букв.', minLength(2)),
+                maxLengthValue: helpers.withMessage('Поле `Название организации` должно содержать не более 50 букв.', maxLength(50))
+
             }
         } else {
             rules.name = { 
                 required: helpers.withMessage('Поле `Имя` обязательно.', required),
                 regex: helpers.withMessage('Поле `Имя` должно содержать только кириллицу.', helpers.regex(/^[а-яА-ЯёЁ]+$/u)),
-                minLengthValue: helpers.withMessage('Поле `Имя` должно содержать не менее 2 букв.', minLength(2))
+                minLengthValue: helpers.withMessage('Поле `Имя` должно содержать не менее 2 букв.', minLength(2)),
+                maxLengthValue: helpers.withMessage('Поле `Имя` должно содержать не более 32 букв.', maxLength(32)),
             }
 
             rules.surname = {
                 required: helpers.withMessage('Поле `Фамилия` обязательно.', required),
                 regex: helpers.withMessage('Поле `Фамилия` должно содержать только кириллицу.', helpers.regex(/^[а-яА-ЯёЁ]+$/u)),
-                minLengthValue: helpers.withMessage('Поле `Фамилия` должно содержать не менее 2 букв.', minLength(2))
+                minLengthValue: helpers.withMessage('Поле `Фамилия` должно содержать не менее 2 букв.', minLength(2)),
+                maxLengthValue: helpers.withMessage('Поле `Фамилия` должно содержать не более 32 букв.', maxLength(32)),
             }
 
         }

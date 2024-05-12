@@ -1,5 +1,5 @@
 <template>
-    
+    <loading-screen v-if="contentLoading" />
     <header-view/>
 
     <admin-nav/>
@@ -10,7 +10,7 @@
 
                 <div class="form-search mb-3 text-end ">
                     <div class="container-search">
-                        <input type="text" class="form-input" name="search" id="search" placeholder="Поиск" v-model="search">
+                        <input type="text" class="form-input" name="search" id="search" placeholder="Поиск" v-model="query['filter[title]']">
                         <button class="search-btn"> <img :src="'/assets/img/search.svg'" alt=""> </button>
                     </div>
                 </div>
@@ -51,24 +51,17 @@ export default {
 
     data() {
         return {
-            search: '',
+            query: {
+                "filter[title]": '',
+                perPage: 10,
+                ...this.$route.query
+            },
+            page: 1,
+
+            nextPage: null,
+            contentLoading: true,
+            pageLoading: false,
             tags: [
-                {
-                    id: 1,
-                    name: 'Тег 1',
-                },
-                {
-                    id: 2,
-                    name: 'Тег 2',
-                },
-                {
-                    id: 3,
-                    name: 'Тег 3',
-                },
-                {
-                    id: 4,
-                    name: 'Тег 4',
-                }
             ]
         }
     },
@@ -77,7 +70,7 @@ export default {
         createTag() {
             this.tags.unshift({
                 id: null,
-                name: '',
+                title: '',
             })
         }
     }
