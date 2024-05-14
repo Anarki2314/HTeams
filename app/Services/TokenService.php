@@ -13,6 +13,6 @@ class TokenService
 
     public static function deleteToken(User $user)
     {
-        $user->currentAccessToken()->delete();
+        $user->tokens()->where('expires_at', '<=', now())->where('name', 'authToken')->delete();
     }
 }

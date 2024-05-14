@@ -9,9 +9,12 @@ use Spatie\QueryBuilder\QueryBuilder;
 class TagController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $tags = QueryBuilder::for(Tag::class)->defaultSort('-id')->allowedFilters(['title'])->get();
+        $tags = QueryBuilder::for(Tag::class)
+            ->defaultSort('-id')
+            ->allowedFilters(['title'])
+            ->paginate($request->get('perPage', 10));;
         return response()->json($tags);
     }
 
@@ -24,10 +27,11 @@ class TagController extends Controller
 
         $validated = $request->validate(
             [
-                'title' => 'required|string|unique:tags,title|max:32',
+                'title' => 'required|string|unique:tags,title|max:32|regex:/^[а-яА-ЯёЁA-Za-z]+$/u',
             ],
             [
                 'title.unique' => 'Тег с таким названием уже существует',
+                'title.regex' => 'Название должно содержать только буквы',
             ],
         );
 
@@ -42,14 +46,13 @@ class TagController extends Controller
         $validated = $request->validate(
             [
                 'title' => 'required|string|unique:tags,title|max:32',
-                'id' => 'required|exists:tags,id',
             ],
             [
                 'title.unique' => 'Тег с таким названием уже существует',
             ],
         );
 
-        $tag = Tag::find($validated['id']);
+        $tag = Tag::findOrFail($id);
         $tag->update(['title' => $validated['title']]);
 
         return response()->json(['message' => 'Тег успешно обновлен']);
@@ -58,13 +61,9 @@ class TagController extends Controller
     public function destroy(Request $request, $id)
     {
 
-        $validated = $request->validate(
-            [
-                'id' => 'required|exists:tags,id',
-            ],
-        );
 
-        $tag = Tag::find($validated['id']);
+
+        $tag = Tag::findOrFail($id);
         $tag->delete();
 
         return response()->json(['message' => 'Тег успешно удален']);

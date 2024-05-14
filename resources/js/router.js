@@ -34,7 +34,7 @@ import AdminRequest from "@/pages/_admin/Request.vue";
 // 404 Page
 import NotFound from "@/pages/NotFound.vue";
 
-import api from "@/api";
+import api from "./api.js";
 import store from "@/store/Auth-store.js";
 import { push } from "notivue";
 async function checkToken() {
@@ -44,18 +44,16 @@ async function checkToken() {
     }
     try {
         const response = await api.post("/auth/refresh");
-        store.commit("login", response.data.data);
         localStorage.setItem("token", response.data.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.data.user));
-        localStorage.setItem("team", JSON.stringify(response.data.data.team));
+        store.commit("login", response.data.data);
         return true;
     } catch (error) {
         if (error.status === 401) {
             push.error("Сессия истекла. Пожалуйста, войдите в систему еще раз");
-            store.dispatch("logout");
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            localStorage.removeItem("team");
+            store.dispatch("logout");
         }
         return false;
     }

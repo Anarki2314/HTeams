@@ -32,14 +32,30 @@
                             <div class="container-input tags-input">
                                 <h4 class="input-title">Теги</h4>
                                 <div class="input-content">
-                                    <input type="text" name="tags" required class="form-input" />
+                                    <MultiSelect
+                                    v-model="form.tags" 
+                                    :options="tags"
+                                    optionLabel="title"
+                                    optionValue="id"
+                                    display="chip"
+
+
+
+                                    filter
+                                    placeholder="Выберите теги"
+                                    name="tags" 
+                                    required 
+                                    class="form-input form-multiselect"
+                                    >
+                                    </MultiSelect>
+
                                 </div>
                             </div>
                             
                             <div class="container-input task-input">
                                 <h4 class="input-title">Задание</h4>
                                 <div class="input-content">
-                                    <input type="file" name="task" id="task" required class="form-input" @change="previewTask" accept=" application/pdf, application/msword " />
+                                    <input type="file" name="task" id="task" required class="form-input" @change="previewTask" accept=" application/pdf, application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document " />
                                     <label for="task" class="task-label">
                                         <span class="task-text"> {{ taskName }} </span>
                                         <span class="task-button">Выбрать файл</span>
@@ -64,11 +80,35 @@
                                 </div>
                             </div>
                             
-                            <div class="container-input prize-input">
-                                <h4 class="input-title">Приз</h4>
-                                <div class="input-content">
-                                    <input type="text" v-model="form.prize" name="prize" required class="form-input" />
+                            <div class="container-input">
+                                <h4 class="input-title">Призовые</h4>
+                                <div class="container-prizes-place">
+                                    <div class="container-input">
+                                        <h4 class="input-title">1-е место</h4>
+                                        <div class="input-content">
+                                            <input 
+                                            type="text" 
+                                            v-model="form.prizes.firstPlace" 
+                                            name="firstPlace" 
+                                            required 
+                                            class="form-input" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="container-input">
+                                        <h4 class="input-title">2-е место</h4>
+                                        <div class="input-content">
+                                            <input type="text" v-model="form.prizes.secondPlace" name="secondPlace" required class="form-input" />
+                                        </div>
+                                    </div>
+                                    <div class="container-input">
+                                        <h4 class="input-title">3-е место</h4>
+                                        <div class="input-content">
+                                            <input type="text" v-model="form.prizes.thirdPlace" name="thirdPlace" required class="form-input" />
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
 
                         </div>
@@ -140,9 +180,10 @@
 
 import HeaderView from '@/components/HeaderView.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
+import MultiSelect from 'primevue/multiselect';
 
 import { useVuelidate } from '@vuelidate/core';
-import { required, helpers } from '@vuelidate/validators';
+import { required, helpers, minLength, maxLength, minValue, maxValue } from '@vuelidate/validators';
 import api from '../../api.js';
 import { push } from 'notivue';
 import {mask} from 'vue-the-mask';
@@ -150,6 +191,7 @@ export default {
     components: {
         HeaderView,
         LoadingScreen,
+        MultiSelect,
     },
     setup() {
         return { v$: useVuelidate() }
@@ -164,12 +206,16 @@ export default {
             taskName: 'Выберите задание',
             contentLoading: true,
             isLoading: false,
-
+            tags: [],
 
             form: {
                 title: '',
                 description: '',
-                prize: '',
+                prizes: {
+                    firstPlace: null,
+                    secondPlace: null,
+                    thirdPlace: null
+                },
                 date_registration: '',
                 date_start: '',
                 date_end: '',
@@ -188,14 +234,14 @@ export default {
             return new Date(new Date().setMonth(new Date().getMonth()+1)).toISOString().slice(0, 10) + 'T23:59:59'
         },
         dateStartMin() {
-            return new Date(new Date(this.form.date_registration || this.dateRegistrationMin).setDate(new Date(this.form.date_registration || this.dateRegistrationMin).getDate() + 7)).toISOString().slice(0, 10) + 'T00:00:00';
+            return new Date(new Date(this.form.date_registration || this.dateRegistrationMin).setDate(new Date(this.form.date_registration || this.dateRegistrationMin).getDate() + 7)).toISOString().slice(0, 10) + 'T00:00';
         },
         
         dateStartMax(){
-            return new Date(new Date(this.form.date_registration || this.dateRegistrationMax).setMonth(new Date(this.form.date_registration || this.dateRegistrationMax).getMonth()+1)).toISOString().slice(0,10) + 'T23:59:59'
+            return new Date(new Date(this.form.date_registration || this.dateRegistrationMax).setMonth(new Date(this.form.date_registration || this.dateRegistrationMax).getMonth()+1)).toISOString().slice(0,10) + 'T23:59'
         },
         dateEndMin(){
-            return new Date(new Date(this.form.date_start || this.dateStartMin).setDate(new Date(this.form.date_start || this.dateStartMin).getDate() + 7)).toISOString().slice(0, 10) + 'T00:00:00';
+            return new Date(new Date(this.form.date_start || this.dateStartMin).setDate(new Date(this.form.date_start || this.dateStartMin).getDate() + 3)).toISOString().slice(0, 10) + 'T00:00';
         },
 
         dateEndMax(){
@@ -245,27 +291,97 @@ export default {
                 console.log(response);
                 // this.$router.push({ name: 'event', params: { id: response.data.id } })
             } catch (error) {
-                console.log(error);
-                // const errors = error.response.data.errors
-                //     for (const errorInput in errors) {
-                //         if (Object.hasOwnProperty.call(errors, errorInput)) {
-                //             push.error(errors[errorInput][0]);
-                //         }
-                //     }
+        const errors = error.response.data.errors
+                    for (const errorInput in errors) {
+                        if (Object.hasOwnProperty.call(errors, errorInput)) {
+                            push.error(errors[errorInput][0]);
+                        }
+                    }
             } finally {
 
                 this.isLoading = false;
+            }
+        },
+
+        async getTags() {
+            try {
+                const response = await api.get('/tags');
+                this.tags = response.data.data;
+            } catch (error) {
+                console.log(error);
             }
         }
     },
 
     created(){
+        this.getTags();
         this.contentLoading = false;
+    },
+
+    validations() {
+        return {
+            form: {
+                title: {
+                    required: helpers.withMessage('Поле `Название` обязательно', required),
+                    regex: helpers.withMessage('В поле `Название` можно использовать только буквы и цифры', helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/)),
+                    minLength: helpers.withMessage('Поле `Название` должно содержать не менее 2 символов', minLength(2)),
+                },
+                description: {
+                    required: helpers.withMessage('Поле `Описание` обязательно', required),
+                    regex: helpers.withMessage('В поле `Описание` можно использовать только буквы и цифры', helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/)),
+                    minLength: helpers.withMessage('Поле `Описание` должно содержать не менее 100 символов', minLength(100)),
+                },
+                date_registration: {
+                    required: helpers.withMessage('Поле `Начало регистрации` обязательно', required),
+                },
+                date_start: {
+                    required: helpers.withMessage('Поле `Начало события` обязательно', required),
+                },
+                date_end: {
+                    required: helpers.withMessage('Поле `Конец события` обязательно', required),
+                },
+                task: {
+                    required: helpers.withMessage('Поле `Задание` обязательно', required),
+                },
+                image: {
+                    required: helpers.withMessage('Поле `Изображение` обязательно', required),
+                },
+                tags: {
+                    required: helpers.withMessage('Поле `Теги` обязательно', required),
+                },
+
+                prizes:{
+                    firstPlace: {
+                        required: helpers.withMessage('Поле `1 место` обязательно', required),
+                        regex: helpers.withMessage('Поле `1 место` должно содержать только цифры', helpers.regex(/^\d+$/)),
+                        minValue: helpers.withMessage('Поле `1 место` должно быть больше чем 1000', minValue(1000)),
+                        maxValue: helpers.withMessage('Поле `1 место` должно быть меньше чем 1000000', maxValue(1000000))
+                    },
+                    secondPlace: {
+                        required: helpers.withMessage('Поле `2 место` обязательно', required),
+                        regex: helpers.withMessage('Поле `2 место` должно содержать только цифры', helpers.regex(/^\d+$/)),
+                        minValue: helpers.withMessage('Поле `1 место` должно быть больше чем 1000', minValue(1000)),
+                        maxValue: helpers.withMessage('Поле `2 место` должно быть меньше чем поле `1 место`', maxValue(this.form.prizes.firstPlace))
+                    },
+                    thirdPlace: {
+                        required: helpers.withMessage('Поле `3 место` обязательно', required),
+                        regex: helpers.withMessage('Поле `3 место` должно содержать только цифры', helpers.regex(/^\d+$/)),
+                        minValue: helpers.withMessage('Поле `1 место` должно быть больше чем 1000', minValue(1000)),
+                        maxValue: helpers.withMessage('Поле `3 место` должно быть меньше чем поле `2 место`', maxValue(this.form.prizes.secondPlace))
+                    }
+                }
+            }
+        }
     }
 }
 
 </script>
 
 <style lang="scss" scoped>
+.container-prizes-place{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 @import "@sass/event-form.scss";
 </style>

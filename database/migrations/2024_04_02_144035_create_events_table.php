@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->foreignId('status_id')->constrained('event_statuses')->onDelete('cascade');
+            $table->foreignId('status_id')->constrained('event_statuses', 'id')->onDelete('cascade');
             $table->foreignId('creator_id')->constrained('users', 'id')->onDelete('cascade');
+            $table->foreignId('image_id')->constrained('files', 'id')->onDelete('cascade');
+            $table->foreignId('task_id')->constrained('files', 'id')->onDelete('cascade');
+
 
             $table->timestamp('date_registration');
             $table->timestamp('date_start');
@@ -33,6 +36,8 @@ return new class extends Migration
         Schema::table('events', function (Blueprint $table) {
             $table->dropForeign(['status_id']);
             $table->dropForeign(['creator_id']);
+            $table->dropForeign(['image_id']);
+            $table->dropForeign(['task_id']);
         });
         Schema::dropIfExists('events');
     }

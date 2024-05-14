@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'primevue/resources/themes/aura-dark-amber/theme.css'
 import 'notivue/notification.css'
 import 'notivue/animations.css'
 import 'notivue/notification-progress.css'
@@ -9,6 +10,8 @@ import store from './store/Auth-store'
 
 import App from '@/App.vue';
 import { createNotivue } from 'notivue';
+
+import PrimeVue from 'primevue/config';
 
 const notivue = createNotivue({
     position: 'top',
@@ -22,4 +25,4 @@ const notivue = createNotivue({
     }
   });
 
-createApp(App).use(notivue).use(router).use(store).mount('#app')
+createApp(App).use(PrimeVue, { unstyled: false}).use(notivue).use(router).use(store).mount('#app')

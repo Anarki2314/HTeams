@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ Route::apiResource('/teams', TeamController::class)->only(['index', 'store', 'sh
 Route::post('/events/', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
 Route::apiResource('/events', EventController::class)->only(['index', 'show']);
 
+
 // Profile routes (only for logged users)
 
 Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
@@ -58,3 +60,10 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
+Route::get('/tags', [TagController::class, 'index']);
+
+// Admin routes
+
+Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ'])->group(function () {
+    Route::apiResource('/tags', TagController::class, ['only' => ['index', 'store', 'update', 'destroy']])->where(['id' => '[0-9]+']);
+});

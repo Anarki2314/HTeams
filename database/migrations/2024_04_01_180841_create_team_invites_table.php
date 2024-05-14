@@ -31,6 +31,6 @@ return new class extends Migration
             $table->dropForeign(['from_user']);
         });
 
-        Schema::dropIfExists('team_members');
+        Schema::dropIfExists('team_invites');
     }
 };

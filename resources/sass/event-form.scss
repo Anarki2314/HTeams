@@ -9,6 +9,26 @@
     cursor: pointer;
 }
 
+.form-input{
+    width: 100%;
+    padding: 10px 10px;
+    color: #f4f4f4;
+    font-size: var(--size-text);
+    outline: none;
+    background: none;
+    border: 1px solid var(--color-main);
+    border-radius: 5px;
+}
+
+.form-multiselect{
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    .p-multiselect{
+        padding: 0 ;
+    }
+}
+
 .event-form {
     display: flex;
     gap: clamp(40px, 3vw, 60px) clamp(40px, 6vw, 100px);
@@ -94,18 +114,20 @@
         cursor: pointer;
         font-size: var(--size-text);
 
+
         .task-text{
             flex: 1;
             font-size: clamp(12px, 1.5vw, 18px);
             overflow: hidden;
             text-overflow: ellipsis;
+            text-wrap: nowrap;
         }
         .task-button{
             background: none;
             outline: none;
+            border-left: 1px solid var(--color-main);
             border:none;
             padding: 5px 10px;
-            border-left: 1px solid var(--color-main);
             color: #f4f4f4;
             transition: all 0.3s ease;
         }
@@ -124,16 +146,7 @@
 }
 
 
-.form-input{
-    width: 100%;
-    padding: 5px 10px;
-    color: #f4f4f4;
-    font-size: var(--size-text);
-    outline: none;
-    background: none;
-    border: 1px solid var(--color-main);
-    border-radius: 5px;
-}
+
 
 
 .container-submit{

@@ -33,7 +33,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
 
 :root{
@@ -85,7 +85,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb{
-    background: #DEAC35;
+    background: var(--color-main);
 }
 ::-webkit-scrollbar{
     width: 5px;
@@ -105,6 +105,8 @@ ul {
 }
 
 .wrapper {
+    max-width: 1920px;
+    margin:0 auto;
     min-height: 100dvh;
 }
 
@@ -387,5 +389,9 @@ ul {
     color: #f4f4f4;
     background-color: rgb(27, 27, 27, 0.8);
 }
+
+/** PrimeVue */
+
+@import url("@sass/primevue.scss");
 
 </style>

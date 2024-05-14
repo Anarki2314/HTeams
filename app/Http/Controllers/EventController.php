@@ -19,6 +19,8 @@ class EventController extends Controller
     {
 
         $validated = $request->validated();
+        var_dump($validated);
+        die;
         $validated['creator_id'] = $request->user()->id;
         // $validated['status_id'] = EventStatus::getByTitle('Новое')->id;
 
