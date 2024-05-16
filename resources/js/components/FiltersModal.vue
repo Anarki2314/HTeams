@@ -70,11 +70,22 @@
     display: flex;
     gap: clamp( 10px, 1.5vw ,25px);
   }
- 
+ .filter-type{
+    font-size: var(--size-text);
+    cursor: pointer;
+ }
+ .filter-type.active{
+  text-decoration: underline;
+  text-underline-offset: 3px;
+ }
+ .filter-type:hover{
+  text-decoration: underline;
+  text-underline-offset: 3px;
+ }
   .container-filters-items {
     overflow: auto;
     display: flex;
-    height: clamp( 180px, 100%, 180px);
+    height: 180px;
     flex-direction: column;
     gap: clamp( 10px, 1.5vw ,25px);
   }
@@ -147,7 +158,6 @@
     border: none;
     background-color: transparent;
     outline: none;
-    font-size: clamp(12px, 1.5vw, 18px);
     font-size: var(--size-text);
   }
 

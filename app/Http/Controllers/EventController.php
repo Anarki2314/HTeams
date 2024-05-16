@@ -11,6 +11,8 @@ use App\Models\EventStatus;
 use App\Models\EventTags;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class EventController extends Controller
 {
@@ -74,6 +76,36 @@ class EventController extends Controller
         $event->update($validated);
 
         return response()->json(['message' => 'Соревнование успешно обновлено']);
+    }
+
+    public function getModerationEvents(Request $request)
+    {
+        /**
+         * Event => 'id', 'title', 'date_registration', 'date_start', 'date_end', 'image_id', 'task_id', 'creator_id', 'status_id', 'created_at', 'updated_at'
+         * Tags
+         * Image reference
+         */
+        // var_dump($request->get('tags'));
+        // die;
+        $events = QueryBuilder::for(Event::class)
+            ->select(['id', 'title', 'date_registration', 'created_at', 'updated_at', 'image_id', 'creator_id'])
+            ->defaultSort('-created_at')
+            ->with('image', function ($query) {
+                $query->select(['id', 'name', 'path']);
+            })
+            ->with('creator', function ($query) {
+                $query->select(['id', 'orgName']);
+            })
+            ->with('tags', function ($query) {
+                $query->select(['tags.id', 'tags.title']);
+            })
+            ->where(['status_id' => EventStatus::getByTitle('На проверке')->id])
+            ->allowedSorts(['created_at'])
+            ->allowedFilters(['title', AllowedFilter::custom('tags', new \App\Filters\TagsFilter())])
+            ->paginate($request->get('perPage', 10));
+
+
+        return response()->json($events);
     }
 
     public function cancelEvent(Request $request, $id)

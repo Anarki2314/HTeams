@@ -21,8 +21,8 @@
         <div class="container-block">
             <div class="container-event">
                 <div class="container-back">
-                    <router-link to="/events" class="">Назад</router-link>
-                </div>
+                        <a @click="$router.go(-1)" class="router-link-underline">Назад</a>
+                    </div>
                 <div
                     class="container-event-main d-flex justify-content-center justify-content-md-start flex-wrap"
                 >

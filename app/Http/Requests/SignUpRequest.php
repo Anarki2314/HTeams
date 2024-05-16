@@ -37,7 +37,7 @@ class SignUpRequest extends FormRequest
             $rules['name'] = 'required|min:2|max:32|regex:/^[а-яА-ЯёЁ]+$/u';
             $rules['surname'] = 'required|min:2|max:32|regex:/^[а-яА-ЯёЁ]+$/u';
         } elseif ($this->roleIsOrganizer()) {
-            $rules['orgName'] = 'required|min:2|max:50|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/u';
+            $rules['orgName'] = 'required|unique:users,orgName|min:2|max:50|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/u';
         }
         return $rules;
     }
@@ -63,6 +63,7 @@ class SignUpRequest extends FormRequest
 
             'orgName.regex' => 'Название организации должно содержать только кириллицу и латиницу.',
             'orgName.required' => 'Поле `Название организации` обязательно.',
+            'orgName.unique' => 'Организация с таким названием уже существует.',
 
             'email.required' => 'Поле `Email` обязательно.',
             'email.unique' => 'Пользователь с таким email уже существует.',

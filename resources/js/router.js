@@ -14,6 +14,7 @@ import ProfileTeamInvites from "@/pages/profile/Invites.vue";
 import UpcomingEvents from "@/pages/profile/UpcomingEvents.vue";
 import FinishedEvents from "@/pages/profile/FinishedEvents.vue";
 
+import ModerationEvents from "@/pages/events/ModerationEvents.vue";
 import ModerationEvent from "@/pages/events/OnModerationEvent.vue";
 import CreateEvent from "@/pages/events/CreateEvent.vue";
 import EditEvent from "@/pages/events/EditEvent.vue";
@@ -167,8 +168,17 @@ const routes = [
     },
     {
         path: "/profile/moderating-events/:eventId",
-        name: "moderating-events",
+        name: "moderating-event",
         component: ModerationEvent,
+        meta: {
+            requiresAuth: true,
+            role: "Организатор",
+        },
+    },
+    {
+        path: "/profile/moderating-events/",
+        name: "moderating-events",
+        component: ModerationEvents,
         meta: {
             requiresAuth: true,
             role: "Организатор",

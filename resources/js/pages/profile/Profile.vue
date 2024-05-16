@@ -34,7 +34,7 @@
 
                     <div class="container-profile-items ">
                             <div class="container-profile-item" v-if="!user.isOrganizer">Всего соревнований: <span class="profile-info-text">{name}</span></div>
-                            <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/ " class="profile-info-text info-button">На проверке</router-link></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/moderating-events" class="profile-info-text info-button">На проверке</router-link></div>
                             <div class="container-profile-item">Предстоящие: <router-link to="/profile/upcoming" class="profile-info-text info-button">{surname}</router-link></div>
                             <div class="container-profile-item">Завершенные: <router-link to="/profile/finished" class="profile-info-text info-button">{phone}</router-link></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>

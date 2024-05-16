@@ -3,12 +3,7 @@
     <section class="teams-section">
         <div class="container-block">
             <div class="container-teams">
-                <div class="form-search mb-3 text-end ">
-                    <div class="container-search">
-                        <input type="text" class="form-input" name="search" id="search" placeholder="Поиск" v-model.lazy="query['filter[title]']" @change.lazy="getTeams">
-                        <button class="search-btn" @click="getTeams"> <img :src="'/assets/img/search.svg'" alt=""> </button>
-                    </div>
-                </div>
+                <SearchForm class="mb-3 text-end" v-model="query['filter[title]']" @search="getTeams" />
                 <div class="container-teams-title d-flex align-items-center justify-content-between">
                     <h3 class="block-title text-center text-lg-start">Команды</h3>
                     <div class="container-filters">
@@ -90,9 +85,9 @@ import TeamCard from '@/components/team/TeamCard.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import FiltersModal from '@/components/FiltersModal.vue';
 import Modal from '@/components/Modal.vue';
-
 import api from '../api.js';
 import {push} from 'notivue'
+import SearchForm from '../components/SearchForm.vue';
 export default {
     components: {
         HeaderView,
@@ -101,7 +96,8 @@ export default {
         TeamCard,
         LoadingScreen,
         FiltersModal,
-        Modal
+        Modal,
+        SearchForm
     },
     data() {
         return {
