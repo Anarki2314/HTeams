@@ -79,6 +79,9 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0;
 
 }
+p {
+    margin-bottom: clamp( 20px , 3vw , 30px );
+}
 
 ::-webkit-scrollbar-track{
     background: #1B1B1B;
@@ -122,18 +125,7 @@ ul {
     margin-bottom: clamp( 20px , 3vw , 40px );
 }
 
-.info-button{
-    color: #f4f4f4;
-    outline: none;
-    font-size: var(--size-text);
-    border: none;
-    border-bottom: #f4f4f4 1px solid ;
-    cursor: pointer;
-}
 
-.button-view.info-button:hover{
-    text-decoration: underline;
-}
 .container-back {
     margin-bottom: clamp(20px, 3vw, 40px);
     font-size: var(--size-text);
@@ -280,115 +272,8 @@ ul {
     gap: clamp(10px, 3vw, 20px);
 }
 
-.button-view {
-    padding: clamp(5px, 1.5vw, 10px) clamp(15px, 3vw, 40px);
-    background:none;
-    outline: none;
-    border: none;
-    color: #f4f4f4;
-    font-size: var(--size-text);
-    cursor: pointer;
-    border-radius: 5px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-.notif-button {
-    padding: clamp(2px, 1.5vw, 5px) clamp(5px, 1.5vw, 20px);
-    color: #f4f4f4;
-    font-size: clamp(12px, 1.5vw, 18px);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.main-button, .main-button:any-link{
-    background: none;
-    border: 2px solid var(--color-main);
-    color: var(--color-main);
-}
-.main-button:hover{
-    background-color: var(--color-main);
-    color: #1B1B1B;
-}
-.main-button:active, .router-link-active.main-button {
-    background-color: var(--color-main);
-
-    color: #1B1B1B;
-}
-.main-button:focus-visible {
-    background-color: var(--color-main);
-    color: #1B1B1B;
-
-    outline: none;
-}
-.secondary-button, .secondary-button:any-link{
-    background: #313131;
-    border: 2px solid #313131;
-}
-.secondary-button:hover{
-    background: rgb(49, 49, 49, 0.7);
-}
-.secondary-button:active {
-    background: rgb(49, 49, 49, 0.8);
-}
-.secondary-button:focus-visible {
-    outline: none;
-    background: rgb(49, 49, 49, 0.8);
-}
-
-.darken-button, .darken-button:any-link{
-    border: 2px solid #313131;
-    color: #313131;
-}
-.darken-button:hover{
-    background-color: #313131;
-    color: #f4f4f4;
-}
-.darken-button:focus-visible{
-    outline: none;
-    background-color: #313131;
-    color: #f4f4f4;
-}
-
-.darken-button:active{
-    background-color: #313131;
-    color: #f4f4f4;
-}
-
-.dark-button{
-    background-color: #1B1B1B;
-    border: 2px solid #1B1B1B;
-    color: #f4f4f4;
-}
-
-.dark-button:hover{
-    background-color: rgb(27, 27, 27, 0.7);
-}
-
-.dark-button:focus-visible{
-    background-color: rgb(27, 27, 27, 0.7);
-}
-
-.dark-button:active{
-    background-color: rgb(27, 27, 27, 0.8);
-}
-.dark-outline-button{
-    border: 2px solid #1B1B1B;
-    color: #1B1B1B;
-}
-
-.dark-outline-button:hover{
-    background-color: rgb(27, 27, 27, 0.7);
-    color: #f4f4f4;
-}
-
-.dark-outline-button:focus-visible{
-    color: #f4f4f4;
-    background-color: rgb(27, 27, 27, 0.7);
-}
-
-.dark-outline-button:active{
-    color: #f4f4f4;
-    background-color: rgb(27, 27, 27, 0.8);
-}
+/** Buttons */
+@import url("@sass/buttons.scss");
 
 /** PrimeVue */
 

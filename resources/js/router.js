@@ -13,8 +13,10 @@ import ProfileTeam from "@/pages/profile/Team.vue";
 import ProfileTeamInvites from "@/pages/profile/Invites.vue";
 import UpcomingEvents from "@/pages/profile/UpcomingEvents.vue";
 import FinishedEvents from "@/pages/profile/FinishedEvents.vue";
-import CreateEvent from "@/pages/events/CreateEvent.vue";
 
+import ModerationEvent from "@/pages/events/OnModerationEvent.vue";
+import CreateEvent from "@/pages/events/CreateEvent.vue";
+import EditEvent from "@/pages/events/EditEvent.vue";
 // Team view pages
 import Team from "@/pages/teams/Team.vue";
 
@@ -158,6 +160,24 @@ const routes = [
         path: "/profile/create-event",
         name: "create-event",
         component: CreateEvent,
+        meta: {
+            requiresAuth: true,
+            role: "Организатор",
+        },
+    },
+    {
+        path: "/profile/moderating-events/:eventId",
+        name: "moderating-events",
+        component: ModerationEvent,
+        meta: {
+            requiresAuth: true,
+            role: "Организатор",
+        },
+    },
+    {
+        path: "/profile/edit-event/:eventId",
+        name: "edit-event",
+        component: EditEvent,
         meta: {
             requiresAuth: true,
             role: "Организатор",

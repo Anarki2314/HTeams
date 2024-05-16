@@ -27,8 +27,8 @@ class CreateEventRequest extends FormRequest
         //! dates min max validation
 
         $rules = [
-            'title' => 'required|min:2|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/u',
-            'description' => 'required|min:100|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s\d\-\_]+$/u',
+            'title' => 'required|min:2|max:50|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/u',
+            'description' => 'required|min:100|max:350|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s\d\-\_]+$/u',
             'date_registration' => [
                 'required',
                 'date',

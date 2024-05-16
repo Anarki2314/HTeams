@@ -75,6 +75,9 @@ class ProfileController extends Controller
         ]);
 
         $fromUser = $request->user();
+        if (!$fromUser->isLeader()) {
+            return response()->json(['message' => 'Пригласить может только лидер'], 409);
+        }
         $team = $fromUser->team;
         if (!$team) {
             return response()->json(['message' => 'Вы не состоите в команде'], 409);

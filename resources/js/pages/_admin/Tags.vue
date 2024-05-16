@@ -23,14 +23,14 @@
                     </div>
                 </div>
 
-                <h3 class="block-title text-center text-lg-start">Тэги</h3>
+                <h3 class="block-title text-center text-lg-start">Теги</h3>
 
                 <div class="container-tag-create">
                     <button
                         class="button-view main-button"
                         @click="openModal('modal-create-tag')"
                     >
-                        Создать тэг
+                        Создать тег
                     </button>
                 </div>
 
@@ -78,13 +78,13 @@
         modalId="modal-create-tag"
         @close="closeModal"
     >
-        <h2 class="modal-title">Введите название тэга</h2>
+        <h2 class="modal-title">Введите название тега</h2>
         <div class="modal-content">
             <form @submit.prevent="createTag">
                 <div class="modal-container-input">
                     <input
                         type="text"
-                        placeholder="Название тэга"
+                        placeholder="Название тега"
                         required
                         class="modal-input"
                         v-model="tagName"
@@ -119,7 +119,7 @@
         modalId="modal-delete-tag"
         @close="closeModal"
     >
-        <h2 class="modal-title">Вы уверены, что хотите удалить тэг?</h2>
+        <h2 class="modal-title">Вы уверены, что хотите удалить тег?</h2>
         <div class="modal-content">
             <form @submit.prevent="deleteTag">
                 <div class="modal-container-buttons">

@@ -8,7 +8,7 @@
                     <router-link to="/_admin/teams" class="admin-nav-item button-view main-button">Команды</router-link>
                     <router-link to="/_admin/users" class="admin-nav-item button-view main-button">Пользователи</router-link>
                     <router-link to="/_admin/organizers" class="admin-nav-item button-view main-button">Организаторы</router-link>
-                    <router-link to="/_admin/tags" class="admin-nav-item button-view main-button">Тэги</router-link>
+                    <router-link to="/_admin/tags" class="admin-nav-item button-view main-button">Теги</router-link>
                     
 
                 </div>

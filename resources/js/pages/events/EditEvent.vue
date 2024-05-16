@@ -14,83 +14,15 @@
                     class="container-create-event-title d-flex justify-content-center justify-content-md-between flex-wrap"
                 >
                     <h3 class="block-title text-center text-lg-start">
-                        Создание соревнования
+                        Редактирование соревнования
                     </h3>
                 </div>
                 <div class="container-event-form">
                     <form
                         action=""
                         class="event-form"
-                        @submit.prevent="createEvent"
+                        @submit.prevent="editEvent"
                     >
-                        <div class="form-block">
-                            <div class="container-input image-input">
-                                <h4 class="input-title">Изображение</h4>
-                                <div class="input-content">
-                                    <input
-                                        type="file"
-                                        name="image"
-                                        id="image"
-                                        required
-                                        class="form-input"
-                                        @change="previewImage"
-                                        accept="image/png, image/jpeg, image/jpg"
-                                    />
-                                    <label for="image" class="image-label">
-                                        Выберите изображение
-                                        <img
-                                            class="image-preview"
-                                            v-if="imageUrl"
-                                            :src="imageUrl"
-                                            alt=""
-                                        />
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="container-input tags-input">
-                                <h4 class="input-title">Теги</h4>
-                                <div class="input-content">
-                                    <MultiSelect
-                                        v-model="form.tags"
-                                        :options="tags"
-                                        optionLabel="title"
-                                        optionValue="id"
-                                        display="chip"
-                                        filter
-                                        placeholder="Выберите теги"
-                                        name="tags"
-                                        required
-                                        class="form-input form-multiselect"
-                                    >
-                                    </MultiSelect>
-                                </div>
-                            </div>
-
-                            <div class="container-input task-input">
-                                <h4 class="input-title">Задание</h4>
-                                <div class="input-content">
-                                    <input
-                                        type="file"
-                                        name="task"
-                                        id="task"
-                                        required
-                                        class="form-input"
-                                        @change="previewTask"
-                                        accept=" application/pdf, application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document "
-                                    />
-                                    <label for="task" class="task-label">
-                                        <span class="task-text">
-                                            {{ taskName }}
-                                        </span>
-                                        <span class="task-button"
-                                            >Выбрать файл</span
-                                        >
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="form-block">
                             <div class="container-input title-input">
                                 <h4 class="input-title">Название</h4>
@@ -116,50 +48,6 @@
                                         class="form-input"
                                         rows="3"
                                     ></textarea>
-                                </div>
-                            </div>
-
-                            <div class="container-input">
-                                <h4 class="input-title">Призовые</h4>
-                                <div class="container-prizes-place">
-                                    <div class="container-input">
-                                        <h4 class="input-title">1-е место</h4>
-                                        <div class="input-content">
-                                            <input
-                                                type="text"
-                                                v-model="form.prizes.firstPlace"
-                                                name="firstPlace"
-                                                required
-                                                class="form-input"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="container-input">
-                                        <h4 class="input-title">2-е место</h4>
-                                        <div class="input-content">
-                                            <input
-                                                type="text"
-                                                v-model="
-                                                    form.prizes.secondPlace
-                                                "
-                                                name="secondPlace"
-                                                required
-                                                class="form-input"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="container-input">
-                                        <h4 class="input-title">3-е место</h4>
-                                        <div class="input-content">
-                                            <input
-                                                type="text"
-                                                v-model="form.prizes.thirdPlace"
-                                                name="thirdPlace"
-                                                required
-                                                class="form-input"
-                                            />
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +106,7 @@
                                     class="button-view main-button"
                                     v-if="!isLoading"
                                 >
-                                    Создать
+                                    Изменить
                                 </button>
                                 <div
                                     class="loading"
@@ -265,26 +153,15 @@ export default {
     },
     data() {
         return {
-            imageUrl: null,
-            taskName: "Выберите задание",
             contentLoading: true,
             isLoading: false,
-            tags: [],
 
             form: {
                 title: "",
                 description: "",
-                prizes: {
-                    firstPlace: null,
-                    secondPlace: null,
-                    thirdPlace: null,
-                },
                 date_registration: "",
                 date_start: "",
                 date_end: "",
-                tags: [],
-                task: null,
-                image: null,
             },
         };
     },
@@ -368,28 +245,7 @@ export default {
         },
     },
     methods: {
-        previewImage(event) {
-            if (!event.target.files[0]) {
-                this.imageUrl = null;
-                this.form.image = null;
-                return;
-            }
-            this.form.image = event.target.files[0];
-
-            this.imageUrl = URL.createObjectURL(this.form.image);
-        },
-
-        previewTask(event) {
-            if (!event.target.files[0]) {
-                this.taskName = "Выберите задание";
-                this.form.task = null;
-                return;
-            }
-            this.form.task = event.target.files[0];
-            this.taskName = this.form.task.name;
-        },
-
-        async createEvent() {
+        async editEvent() {
             const isFormCorrect = await this.v$.$validate();
             if (!isFormCorrect) {
                 this.v$.$errors.forEach((error) => {
@@ -400,16 +256,16 @@ export default {
             this.isLoading = true;
 
             try {
-                const response = await api.post("/events/", this.form, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+                const response = await api.put(
+                    "/events/" + this.$route.params.eventId,
+                    this.form,
+                );
                 this.$router.push({
                     name: "moderating-events",
-                    params: { eventId: response.data.data.id },
+                    params: { eventId: this.$route.params.eventId },
                 });
             } catch (error) {
+                console.log(error);
                 const errors = error.data.errors;
                 for (const errorInput in errors) {
                     if (Object.hasOwnProperty.call(errors, errorInput)) {
@@ -421,21 +277,24 @@ export default {
             }
         },
 
-        async getTags() {
-            this.contentLoading = true;
+        async getEvent() {
             try {
-                const response = await api.get("/tags");
-                this.tags = response.data.data;
+                this.contentLoading = true;
+                const response = await api.get(
+                    `/events/${this.$route.params.eventId}/full`
+                );
+                this.form = response.data.data;
             } catch (error) {
                 console.log(error);
             } finally {
                 this.contentLoading = false;
             }
         },
+
     },
 
     created() {
-        this.getTags();
+        this.getEvent();
     },
 
     validations() {
@@ -494,81 +353,6 @@ export default {
                         "Поле `Конец события` обязательно",
                         required
                     ),
-                },
-                task: {
-                    required: helpers.withMessage(
-                        "Поле `Задание` обязательно",
-                        required
-                    ),
-                },
-                image: {
-                    required: helpers.withMessage(
-                        "Поле `Изображение` обязательно",
-                        required
-                    ),
-                },
-                tags: {
-                    required: helpers.withMessage(
-                        "Поле `Теги` обязательно",
-                        required
-                    ),
-                },
-
-                prizes: {
-                    firstPlace: {
-                        required: helpers.withMessage(
-                            "Поле `1 место` обязательно",
-                            required
-                        ),
-                        regex: helpers.withMessage(
-                            "Поле `1 место` должно содержать только цифры",
-                            helpers.regex(/^\d+$/)
-                        ),
-                        minValue: helpers.withMessage(
-                            "Поле `1 место` должно быть больше чем 1000",
-                            minValue(1000)
-                        ),
-                        maxValue: helpers.withMessage(
-                            "Поле `1 место` должно быть меньше чем 1000000",
-                            maxValue(1000000)
-                        ),
-                    },
-                    secondPlace: {
-                        required: helpers.withMessage(
-                            "Поле `2 место` обязательно",
-                            required
-                        ),
-                        regex: helpers.withMessage(
-                            "Поле `2 место` должно содержать только цифры",
-                            helpers.regex(/^\d+$/)
-                        ),
-                        minValue: helpers.withMessage(
-                            "Поле `1 место` должно быть больше чем 1000",
-                            minValue(1000)
-                        ),
-                        maxValue: helpers.withMessage(
-                            "Поле `2 место` должно быть меньше чем поле `1 место`",
-                            maxValue(this.form.prizes.firstPlace)
-                        ),
-                    },
-                    thirdPlace: {
-                        required: helpers.withMessage(
-                            "Поле `3 место` обязательно",
-                            required
-                        ),
-                        regex: helpers.withMessage(
-                            "Поле `3 место` должно содержать только цифры",
-                            helpers.regex(/^\d+$/)
-                        ),
-                        minValue: helpers.withMessage(
-                            "Поле `1 место` должно быть больше чем 1000",
-                            minValue(1000)
-                        ),
-                        maxValue: helpers.withMessage(
-                            "Поле `3 место` должно быть меньше чем поле `2 место`",
-                            maxValue(this.form.prizes.secondPlace)
-                        ),
-                    },
                 },
             },
         };

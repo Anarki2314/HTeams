@@ -34,8 +34,12 @@ Route::apiResource('/teams', TeamController::class)->only(['index', 'store', 'sh
 
 // Event routes
 Route::post('/events/', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
-Route::apiResource('/events', EventController::class)->only(['index', 'show']);
 
+Route::get('/events/{id}/full', [EventController::class, 'getFullEvent'])->middleware(['auth:sanctum', 'ability:Организатор, Админ'])->where(['id' => '[0-9]+']);
+Route::get('/events/moderation', [EventController::class, 'getModerationEvents'])->middleware(['auth:sanctum', 'ability:Организатор, Админ']);
+Route::delete('/events/{id}/cancel', EventController::class, 'cancelEvent')->middleware(['auth:sanctum', 'ability:Организатор, Админ'])->where(['id' => '[0-9]+']);
+Route::apiResource('/events', EventController::class)->only(['index', 'show'])->where(['id' => '[0-9]+']);
+Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
 
 // Profile routes (only for logged users)
 
@@ -47,7 +51,6 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
     Route::post('/team/invite', [ProfileController::class, 'inviteFromTeam'])->middleware('ability:Пользователь');
     Route::post('/team/invite/team-choice', [ProfileController::class, 'teamChoiceInvite'])->middleware('ability:Пользователь');
     Route::post('/team/invite/user-choice', [ProfileController::class, 'userChoiceInvite'])->middleware('ability:Пользователь');
-    Route::post('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
 
     Route::post('/team/join', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь');
     Route::get('/team/invites', [ProfileController::class, 'getTeamInvites'])->middleware('ability:Пользователь');
@@ -61,6 +64,9 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
 
 Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
 Route::get('/tags', [TagController::class, 'index']);
+
+
+
 
 // Admin routes
 

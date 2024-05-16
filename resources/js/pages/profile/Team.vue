@@ -43,7 +43,7 @@
                                         Заявки на вступление  
                                 </router-link>
                                 </div>
-                                <div class="container-team-item"><span to="/profile/team" class="info-button" @click="openModal('modal-invite-team')" v-if="!isTeamFull">Пригласить в команду</span></div>
+                                <div class="container-team-item"><span to="/profile/team" class="info-button" @click="openModal('modal-invite-team')" v-if="!isTeamFull && user.isLeader">Пригласить в команду</span></div>
                                 <div class="container-team-item" v-if="user.isLeader"><span to="/profile/team" class="info-button" >Удалить команду</span></div>
                             </div>
 
