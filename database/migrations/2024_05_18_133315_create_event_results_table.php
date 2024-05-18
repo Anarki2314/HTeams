@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification_events', function (Blueprint $table) {
+        Schema::create('event_results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->string('type');
-            $table->string('message')->nullable();
+            $table->foreignId('team_id')->constrained('users')->onDelete('cascade');
+            $table->integer('place');
+            $table->timestamps();
         });
     }
 
@@ -25,6 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notification_events');
+        Schema::table('event_results', function (Blueprint $table) {
+            $table->dropForeign(['event_id']);
+            $table->dropForeign(['team_id']);
+        });
+        Schema::dropIfExists('event_results');
     }
 };

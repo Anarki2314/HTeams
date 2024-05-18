@@ -2,3 +2,26 @@
     background: none;
     border: 1px solid var(--color-main);
 }
+
+.p-icon .p-dropdown-trigger-icon{
+    stroke: var(--color-main);
+}
+.p-dropdown-panel{
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+#sort{
+    border: 1px solid var(--color-main);
+    background: none;
+    color: var(--color-main);
+    border-radius: 5px;
+    outline: none;
+    
+}
+
+
+.p-dropdown-label, .p-dropdown-item-label, .p-dropdown-item-group-label{
+    font-size: clamp(12px, 1.5vw, 18px);
+    
+}

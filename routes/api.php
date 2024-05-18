@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Resources\UserResource;
@@ -37,11 +38,12 @@ Route::apiResource('/teams', TeamController::class)->only(['index', 'store', 'sh
 
 // Event Organizer/Admin routes
 
-Route::get('/events/{id}/full', [EventController::class, 'getFullEvent'])->middleware(['auth:sanctum', 'ability:Организатор, Админ'])->where(['id' => '[0-9]+']);
+Route::get('/events/{id}/full', [EventController::class, 'getFullEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
 
-Route::get('/events/moderation', [EventController::class, 'getModerationEvents'])->middleware(['auth:sanctum', 'ability:Организатор, Админ']);
+Route::get('/events/moderation', [EventController::class, 'getModerationEvents'])->middleware(['auth:sanctum', 'ability:Организатор,Админ']);
 
-Route::delete('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор, Админ'])->where(['id' => '[0-9]+']);
+Route::delete('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
+Route::put('/events/{id}/approve', [EventController::class, 'approveEvent'])->middleware(['auth:sanctum', 'ability:Админ'])->where(['id' => '[0-9]+']);
 
 Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
 
@@ -92,6 +94,7 @@ Route::get('/notifications', [NotificationsController::class, 'getNotifications'
 
 Route::get('/tags', [TagController::class, 'index']);
 
+Route::get('/statuses', [StatusController::class, 'index']);
 
 // Admin routes
 

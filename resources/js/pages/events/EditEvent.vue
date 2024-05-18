@@ -261,7 +261,7 @@ export default {
                     this.form,
                 );
                 this.$router.push({
-                    name: "moderating-events",
+                    name: "moderating-event",
                     params: { eventId: this.$route.params.eventId },
                 });
             } catch (error) {

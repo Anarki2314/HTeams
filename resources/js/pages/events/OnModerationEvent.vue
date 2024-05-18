@@ -55,7 +55,7 @@
                                 #{{ tag.title }}
                             </span>
                         </div>
-                        <div class="container-event-buttons d-flex flex-wrap">
+                        <div class="container-event-buttons d-flex flex-wrap" v-if="event.status === 'На проверке'">
                             <router-link :to="'/profile/edit-event/' + event.id" class="button-view main-button">Редактировать</router-link>
                             <button class="button-view secondary-button" @click="openModal('modal-cancel-event')">Отменить</button>
                         </div>
@@ -79,20 +79,17 @@
                         <div class="container-info-item">
                             <div class="info-item-text">Начало регистрации</div>
                             <div class="info-item info-first">
-                                {{ event.date_registration?.slice(0, 16) }}
-                            </div>
+                                {{ new Date(event.date_registration).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
                         </div>
                         <div class="container-info-item">
                             <div class="info-item-text">Начало события</div>
                             <div class="info-item info-second">
-                                {{ event.date_start?.slice(0, 16) }}
-                            </div>
+                                {{ new Date(event.date_start).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
                         </div>
                         <div class="container-info-item">
                             <div class="info-item-text">Конец события</div>
                             <div class="info-item info-third">
-                                {{ event.date_end?.slice(0, 16) }}
-                            </div>
+                                {{ new Date(event.date_end).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,6 +175,7 @@ import LoadingScreen from "@/components/LoadingScreen.vue";
 import Modal from "@/components/Modal.vue";
 
 import api from "../../api.js";
+import { push } from "notivue";
 export default {
     components: {
         HeaderView,
@@ -218,6 +216,20 @@ export default {
                 console.log(error);
             } finally {
                 this.contentLoading = false;
+            }
+        },
+
+        async cancelEvent() {
+            this.isLoading = true;
+            try {
+                const response = await api.delete(`/events/${this.$route.params.eventId}/cancel`);
+                push.success(response.data.message);
+                this.closeModal();
+                this.$router.push({ name: "moderating-events"    });
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.isLoading = false;
             }
         },
     },
@@ -332,15 +344,15 @@ section {
 }
 
 .info-first {
-    font-size: clamp(16px, 4vw, 68px);
+    font-size: clamp(16px, 4vw, 48px);
 }
 
 .info-second {
-    font-size: clamp(16px, 3.5vw, 60px);
+    font-size: clamp(16px, 3.5vw, 42px);
 }
 
 .info-third {
-    font-size: clamp(16px, 3vw, 52px);
+    font-size: clamp(16px, 3vw, 36px);
 }
 
 .container-description-text {

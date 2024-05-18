@@ -31,13 +31,19 @@
                     </filters-modal>
                     </div>
                 </div>
-                <div class="container-sort"></div>
-                <div class="container-events-items d-flex justify-content-center justify-content-lg-between flex-wrap">
+                <sorting v-model="query['sort']" :sortList="sortList" @update:modelValue="getEvents"/>
+                <div class="container-events-items d-flex justify-content-center justify-content-lg-between flex-wrap position-relative">
                     <loading-screen v-if="contentLoading"/>
                     <div class="container-empty-page row-card" v-if="!events.length">
                         <div class="empty-page" >Ничего не найдено</div>
                     </div>
                     <event-card v-for="event, index in events" :key="index" :event="event" url="/profile/moderating-events/" />
+
+                    <button class="container-pagination row-card d-flex justify-content-center" @click="loadNextPage"
+                        v-if="nextPage">
+                        <span class="pagination-btn" v-if="!pageLoading">Показать еще</span>
+                        <img :src="'/assets/img/loading.svg'" alt="" v-if="pageLoading" class="pagination-loading" />
+                    </button>
                 </div>
             </div>
         </div>
@@ -52,7 +58,7 @@ import EventCard from '@/components/event/EventCard.vue';
 import SearchForm from '../../components/SearchForm.vue';
 import FiltersModal from '../../components/FiltersModal.vue';
 import LoadingScreen from '../../components/LoadingScreen.vue';
-
+import Sorting from '../../components/Sorting.vue';
 import api from '../../api.js';
 import {push} from 'notivue'
 
@@ -64,32 +70,45 @@ export default {
         EventCard,
         SearchForm,
         FiltersModal,
-        LoadingScreen
+        LoadingScreen,
+        Sorting
     },
     data() {
         return {
+            contentLoading: true,
+            pageLoading: false,
+            
             query: {
                 "filter[title]": '',
                 "filter[tags]": [],
-                "sort": '-created_at',
+                "sort": '-updated_at',
                 perPage: 10,
                 ...this.$route.query
             },
+            selectedTags: this.$route.query['filter[tags]'] || [],
+            
             page: 1,
-            selectedTags: [...this.$route.query['filter[tags]']] || [],
             nextPage: null,
-            contentLoading: true,
-            pageLoading: false,
+            
             events: [],
+            
             tags:[],
             activeFilterType: 'tags',
+            
+
+            sortList: [
+                {
+                    label: 'По времени создания',
+                    items: [
+                        {label: 'От новых к старым', value: '-updated_at'},
+                        {label: 'От старых к новым', value: 'updated_at'},
+                    ]
+                },
+            ],
+
+
             showModal: false,
             activeModal: '',
-        }
-    },
-    computed: {
-        isAuth() {
-            return this.$store.getters.isLoggedIn
         }
     },
 

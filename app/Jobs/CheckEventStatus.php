@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Event;
 use App\Models\EventStatus;
+use App\Models\NotificationEvents;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,7 +32,8 @@ class CheckEventStatus implements ShouldQueue
             'New' => EventStatus::getByTitle('Новое')->id,
             'Registration' => EventStatus::getByTitle('Регистрация')->id,
             'Started' => EventStatus::getByTitle('Началось')->id,
-            'Finished' => EventStatus::getByTitle('Завершено')->id
+            'Finished' => EventStatus::getByTitle('Завершено')->id,
+            'Cancelled' => EventStatus::getByTitle('Отменено')->id
         ];
         $events = Event::where('status_id', array_slice($statusesId, 0, 3))->get();
 
@@ -39,8 +41,14 @@ class CheckEventStatus implements ShouldQueue
             switch ($event->status_id) {
                 case $statusesId['New']:
                     if ($event->date_registration < now('Europe/Moscow')) {
-                        $event->status_id = $statusesId['Registration'];
-                        $event->save();
+                        if ($event->teams->count() > 10) {
+                            $event->status_id = $statusesId['Registration'];
+                            $event->save();
+                        } else {
+                            $event->status_id = $statusesId['Cancelled'];
+                            $event->save();
+                            NotificationEvents::insertNotification($event->creator_id, $event->id, 'cancel', 'Недостаточно участников');
+                        }
                     }
                     break;
                 case $statusesId['Registration']:

@@ -6,22 +6,8 @@
     <section class="tags-section admin-section">
         <div class="container-block">
             <div class="container-tag admin-container">
-                <div class="form-search mb-3 text-end">
-                    <div class="container-search">
-                        <input
-                            type="text"
-                            class="form-input"
-                            name="search"
-                            id="search"
-                            placeholder="Поиск"
-                            v-model.lazy="query['filter[title]']"
-                            @change.lazy="getTags"
-                        />
-                        <button class="search-btn" @click="getTags">
-                            <img :src="'/assets/img/search.svg'" alt="" />
-                        </button>
-                    </div>
-                </div>
+                <SearchForm @search="getTags" v-model="query['filter[title]']"/>
+                
 
                 <h3 class="block-title text-center text-lg-start">Теги</h3>
 
@@ -160,6 +146,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import api from "../../api.js";
 import { push } from "notivue";
+import SearchForm from "../../components/SearchForm.vue";
 export default {
     components: {
         HeaderView,
@@ -167,6 +154,7 @@ export default {
         TagCard,
         FooterView,
         Modal,
+        SearchForm,
         LoadingScreen,
     },
 

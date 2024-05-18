@@ -406,7 +406,7 @@ export default {
                     },
                 });
                 this.$router.push({
-                    name: "moderating-events",
+                    name: "moderating-event",
                     params: { eventId: response.data.data.id },
                 });
             } catch (error) {
@@ -512,6 +512,10 @@ export default {
                         "Поле `Теги` обязательно",
                         required
                     ),
+                    maxLength: helpers.withMessage(
+                        "Поле `Теги` должно содержать не более 6 тегов",
+                        maxLength(6)
+                    )
                 },
 
                 prizes: {

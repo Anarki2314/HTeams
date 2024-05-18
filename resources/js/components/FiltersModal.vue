@@ -70,22 +70,22 @@
     display: flex;
     gap: clamp( 10px, 1.5vw ,25px);
   }
- .filter-type{
+ .filters-type{
     font-size: var(--size-text);
     cursor: pointer;
  }
- .filter-type.active{
+ .filters-type.active{
   text-decoration: underline;
   text-underline-offset: 3px;
  }
- .filter-type:hover{
+ .filters-type:hover{
   text-decoration: underline;
   text-underline-offset: 3px;
  }
   .container-filters-items {
     overflow: auto;
     display: flex;
-    height: 180px;
+    max-height: clamp(120px, 15vw, 180px);
     flex-direction: column;
     gap: clamp( 10px, 1.5vw ,25px);
   }
@@ -113,8 +113,8 @@
   .filters-checkbox-label::before {
     content: "";
     display: block;
-    width: 30px;
-    height: 30px;
+    width: clamp(24px, 3vw, 30px);
+    height: clamp(24px, 3vw, 30px);
     border: 1px solid #1B1B1B;
     border-radius: 5px;
   }

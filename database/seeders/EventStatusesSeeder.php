@@ -16,6 +16,7 @@ class EventStatusesSeeder extends Seeder
         DB::table('event_statuses')->insert([
             ['title' => 'Новое'],
             ['title' => 'На проверке'],
+            ['title' => 'Отменено'],
             ['title' => 'Регистрация'],
             ['title' => 'Началось'],
             ['title' => 'Завершено'],

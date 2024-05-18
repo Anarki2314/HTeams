@@ -6,7 +6,11 @@
             <h4 class="invite-name row-card-name">{{ invite.email }}</h4>
         <div class="container-invite-buttons d-flex flew-wrap row-card-container-button">
             <button class="button-view main-button apply-button" @click="sendChoice(true)">Принять</button>
+
             <button class="button-view secondary-button apply-button" @click="sendChoice(false)">Отклонить</button>
+
+            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+
         </div>
     </div>
 </template>
@@ -22,10 +26,24 @@ export default {
         }
     },
 
+    data() {
+        return {
+            isLoading: false
+        }
+    },
     methods: {
-        sendChoice(choice) {
+        async sendChoice(choice) {
+            this.isLoading = true
             this.invite.choice = choice
-            this.$emit('sendChoice', this.invite);
+            try {
+                this.$emit('sendChoice', this.invite);
+            } catch (error) {
+                push.error(error.data.message);
+            } finally {
+                this.isLoading = false
+            }
+            
+            
         }
     }
 }
