@@ -1,5 +1,5 @@
 <template>
-        <div class="container-event-participate d-flex">
+        <div class="container-event-participate d-flex flex-wrap ">
 
                 <button type="button" class="button-view main-button" v-if="canJoin" @click="joinEvent">
                     Принять участие
@@ -10,11 +10,13 @@
                     Отменить участие
                 </button>
 
-                <button type="button" class="button-view main-button" v-if="canDownload">
-                    Скачать задание
+                <button type="button" class="button-view main-button" v-if="canAnswer"
+                    @click="answerEvent ">
+                    Прикрепить ответ
                 </button>
 
-                <a href="#info" class="button-view main-button" v-if="haveResults">Итоги</a>
+                <a href="#winners" class="button-view main-button" v-if="haveResults">Итоги</a>
+                <a :href="event.answer?.path" class="button-view main-button" :download="event.answer?.name" v-if="haveAnswer">Ваш ответ</a>
 
         </div>
 </template>
@@ -60,9 +62,17 @@ export default {
             return (this.isUser && this.haveTeam) && (this.event.isJoined && this.event.status == 'Началось');
         },
 
+        canAnswer() {
+            return (this.isUser && this.haveTeam && this.isLeader) && (this.event.isJoined && this.event.status == 'Началось');
+        },
         haveResults() {
             return this.event.status == 'Итоги';
+        },
+
+        haveAnswer(){
+            return !!this.event.answer;
         }
+
     },
 
     methods: {
@@ -87,8 +97,28 @@ export default {
             }    
 
             this.$emit('openModal', 'modal-cancel-join-event');
+        },
+
+        answerEvent() {
+            if (!this.isAuth) {
+                this.$emit('openModal', 'modal-auth');
+                return
+            }
+            if (!this.isLeader){
+                this.$emit('openModal', 'modal-leader-event');
+                return
+            }
+
+            this.$emit('openModal', 'modal-answer-event');
+
         }
     },
 
 }
 </script>
+
+<style scoped>
+.container-event-participate {
+    gap: 10px;
+}
+</style>    

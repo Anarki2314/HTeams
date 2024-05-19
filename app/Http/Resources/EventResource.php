@@ -30,10 +30,15 @@ class EventResource extends JsonResource
         ];
         $user = $request->user('sanctum');
         if ($user && $user->isUser() && $user->team) {
-            $data['isJoined'] = $this->isJoined($user);
-        }
-        if ($this->status_id == EventStatus::getByTitle('Началось')->id) {
-            $data['task'] = new FileResource($this->task);
+            $isJoined = $this->isJoined($user);
+            $data['isJoined'] = $isJoined;
+
+            if ($this->status_id == EventStatus::getByTitle('Началось')->id && $isJoined) {
+                $data['task'] = new FileResource($this->task);
+                if ($answer = $this->answers->where('event_id', $this->id)->where('team_id', $user->team->id)->first()) {
+                    $data['answer'] = new FileResource($answer->answer);
+                }
+            }
         }
 
         return $data;

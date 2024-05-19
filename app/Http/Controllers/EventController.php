@@ -6,13 +6,16 @@ use App\Http\Requests\CreateEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Resources\EventFullResource;
 use App\Http\Resources\EventResource;
+use App\Http\Resources\FileResource;
 use App\Models\Event;
+use App\Models\EventAnswer;
 use App\Models\EventPrizes;
 use App\Models\EventStatus;
 use App\Models\EventTags;
 use App\Models\EventTeams;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\File as RulesFile;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -196,5 +199,43 @@ class EventController extends Controller
         EventTeams::where(['event_id' => $event->id, 'team_id' => $user->team->id])->delete();
 
         return response()->json(['message' => 'Вы отменили регистрацию на соревнование']);
+    }
+
+    public function answerEvent(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'answer' => [
+                'required',
+                RulesFile::types(['doc', 'docx', 'pdf'])->min('1kb')->max('4mb')
+            ],
+        ]);
+        $user = $request->user();
+        if (!$user->isLeader()) {
+            return response()->json(['message' => 'Прикрепить ответ может только лидер команды']);
+        }
+
+
+        $event = Event::where(['status_id' => EventStatus::getByTitle('Началось')->id])->findOrFail($id);
+
+        $answerFile = $request->file('answer');
+        $answerPath = File::fileUpload($answerFile);
+        $answerCreated = File::create(['name' => $answerFile->getClientOriginalName(), 'path' => $answerPath]);
+
+        $eventAnswer = EventAnswer::where(['event_id' => $event->id, 'team_id' => $user->team->id])->first();
+        if ($eventAnswer) {
+            $eventAnswer->answer_id = $answerCreated->id;
+            $eventAnswer->save();
+            return response()->json(['message' => 'Ответ успешно прикреплен', 'data' => [
+                'answer' => new FileResource($answerCreated),
+            ]], 201);
+        }
+        EventAnswer::create([
+            'event_id' => $event->id,
+            'team_id' => $user->team->id,
+            'answer_id' => $answerCreated->id,
+        ]);
+        return response()->json(['message' => 'Ответ успешно прикреплен', 'data' => [
+            'answer' => new FileResource($answerCreated),
+        ]], 201);
     }
 }

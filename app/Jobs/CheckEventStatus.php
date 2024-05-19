@@ -35,7 +35,7 @@ class CheckEventStatus implements ShouldQueue
             'Finished' => EventStatus::getByTitle('Завершено')->id,
             'Cancelled' => EventStatus::getByTitle('Отменено')->id
         ];
-        $events = Event::where('status_id', array_slice($statusesId, 0, 3))->get();
+        $events = Event::whereIn('status_id', array_slice($statusesId, 0, 3))->get();
 
         foreach ($events as $event) {
             switch ($event->status_id) {
@@ -46,17 +46,18 @@ class CheckEventStatus implements ShouldQueue
                     }
                     break;
                 case $statusesId['Registration']:
-                    if ($event->date_start < now()) {
+                    if ($event->date_start < now('Europe/Moscow')) {
                         $event->status_id = $statusesId['Started'];
                         $event->save();
                     }
                     break;
                 case $statusesId['Started']:
-                    if ($event->date_end < now()) {
+                    if ($event->date_end < now('Europe/Moscow')) {
                         $event->status_id = $statusesId['Finished'];
                         $event->save();
                     }
                     break;
+
                 default:
                     break;
             }

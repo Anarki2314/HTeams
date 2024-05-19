@@ -80,6 +80,11 @@ class Event extends Model
         return $this->belongsTo(File::class, 'task_id', 'id');
     }
 
+    public function answers(): HasMany
+    {
+        return $this->hasMany(EventAnswer::class, 'event_id', 'id')->orderBy('updated_at', 'desc');
+    }
+
     public function isJoined(User $user): bool
     {
         return $this->teams->where('id', $user->team->id)->isNotEmpty();

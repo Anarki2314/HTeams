@@ -40,6 +40,12 @@ export default {
                         team_id: this.invite.teamId
                     });
                     push.info(response.data.message);
+
+                    // const responseUser = await api.post("/auth/refresh");
+                    // localStorage.setItem("token", responseUser.data.data.token);
+                    // localStorage.setItem("user", JSON.stringify(responseUser.data.data.user));
+                    // this.$store.commit('login', responseUser.data.data);
+                    // return true;
                 }
             } catch (error) {
                 push.error(error.data.message);

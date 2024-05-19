@@ -65,7 +65,7 @@
             <div
                 class="container-about d-flex align-items-center justify-content-center flex-wrap"
             >
-                <div class="container-info">
+                <div class="container-info" v-if="event.status != 'Итоги'">
                     <h3 class="block-title text-center">Даты проведения</h3>
 
                     <div
@@ -85,6 +85,35 @@
                             <div class="info-item-text">Конец события</div>
                             <div class="info-item info-third">
                                 {{ new Date(event.date_end).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-info" id="winners" v-if='event.winners?.length && event.status == "Итоги"'>
+                    <h3 class="block-title text-center">Победители</h3>
+
+                    <div
+                        class="container-info-items d-flex flex-column align-items-center justify-content-center"
+                    >
+                    <div
+                            class="container-info-item"
+                            v-for="(winner, index) in event.winners"
+                            :key="winner.id"
+                        >
+                            <div class="info-item-text">
+                                {{ winner.place }}-е место
+                            </div>
+                            <div
+                                class="info-item"
+                                :class="
+                                    index === 0
+                                        ? 'info-first'
+                                        : index === 1
+                                        ? 'info-second'
+                                        : 'info-third'
+                                "
+                            >
+                                {{ winner.team }} 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -138,8 +167,11 @@
                         class="button-view main-button text-uppercase"
                         :href="event.task?.path"
                         :download="event.task?.name"
+                        v-if="canDownload"
                         >Скачать задание</a
                     >
+
+                    <button class="button-view main-button text-uppercase" @click="openModal('modal-join-event')" v-if="canJoin">Принять участие</button>
                 </div>
             </div>
         </div>
@@ -203,6 +235,43 @@
                 </div>
     </modal>
 
+    <modal v-if="showModal && activeModal === 'modal-answer-event'" :show="showModal" @close="closeModal">
+        <h2 class="modal-title">Прикрепить ответ на задание</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="answerEvent">
+                    <div class="modal-container-input position-relative">
+                        <input
+                                        type="file"
+                                        name="answer"
+                                        id="answer"
+                                        required
+                                        class="form-input"
+                                        @change="previewAnswer"
+                                        accept=" application/pdf, application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document "
+                                    />
+                                    <label for="answer" class="answer-label">
+                                        <span class="answer-text">
+                                            {{ answerFileName }}
+                                        </span>
+                                        <span class="answer-button"
+                                            >Выбрать файл</span
+                                        >
+                                    </label>
+                    </div>
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Закрыть</button>
+                        <div class="modal-container-button">
+                            <button type="submit" class="button-view dark-button" v-if="!isLoading">Прикрепить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+
+                        </div>
+
+
+                    </div>
+                    </form>
+                </div>
+    </modal>
+
 
 </template>
 
@@ -229,6 +298,9 @@ export default {
             activeModal: "",
 
             event: {},
+
+            answerFileName: "Выберите файл",
+            answerFile: null,
         };
     },
 
@@ -236,9 +308,34 @@ export default {
         isAuth() {
             return this.$store.getters.isLoggedIn
         },
+
+        isUser() {
+            return this.$store.getters.isUser
+        },
+
+        haveTeam() {
+            return this.$store.getters.haveTeam
+        },
+
+        canJoin() {
+            return (this.isUser && this.haveTeam) && (!this.event.isJoined && this.event.status == 'Регистрация'); 
+        },
+
+        canDownload() {
+            return (this.isUser && this.haveTeam) && (this.event.isJoined && this.event.status == 'Началось');
+        },
     },
 
     methods: {
+       previewAnswer(event) {
+           if (!event.target.files[0]) {
+               this.answerFileName = "Выберите задание";
+               this.answerFile = null;
+               return;
+           }
+           this.answerFile = event.target.files[0];
+           this.answerFileName = this.answerFile.name;
+       },
         closeModal() {
             this.showModal = false;
             this.activeModal = "";
@@ -290,6 +387,31 @@ export default {
                 this.closeModal();
             } catch (error) {
                 console.log(error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async answerEvent() {
+            try {
+                this.isLoading = true;
+                const response = await api.post(
+                    `/events/${this.$route.params.eventId}/answer`,
+                    {
+                        answer: this.answerFile
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                );
+                push.success(response.data.message);
+                this.event.answer = response.data.data.answer;
+                this.closeModal();
+
+            } catch (error) {
+                push.error(error.data.message);
             } finally {
                 this.isLoading = false;
             }
@@ -425,4 +547,65 @@ section {
     font-size: var(--size-title);
     padding: clamp(10px, 2vw, 30px) clamp(20px, 3vw, 60px);
 }
+
+.form-input{
+    width: 100%;
+    padding: 10px 10px;
+    color: #f4f4f4;
+    font-size: var(--size-text);
+    outline: none;
+    background: none;
+    border: 1px solid var(--color-main);
+    border-radius: 5px;
+}
+.form-input {
+        width: 0;
+        height: 0;
+        opacity: 0;
+        padding: 0;
+        border: none;
+        position: absolute;
+    }
+
+    .answer-label{
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 5px;
+        border: 1px solid var(--color-main);
+        padding: 0 0 0 10px;
+        overflow: hidden;
+        cursor: pointer;
+        font-size: var(--size-text);
+
+
+        .answer-text{
+            flex: 1;
+            font-size: clamp(12px, 1.5vw, 18px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+        }
+        .answer-button{
+            background: none;
+            outline: none;
+            border:none;
+            border-left: 1px solid var(--color-main);
+            padding: 5px 10px;
+            color: #f4f4f4;
+            transition: all 0.3s ease;
+        }
+    }
+
+    .form-input:focus + .answer-label .answer-button{
+        background-color: var(--color-main);
+        color: #1B1B1B;
+    }
+
+    .answer-label:hover .answer-button{
+        background-color: var(--color-main);
+        color: #1B1B1B;
+    }
 </style>

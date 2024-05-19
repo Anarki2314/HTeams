@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AuthResource;
 use App\Http\Resources\TeamInvitesResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
