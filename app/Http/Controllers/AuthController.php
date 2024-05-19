@@ -7,6 +7,7 @@ use App\Http\Requests\SignUpRequest;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
+use App\Models\File;
 use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class AuthController extends Controller
 
 
         $validated = $request->validated();
+        $validated['avatar_id'] = File::generateAvatar();
         $user = User::create($validated);
 
         $token = TokenService::generateToken($user);

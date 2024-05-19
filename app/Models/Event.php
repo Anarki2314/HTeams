@@ -70,6 +70,12 @@ class Event extends Model
     }
 
 
+    public function participants(): HasMany
+    {
+        return $this->hasMany(EventTeams::class, 'event_id', 'id');
+    }
+
+
     public function prizes(): HasMany
     {
         return $this->hasMany(EventPrizes::class, 'event_id', 'id');
@@ -80,6 +86,10 @@ class Event extends Model
         return $this->belongsTo(File::class, 'task_id', 'id');
     }
 
+    public function results(): HasMany
+    {
+        return $this->hasMany(EventResult::class, 'event_id', 'id');
+    }
     public function answers(): HasMany
     {
         return $this->hasMany(EventAnswer::class, 'event_id', 'id')->orderBy('updated_at', 'desc');
@@ -87,6 +97,6 @@ class Event extends Model
 
     public function isJoined(User $user): bool
     {
-        return $this->teams->where('id', $user->team->id)->isNotEmpty();
+        return $this->participants->where('user_id', $user->id)->where('team_id', $user->team->id)->isNotEmpty();
     }
 }

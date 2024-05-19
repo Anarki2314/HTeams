@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
         });
     }
 
@@ -26,6 +27,7 @@ return new class extends Migration
         Schema::table('event_teams', function (Blueprint $table) {
             $table->dropForeign(['event_id']);
             $table->dropForeign(['team_id']);
+            $table->dropForeign(['user_id']);
         });
         Schema::dropIfExists('event_teams');
     }

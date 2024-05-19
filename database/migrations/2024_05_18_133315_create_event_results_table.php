@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('event_results', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->foreignId('team_id')->constrained('users')->onDelete('cascade');
+            $table->string('team_name');
             $table->integer('place');
             $table->timestamps();
         });
@@ -27,7 +27,6 @@ return new class extends Migration
     {
         Schema::table('event_results', function (Blueprint $table) {
             $table->dropForeign(['event_id']);
-            $table->dropForeign(['team_id']);
         });
         Schema::dropIfExists('event_results');
     }

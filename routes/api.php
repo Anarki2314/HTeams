@@ -42,6 +42,9 @@ Route::get('/events/{id}/full', [EventController::class, 'getFullEvent'])->middl
 
 Route::get('/events/moderation', [EventController::class, 'getModerationEvents'])->middleware(['auth:sanctum', 'ability:Организатор,Админ']);
 
+Route::get('/events/upcoming', [EventController::class, 'getUpcomingEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор']);
+Route::get('/events/finished', [EventController::class, 'getFinishedEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор']);
+
 Route::post('/events/{id}/join', [EventController::class, 'joinEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
 Route::delete('/events/{id}/leave', [EventController::class, 'leaveEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
 Route::post('/events/{id}/answer', [EventController::class, 'answerEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);

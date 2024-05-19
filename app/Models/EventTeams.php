@@ -15,6 +15,7 @@ class EventTeams extends Model
     protected $fillable = [
         'event_id',
         'team_id',
+        'user_id',
     ];
 
 

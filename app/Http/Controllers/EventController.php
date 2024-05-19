@@ -178,10 +178,15 @@ class EventController extends Controller
         }
         $event = Event::where(['status_id' => EventStatus::getByTitle('Регистрация')->id])->findOrFail($id);
 
-        EventTeams::create([
-            'event_id' => $event->id,
-            'team_id' => $user->team->id,
-        ]);
+        $teamId = $user->team->id;
+        $user->team->members->each(function ($member) use ($event, $teamId) {
+            EventTeams::create([
+                'event_id' => $event->id,
+                'team_id' => $teamId,
+                'user_id' => $member->id
+            ]);
+        });
+
         return response()->json(['message' => 'Вы успешно зарегистрировались на соревнование']);
     }
 
@@ -237,5 +242,81 @@ class EventController extends Controller
         return response()->json(['message' => 'Ответ успешно прикреплен', 'data' => [
             'answer' => new FileResource($answerCreated),
         ]], 201);
+    }
+
+    public function getUpcomingEvents(Request $request)
+    {
+        $user = $request->user();
+
+        $events = QueryBuilder::for(Event::class)
+            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id'])
+            ->defaultSort('-updated_at')
+
+            ->with('image', function ($query) {
+                $query->select(['id', 'name', 'path']);
+            })
+            ->with('status')
+            ->with('creator', function ($query) {
+                $query->select(['id', 'orgName']);
+            })
+            ->with('tags', function ($query) {
+                $query->select(['tags.id', 'tags.title']);
+            })
+
+            ->whereIn('status_id', [EventStatus::getByTitle('Регистрация')->id, EventStatus::getByTitle('Началось')->id, EventStatus::getByTitle('Новое')->id]);
+
+
+        if ($user->isOrganizer()) {
+            $events = $events->where('creator_id', $user->id);
+        } else {
+            $events = $events->whereHas('participants', function ($query) use ($user) {
+                $query->where('team_id', $user->team->id)->where('user_id', $user->id);
+            });
+        }
+
+        $events = $events->allowedSorts(['updated_at', 'title', 'date_registration', 'date_start'])
+            ->allowedFilters([
+                'title',
+                AllowedFilter::custom('tags', new \App\Filters\TagsFilter()),
+                AllowedFilter::exact('statuses', 'status_id'),
+            ],)
+            ->paginate($request->get('perPage', 10));
+
+        return response()->json($events);
+    }
+
+    public function getFinishedEvents(Request $request)
+    {
+        $user = $request->user();
+
+        $events = QueryBuilder::for(Event::class)
+            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id'])
+            ->defaultSort('-updated_at')
+            ->with('image', function ($query) {
+                $query->select(['id', 'name', 'path']);
+            })
+            ->with('status')
+            ->with('creator', function ($query) {
+                $query->select(['id', 'orgName']);
+            })
+            ->with('tags', function ($query) {
+                $query->select(['tags.id', 'tags.title']);
+            })
+            ->whereIn('status_id', [EventStatus::getByTitle('Завершено')->id]);
+        if ($user->isOrganizer()) {
+            $events = $events->where('creator_id', $user->id);
+        } else {
+            $events = $events->whereHas('participants', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
+        }
+        $events = $events->allowedSorts(['updated_at', 'title', 'date_registration', 'date_start'])
+            ->allowedFilters([
+                'title',
+                AllowedFilter::custom('tags', new \App\Filters\TagsFilter()),
+                AllowedFilter::exact('statuses', 'status_id'),
+            ],)
+            ->paginate($request->get('perPage', 10));
+        return response()->json($events);
     }
 }

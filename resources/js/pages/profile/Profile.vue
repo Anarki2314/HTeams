@@ -9,11 +9,9 @@
                 <div class="container-profile-content mb-5 d-flex justify-content-center justify-content-lg-start flex-wrap">
 
                     <div class="container-profile-image d-flex flex-column">
-                        <!-- <img :src="'/assets/img/profile.png'" alt=""> -->
-                        <img src="https://via.placeholder.com/200" alt="">
+                        <img :src="user.avatar?.path" alt="" class="profile-image">
 
                         <div class="profile-image-text">Изменить фото</div>
-                        <div class="profile-image-text">Удалить фото</div>
                     </div>
                     
                     <div class="container-profile-about">
@@ -30,13 +28,12 @@
                         </div>
                     </div>
                     <div class="container-profile-stats" v-if="!user.isAdmin">
-                    <h4 class="profile-subtitle text-center text-md-start">Статистика:</h4>
+                    <h4 class="profile-subtitle text-center text-md-start">Соревнования:</h4>
 
                     <div class="container-profile-items ">
-                            <div class="container-profile-item" v-if="!user.isOrganizer">Всего соревнований: <span class="profile-info-text">{name}</span></div>
                             <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/moderating-events" class="profile-info-text info-button">На проверке</router-link></div>
-                            <div class="container-profile-item">Предстоящие: <router-link to="/profile/upcoming" class="profile-info-text info-button">{surname}</router-link></div>
-                            <div class="container-profile-item">Завершенные: <router-link to="/profile/finished" class="profile-info-text info-button">{phone}</router-link></div>
+                            <div class="container-profile-item"><router-link to="/profile/upcoming" class="profile-info-text info-button">Предстоящие</router-link></div>
+                            <div class="container-profile-item"><router-link to="/profile/finished" class="profile-info-text info-button">Завершенные</router-link></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
                             <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
                             <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/create-event" class="info-button">Создать соревнование</router-link></div>
@@ -224,6 +221,12 @@ section{
 
 .container-profile-image{
     gap: 15px;
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 5px;
 }
 
 .profile-image-text {

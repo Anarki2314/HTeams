@@ -40,6 +40,8 @@ class EventResource extends JsonResource
                 }
             }
         }
+        if ($this->status_id == EventStatus::getByTitle('Итоги')->id) {
+        }
 
         return $data;
     }
