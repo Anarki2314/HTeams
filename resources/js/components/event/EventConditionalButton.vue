@@ -1,10 +1,21 @@
 <template>
         <div class="container-event-participate d-flex">
-                <button class="button-view main-button" v-if="canParticipate">Принять участие</button>
-                <button class="button-view darken-button" v-if="canCancelParticipation">Отменить участие</button>
-                <button class="button-view darken-button" v-if="canEdit">Редактировать</button>
-                <button class="button-view main-button" v-if="canDownload">Скачать задание</button>
+
+                <button type="button" class="button-view main-button" v-if="canJoin" @click="joinEvent">
+                    Принять участие
+                </button>
+
+                <button type="button" class="button-view darken-button" v-if="canCancelJoin"
+                    @click="cancelJoinEvent">
+                    Отменить участие
+                </button>
+
+                <button type="button" class="button-view main-button" v-if="canDownload">
+                    Скачать задание
+                </button>
+
                 <a href="#info" class="button-view main-button" v-if="haveResults">Итоги</a>
+
         </div>
 </template>
 
@@ -13,14 +24,6 @@
 
 export default {
 
-    data() {
-        return {
-            statuses: ['Новое', 'Регистрация', 'Началось', 'Завершено'],
-            isUser: true,
-            isOrganizer: false,
-
-        }
-    },
     props: {
         event: {
             type: Object,
@@ -31,28 +34,61 @@ export default {
 
     computed: {
 
-
-        canParticipate() {
-            
-            return !this.isOrganizer&& this.event.status === 'Регистрация' && !this.event.isParticipated;
+        isAuth() {
+            return this.$store.getters.isLoggedIn;
+        },
+        isUser() {
+            return this.$store.getters.isUser;
         },
 
-        canCancelParticipation() {
-            return this.isUser && this.event.status === 'Регистрация' && this.event.isParticipated;
+        isLeader() {
+            return this.$store.getters.isLeader;
         },
-        canEdit() {
-            return this.isOrganizer && this.event.status === 'Новое';
+        haveTeam() {
+            return this.$store.getters.haveTeam;
+        },
+
+        canJoin() {
+            return (this.isUser && this.haveTeam) && (!this.event.isJoined && this.event.status == 'Регистрация'); 
+        },
+
+        canCancelJoin() {
+            return (this.isUser && this.haveTeam && this.isLeader) && (this.event.isJoined && this.event.status == 'Регистрация'); 
         },
 
         canDownload() {
-            return this.isUser && this.event.status === 'Началось' && this.event.isParticipated;
+            return (this.isUser && this.haveTeam) && (this.event.isJoined && this.event.status == 'Началось');
         },
 
         haveResults() {
-            return this.event.status === 'Завершено';
+            return this.event.status == 'Итоги';
         }
     },
-    
+
+    methods: {
+
+        joinEvent() {
+            if (!this.isAuth) {
+                this.$emit('openModal', 'modal-auth');
+                return
+            }    
+            if (!this.isLeader){
+                this.$emit('openModal', 'modal-leader-event');
+                return
+            }
+
+            this.$emit('openModal', 'modal-join-event');
+        },
+
+        cancelJoinEvent() {
+            if (!this.isAuth) {
+                this.$emit('openModal', 'modal-auth');
+                return
+            }    
+
+            this.$emit('openModal', 'modal-cancel-join-event');
+        }
+    },
 
 }
 </script>

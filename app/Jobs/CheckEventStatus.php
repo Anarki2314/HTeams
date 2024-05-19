@@ -41,14 +41,8 @@ class CheckEventStatus implements ShouldQueue
             switch ($event->status_id) {
                 case $statusesId['New']:
                     if ($event->date_registration < now('Europe/Moscow')) {
-                        if ($event->teams->count() > 10) {
-                            $event->status_id = $statusesId['Registration'];
-                            $event->save();
-                        } else {
-                            $event->status_id = $statusesId['Cancelled'];
-                            $event->save();
-                            NotificationEvents::insertNotification($event->creator_id, $event->id, 'cancel', 'Недостаточно участников');
-                        }
+                        $event->status_id = $statusesId['Registration'];
+                        $event->save();
                     }
                     break;
                 case $statusesId['Registration']:

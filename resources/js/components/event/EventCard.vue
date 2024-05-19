@@ -12,7 +12,11 @@
                 <span class="event-card-tag" v-if="slicedTags.length < event.tags.length"> +{{ event.tags.length - slicedTags.length }}</span>
                 
             </div>
-            <div class="event-card-date" v-if = "!event.status?.title"> {{ new Date(event.updated_at).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}} </div>
+            <div class="event-card-date" v-if = "!event.status?.title"> {{ new Date(event.updated_at).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}} 
+            </div>
+            <div class="event-card-date" v-if = "event.status?.title">
+                 {{ new Date(event.date_registration).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}
+            </div>
         </div>
     </router-link>
 </template>

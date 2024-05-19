@@ -79,4 +79,9 @@ class Event extends Model
     {
         return $this->belongsTo(File::class, 'task_id', 'id');
     }
+
+    public function isJoined(User $user): bool
+    {
+        return $this->teams->where('id', $user->team->id)->isNotEmpty();
+    }
 }

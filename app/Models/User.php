@@ -86,7 +86,7 @@ class User extends Authenticatable
 
     public function isLeader(): bool
     {
-        return $this->id === $this->team->leader_id;
+        return $this->id === $this->team?->leader_id;
     }
 
     public function isAdmin(): bool
@@ -102,5 +102,10 @@ class User extends Authenticatable
     public function isOrganizer(): bool
     {
         return $this->role->title === 'Организатор';
+    }
+
+    public function avatar(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'avatar_id');
     }
 }

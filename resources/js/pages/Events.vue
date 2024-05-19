@@ -111,7 +111,7 @@ export default {
                 ...this.$route.query,
             },
             selectedTags: this.$route.query["filter[tags]"] || [],
-            selectedStatuses: this.$route.query["filter[statuses]"] || [],
+            selectedStatuses: this.$route.query["filter[statuses]"] || [1,4],
             page: 1,
             nextPage: null,
 

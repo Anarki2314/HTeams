@@ -10,6 +10,7 @@ use App\Models\Event;
 use App\Models\EventPrizes;
 use App\Models\EventStatus;
 use App\Models\EventTags;
+use App\Models\EventTeams;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -22,11 +23,12 @@ class EventController extends Controller
     {
 
         $events = QueryBuilder::for(Event::class)
-            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id'])
+            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id'])
             ->defaultSort('-updated_at')
             ->with('image', function ($query) {
                 $query->select(['id', 'name', 'path']);
             })
+            ->with('status')
             ->with('creator', function ($query) {
                 $query->select(['id', 'orgName']);
             })
@@ -48,7 +50,6 @@ class EventController extends Controller
     public function show(Request $request, $id)
     {
         $event = Event::where('status_id', '!=', EventStatus::getByTitle('Отменено')->id)->where('status_id', '!=', EventStatus::getByTitle('На проверке')->id)->findOrFail($id);
-
         return response()->json([
             'data' => new EventResource($event)
         ]);
@@ -163,5 +164,37 @@ class EventController extends Controller
 
 
         return response()->json(['message' => 'Соревнование одобрено']);
+    }
+
+
+    public function joinEvent(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!$user->isLeader()) {
+            return response()->json(['message' => 'Зарегистрироваться может только лидер команды']);
+        }
+        $event = Event::where(['status_id' => EventStatus::getByTitle('Регистрация')->id])->findOrFail($id);
+
+        EventTeams::create([
+            'event_id' => $event->id,
+            'team_id' => $user->team->id,
+        ]);
+        return response()->json(['message' => 'Вы успешно зарегистрировались на соревнование']);
+    }
+
+
+    public function leaveEvent(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!$user->isLeader()) {
+            return response()->json(['message' => 'Отменить регистрацию может только лидер команды']);
+        }
+
+        $event = Event::where(['status_id' => EventStatus::getByTitle('Регистрация')->id])->findOrFail($id);
+
+
+        EventTeams::where(['event_id' => $event->id, 'team_id' => $user->team->id])->delete();
+
+        return response()->json(['message' => 'Вы отменили регистрацию на соревнование']);
     }
 }

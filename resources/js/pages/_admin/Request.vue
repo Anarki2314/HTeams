@@ -190,7 +190,6 @@
 
 <script>
 import HeaderView from "@/components/HeaderView.vue";
-import EventConditionalButton from "../../components/event/EventConditionalButton.vue";
 import LoadingScreen from "@/components/LoadingScreen.vue";
 import Modal from "@/components/Modal.vue";
 
@@ -199,13 +198,11 @@ import { push } from "notivue";
 export default {
     components: {
         HeaderView,
-        EventConditionalButton,
         LoadingScreen,
         Modal
     },
     data() {
         return {
-            // TODO: remove isOrganizer from data and use store
             contentLoading: true,
             isLoading: false,
             showModal: false,
