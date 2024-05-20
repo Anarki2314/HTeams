@@ -64,11 +64,6 @@ class Event extends Model
     }
 
 
-    public function teams(): HasManyThrough
-    {
-        return $this->hasManyThrough(Team::class, EventTeams::class, 'event_id', 'id', 'id', 'team_id');
-    }
-
 
     public function participants(): HasMany
     {

@@ -3,15 +3,15 @@
     border: 1px solid var(--color-main);
 }
 
-.p-icon .p-dropdown-trigger-icon{
-    stroke: var(--color-main);
+.p-icon.p-dropdown-trigger-icon{
+    stroke: var(--color-main) !important;
 }
 .p-dropdown-panel{
     overflow: hidden;
     border-radius: 5px;
 }
 
-#sort{
+#sort, .winners-select{
     border: 1px solid var(--color-main);
     background: none;
     color: var(--color-main);

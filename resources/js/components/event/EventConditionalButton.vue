@@ -15,7 +15,7 @@
                     Прикрепить ответ
                 </button>
 
-                <a href="#winners" class="button-view main-button" v-if="haveResults">Итоги</a>
+                <a href="#info" class="button-view main-button" v-if="haveResults">Итоги</a>
                 <a :href="event.answer?.path" class="button-view main-button" :download="event.answer?.name" v-if="haveAnswer">Ваш ответ</a>
 
         </div>

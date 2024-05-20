@@ -41,6 +41,7 @@ class EventResource extends JsonResource
             }
         }
         if ($this->status_id == EventStatus::getByTitle('Итоги')->id) {
+            $data['winners'] = EventResultResource::collection($this->results);
         }
 
         return $data;

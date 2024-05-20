@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-info" id="winners" v-if='event.winners?.length && event.status == "Итоги"'>
+                <div class="container-info" v-if='event.winners?.length && event.status == "Итоги"'>
                     <h3 class="block-title text-center">Победители</h3>
 
                     <div

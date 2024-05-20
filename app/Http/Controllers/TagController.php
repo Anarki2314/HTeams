@@ -18,9 +18,6 @@ class TagController extends Controller
         return response()->json($tags);
     }
 
-    public function show(Request $request, $id)
-    {
-    }
 
     public function store(Request $request)
     {

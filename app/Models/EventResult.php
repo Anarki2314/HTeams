@@ -10,13 +10,12 @@ class EventResult extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['event_id', 'team_id', 'place'];
+    protected $fillable = ['event_id', 'team_name', 'place'];
 
-    public function team(): BelongsTo
+    public function team()
     {
-        return $this->belongsTo(Team::class, 'team_id', 'id');
+        return Team::where('title', $this->team_name)->first();
     }
-
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id', 'id');

@@ -19,6 +19,10 @@ class TeamMembersResource extends JsonResource
             'name' => $this->name,
             'surname' => $this->surname,
             'isLeader' => $this->isLeader(),
+            'avatar' => ($this->avatar) ? new FileResource($this->avatar) : [
+                'path' => '/assets/img/avatar.jpg',
+                'name' => 'avatar.jpg'
+            ]
         ];
     }
 }

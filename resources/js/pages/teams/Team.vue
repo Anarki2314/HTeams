@@ -21,8 +21,7 @@
                 <div
                     class="container-team-content mb-5 d-flex justify-content-center justify-content-lg-start flex-wrap">
                     <div class="container-team-image d-flex flex-column">
-                        <!-- <img :src="'/assets/img/team.png'" alt=""> -->
-                        <img src="https://via.placeholder.com/300" alt="" />
+                        <img :src="team.leader?.avatar.path" alt="" />
                     </div>
 
                     <div class="container-team-about">

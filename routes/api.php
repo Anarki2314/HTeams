@@ -47,7 +47,14 @@ Route::get('/events/finished', [EventController::class, 'getFinishedEvents'])->m
 
 Route::post('/events/{id}/join', [EventController::class, 'joinEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
 Route::delete('/events/{id}/leave', [EventController::class, 'leaveEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
+
+
+Route::get('/events/{id}/answers', [EventController::class, 'getEventAnswers'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
+Route::get('/events/{id}/teams', [EventController::class, 'getEventTeams'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
+
+Route::post('/events/{id}/winners', [EventController::class, 'setEventWinners'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
 Route::post('/events/{id}/answer', [EventController::class, 'answerEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
+
 Route::delete('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
 Route::put('/events/{id}/approve', [EventController::class, 'approveEvent'])->middleware(['auth:sanctum', 'ability:Админ'])->where(['id' => '[0-9]+']);
 
@@ -94,6 +101,7 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
 
 
 Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->middleware('auth:sanctum');
+Route::delete('/notifications/{id}', [NotificationsController::class, 'deleteNotification'])->middleware('auth:sanctum')->where(['id' => '[0-9]+']);
 
 
 

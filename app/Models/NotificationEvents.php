@@ -31,11 +31,11 @@ class NotificationEvents extends Model
         return $this->belongsTo(Event::class, 'event_id', 'id');
     }
 
-    public static function insertNotification($user, $event, $type, $message = null)
+    public static function insertNotification($userId, $eventId, $type, $message = null)
     {
         $notification = new NotificationEvents();
-        $notification->user_id = $user->id;
-        $notification->event_id = $event->id;
+        $notification->user_id = $userId;
+        $notification->event_id = $eventId;
         $notification->type = $type;
         $notification->message = $message;
         $notification->save();

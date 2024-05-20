@@ -6,14 +6,18 @@ use App\Http\Requests\CreateEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Resources\EventFullResource;
 use App\Http\Resources\EventResource;
+use App\Http\Resources\EventTeamResource;
 use App\Http\Resources\FileResource;
 use App\Models\Event;
 use App\Models\EventAnswer;
 use App\Models\EventPrizes;
+use App\Models\EventResult;
 use App\Models\EventStatus;
 use App\Models\EventTags;
 use App\Models\EventTeams;
 use App\Models\File;
+use App\Models\NotificationEvents;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\File as RulesFile;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -60,7 +64,6 @@ class EventController extends Controller
 
     public function createEvent(CreateEventRequest $request)
     {
-
         $validated = $request->validated();
         $imageFile = $request->file('image');
         $taskFile = $request->file('task');
@@ -74,13 +77,10 @@ class EventController extends Controller
         $validated['image_id'] = $imageCreated->id;
         $validated['task_id'] = $taskCreated->id;
 
-
         $event = Event::create($validated);
 
         $tags = EventTags::insertTags($event->id, $validated['tags']);
         $prizes = EventPrizes::insertPrizes($event->id, $validated['prizes']);
-
-
 
         return response()->json(['message' => 'Соревнование успешно создано', 'data' => [
             'id' => $event->id
@@ -302,7 +302,7 @@ class EventController extends Controller
             ->with('tags', function ($query) {
                 $query->select(['tags.id', 'tags.title']);
             })
-            ->whereIn('status_id', [EventStatus::getByTitle('Завершено')->id]);
+            ->whereIn('status_id', [EventStatus::getByTitle('Завершено')->id, EventStatus::getByTitle('Итоги')->id]);
         if ($user->isOrganizer()) {
             $events = $events->where('creator_id', $user->id);
         } else {
@@ -310,7 +310,7 @@ class EventController extends Controller
                 $query->where('user_id', $user->id);
             });
         }
-        $events = $events->allowedSorts(['updated_at', 'title', 'date_registration', 'date_start'])
+        $events = $events->allowedSorts(['updated_at', 'title', 'date_end'])
             ->allowedFilters([
                 'title',
                 AllowedFilter::custom('tags', new \App\Filters\TagsFilter()),
@@ -318,5 +318,84 @@ class EventController extends Controller
             ],)
             ->paginate($request->get('perPage', 10));
         return response()->json($events);
+    }
+
+    public function getEventAnswers(Request $request, $id)
+    {
+        $answers = QueryBuilder::for(EventAnswer::class)
+            ->where('event_id', $id)
+            ->select(['id', 'event_id', 'answer_id', 'team_id'])
+            ->with('answer', function ($query) {
+                $query->select(['id', 'name', 'path']);
+            })
+            ->with('team', function ($query) {
+                $query->select(['id', 'title', 'leader_id']);
+
+                $query->with('leader', function ($query) {
+                    $query->select(['id', 'avatar_id']);
+                    $query->with('avatar', function ($query) {
+                        $query->select(['id', 'path', 'name']);
+                    });
+                });
+            })
+            // ->allowedFilters(['title'])
+            ->defaultSort('-updated_at')
+            ->allowedSorts(['updated_at'])
+
+            ->paginate($request->get('perPage', 10));;
+        return response()->json($answers);
+    }
+
+    public function getEventTeams(Request $request, $id)
+    {
+        $event = Event::where(['status_id' => EventStatus::getByTitle('Завершено')->id])->where(['creator_id' => $request->user()->id])->findOrFail($id);
+        $teams = EventTeams::where('event_id', $id)->distinct('team_id')->get();
+        return response()->json([
+            'data' => EventTeamResource::collection($teams),
+        ]);
+    }
+
+    public function setEventWinners(Request $request, $id)
+    {
+        $validated = $request->validate(
+            [
+                'firstPlace' => 'required|exists:teams,id|different:secondPlace,thirdPlace',
+                'secondPlace' => 'required|exists:teams,id|different:firstPlace,thirdPlace',
+                'thirdPlace' => 'required|exists:teams,id|different:firstPlace,secondPlace',
+            ],
+            [
+                'firstPlace.different' => 'Первое место не может быть одинаковым с третьим и вторым местом',
+                'secondPlace.different' => 'Второе место не может быть одинаковым с первым и третьим местом',
+                'thirdPlace.different' => 'Третье место не может быть одинаковым с первым и вторым местом',
+            ]
+        );
+        $event = Event::where('status_id', '=', EventStatus::getByTitle('Завершено')->id)->where(['creator_id' => $request->user()->id])->findOrFail($id);
+
+        EventResult::insert([
+            [
+                'event_id' => $event->id,
+                'team_name' => Team::find($validated['firstPlace'])->title,
+                'place' => 1
+            ],
+            [
+                'event_id' => $event->id,
+                'team_name' => Team::find($validated['secondPlace'])->title,
+                'place' => 2
+            ],
+            [
+                'event_id' => $event->id,
+                'team_name' => Team::find($validated['thirdPlace'])->title,
+                'place' => 3
+            ],
+        ]);
+        $event->status_id = EventStatus::getByTitle('Итоги')->id;
+        $event->participants->each(function ($participant) use ($event) {
+            NotificationEvents::insertNotification($participant->user_id, $event->id, 'results');
+        });
+        $event->save();
+
+        return response()->json([
+            'message' => 'Итоги добавлены',
+        ]);
     }
 }

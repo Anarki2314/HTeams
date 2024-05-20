@@ -2,7 +2,7 @@
     <div class="container-team-member d-flex align-items-center">
         <div class="container-member-image">
             <img
-                src="https://via.placeholder.com/60"
+                :src="member.avatar?.path"
                 alt=""
                 class="member-image"
             />

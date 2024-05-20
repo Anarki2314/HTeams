@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\NotificationInvitesResource;
+use App\Models\NotificationEvents;
 use App\Models\NotificationInvites;
 use Illuminate\Http\Request;
 
@@ -26,5 +27,13 @@ class NotificationsController extends Controller
             'data' => $responseData,
             'count' => $count
         ], 200);
+    }
+
+    public function deleteNotification(Request $request, $id)
+    {
+        $user = $request->user();
+        $notification = NotificationEvents::where('user_id', $user->id)->findOrFail($id);
+        $notification->delete();
+        return response()->json(['message' => 'Уведомление удалено'], 200);
     }
 }

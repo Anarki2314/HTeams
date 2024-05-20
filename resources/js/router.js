@@ -16,6 +16,8 @@ import FinishedEvents from "@/pages/profile/FinishedEvents.vue";
 
 import ModerationEvents from "@/pages/events/ModerationEvents.vue";
 import ModerationEvent from "@/pages/events/OnModerationEvent.vue";
+import ModerationEventAnswers from "@/pages/events/Answers.vue";
+import ModerationEventWinners from "@/pages/events/Winners.vue";
 import CreateEvent from "@/pages/events/CreateEvent.vue";
 import EditEvent from "@/pages/events/EditEvent.vue";
 // Team view pages
@@ -170,6 +172,24 @@ const routes = [
         path: "/profile/moderating-events/:eventId",
         name: "moderating-event",
         component: ModerationEvent,
+        meta: {
+            requiresAuth: true,
+            role: "Организатор",
+        },
+    },
+    {
+        path: "/profile/moderating-events/:eventId/answers",
+        name: "moderating-event-answers",
+        component: ModerationEventAnswers,
+        meta: {
+            requiresAuth: true,
+            role: "Организатор",
+        },
+    },
+    {
+        path: "/profile/moderating-events/:eventId/winners",
+        name: "moderating-event-winners",
+        component: ModerationEventWinners,
         meta: {
             requiresAuth: true,
             role: "Организатор",

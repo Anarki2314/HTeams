@@ -1,5 +1,5 @@
 <template>
-    <div class="team-row-card row-card justify-content-sm-between" v-if="hasRequiredProps">
+    <div class="team-row-card row-card justify-content-sm-between">
         <router-link :to="'/_admin/teams/' + team.id" class="container-team-name row-card-container-name">
             <div class="container-team-image row-card-container-image">
                 <img :src="team.image" alt="" class="team-image row-card-image">
@@ -24,12 +24,6 @@ export default {
         }
     },
 
-    computed: {
-        hasRequiredProps() {
-            const { id, name, image } = this.team
-            return id && name && image;
-        }
-    }
 }
 </script>
 

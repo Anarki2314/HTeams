@@ -23,8 +23,14 @@ class TeamController extends Controller
 
         $teams = QueryBuilder::for(Team::class)
             ->defaultSort('-id')
-            ->select('id', 'title')
+            ->select('id', 'title', 'leader_id')
             ->withCount('members')
+            ->with('leader', function ($query) {
+                $query->select(['id', 'avatar_id']);
+                $query->with('avatar', function ($query) {
+                    $query->select(['id', 'path', 'name']);
+                });
+            })
             ->allowedFilters(['title', AllowedFilter::custom('isFull', new \App\Filters\IsFullFilter())->nullable()])
 
 

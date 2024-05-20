@@ -40,7 +40,7 @@
                     <div class="container-empty-page row-card" v-if="!events.length">
                         <div class="empty-page" >Ничего не найдено</div>
                     </div>
-                    <event-card v-for="event, index in events" :key="index" :event="event" :url="urlEvent" />
+                    <event-card v-for="event, index in events" :key="index" :event="event" :url="(isUser) ? '/events/' : '/profile/moderating-events/'" />
 
                     <button class="container-pagination row-card d-flex justify-content-center" @click="loadNextPage"
                         v-if="nextPage">
@@ -78,7 +78,6 @@ export default {
     },
     data() {
         return {
-            urlEvent: (this.isUser) ? '/events/' : '/profile/moderating-events/',
             contentLoading: true,
             pageLoading: false,
             
@@ -108,6 +107,27 @@ export default {
                         {label: 'От старых к новым', value: 'updated_at'},
                     ]
                 },
+                {
+                    label: 'По времени начала',
+                    items: [
+                        {label: 'От поздних к ранним', value: '-date_start'},
+                        {label: 'От ранних к поздним', value: 'date_start'},
+                    ]
+                },
+                {
+                    label: 'По времени регистрации',
+                    items: [
+                        {label: 'От поздних к ранним', value: '-date_registration'},
+                        {label: 'От ранних к поздним', value: 'date_registration'},
+                    ]
+                },
+                {
+                    label: 'По названию',
+                    items: [
+                        {label: 'От А к Я', value: 'title'},
+                        {label: 'От Я к А', value: '-title'},
+                    ]
+                }
             ],
 
 

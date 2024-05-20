@@ -19,6 +19,12 @@ class TeamResource extends JsonResource
             'title' => $this->title,
             'inviteCode' => $this->invite_code,
             'members' => TeamMembersResource::collection($this->members),
+            'leader' => [
+                'avatar' => ($this->leader->avatar) ? new FileResource($this->leader->avatar) : [
+                    'path' => '/assets/img/avatar.jpg',
+                    'name' => 'avatar.jpg'
+                ],
+            ]
         ];
     }
 }

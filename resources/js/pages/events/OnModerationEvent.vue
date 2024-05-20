@@ -22,7 +22,7 @@
             <div class="container-event">
                 <div class="container-back">
                         <a @click="$router.go(-1)" class="router-link-underline">Назад</a>
-                    </div>
+                </div>
                 <div
                     class="container-event-main d-flex justify-content-center justify-content-md-start flex-wrap"
                 >
@@ -55,9 +55,11 @@
                                 #{{ tag.title }}
                             </span>
                         </div>
-                        <div class="container-event-buttons d-flex flex-wrap" v-if="event.status === 'На проверке'">
-                            <router-link :to="'/profile/edit-event/' + event.id" class="button-view main-button">Редактировать</router-link>
-                            <button class="button-view secondary-button" @click="openModal('modal-cancel-event')">Отменить</button>
+                        <div class="container-event-buttons d-flex flex-wrap" >
+                            <router-link :to="'/profile/edit-event/' + event.id" class="button-view main-button" v-if="event.status === 'На проверке' || event.status === 'Новое'">Редактировать</router-link>
+                            <button class="button-view secondary-button" @click="openModal('modal-cancel-event')" v-if="event.status === 'На проверке' || event.status === 'Новое' || event.status === 'Регистрация'">Отменить</button>
+                            <router-link :to="'/profile/moderating-events/' + event.id + '/answers'" class="button-view main-button" v-if="event.status === 'Завершено'">Посмотреть ответы</router-link>
+                            <router-link :to="'/profile/moderating-events/' + event.id + '/winners'" class="button-view main-button" v-if="event.status === 'Завершено'">Выбрать победителя</router-link>
                         </div>
                     </div>
                 </div>
@@ -65,12 +67,42 @@
         </div>
     </section>
 
+    
     <section class="event-info-section" id="info">
         <div class="container-block">
             <div
                 class="container-about d-flex align-items-center justify-content-center flex-wrap"
             >
-                <div class="container-info">
+            <div class="container-info" id="winners" v-if='event.winners?.length && event.status == "Итоги"'>
+                    <h3 class="block-title text-center">Победители</h3>
+
+                    <div
+                        class="container-info-items d-flex flex-column align-items-center justify-content-center"
+                    >
+                    <div
+                            class="container-info-item"
+                            v-for="(winner, index) in event.winners"
+                            :key="winner.id"
+                        >
+                            <div class="info-item-text">
+                                {{ winner.place }}-е место
+                            </div>
+                            <div
+                                class="info-item"
+                                :class="
+                                    index === 0
+                                        ? 'info-first'
+                                        : index === 1
+                                        ? 'info-second'
+                                        : 'info-third'
+                                "
+                            >
+                                {{ winner.team }} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-info" v-if="event.status != 'Итоги'">
                     <h3 class="block-title text-center">Даты проведения</h3>
 
                     <div

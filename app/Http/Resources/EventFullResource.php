@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\EventStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,6 +29,9 @@ class EventFullResource extends JsonResource
             'status' => $this->status->title,
             'creator' => $this->creator->orgName,
         ];
+        if ($this->status_id == EventStatus::getByTitle('Итоги')->id) {
+            $data['winners'] = EventResultResource::collection($this->results);
+        }
         return $data;
     }
 }
