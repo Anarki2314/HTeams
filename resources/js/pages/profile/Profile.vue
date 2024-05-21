@@ -22,7 +22,7 @@
                             <div class="container-profile-item" v-if="user.isOrganizer">Организация: <span class="profile-info-text">{{ user.orgName }}</span></div>
 
                             <div class="container-profile-item">Телефон: <span class="profile-info-text">{{ user.phone }}</span></div>
-                            <div class="container-profile-item">Дата регистрации: <span class="profile-info-text">{{ user.createdAt }}</span></div>
+                            <div class="container-profile-item">Дата регистрации: <span class="profile-info-text">{{ user.created_at }}</span></div>
                             <div class="container-profile-item"><span class="info-button" @click="openModal('modal-change-password')">Сменить пароль</span></div>
                             <div class="container-profile-item"><span class="info-button" @click="openModal('modal-delete-profile')">Удалить аккаунт</span></div>
                         </div>
@@ -34,10 +34,10 @@
                             <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/moderating-events" class="profile-info-text info-button">На проверке</router-link></div>
                             <div class="container-profile-item"><router-link to="/profile/upcoming" class="profile-info-text info-button">Предстоящие</router-link></div>
                             <div class="container-profile-item"><router-link to="/profile/finished" class="profile-info-text info-button">Завершенные</router-link></div>
-                            <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
-                            <div class="container-profile-item" v-if="!user.isOrganizer && !user.haveTeam"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer && !haveTeam"><span class="info-button" @click="openModal('modal-create-team')">Создать команду</span></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer && !haveTeam"><span class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span></div>
                             <div class="container-profile-item" v-if="user.isOrganizer"><router-link to="/profile/create-event" class="info-button">Создать соревнование</router-link></div>
-                            <div class="container-profile-item" v-if="!user.isOrganizer && user.haveTeam"><router-link to="/profile/team" class="info-button">Ваша команда</router-link></div>
+                            <div class="container-profile-item" v-if="!user.isOrganizer && haveTeam"><router-link to="/profile/team" class="info-button">Ваша команда</router-link></div>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                 <div class="modal-content">
                     <form @submit.prevent="joinTeam">
                     <div class="modal-container-input">
-                        <input type="text" placeholder="Код команды" required class="modal-input" v-model="inviteCode"/>
+                        <input type="text" placeholder="Код команды" v-mask="'XXXXXXXXXX'" required class="modal-input" v-model="inviteCode"/>
                     </div>
                     <div class="modal-container-buttons">
                         <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
@@ -86,13 +86,13 @@
                 <div class="modal-content">
                     <form @submit.prevent="changePassword">
                     <div class="modal-container-input">
-                        <input type="text" placeholder="Старый пароль" required class="modal-input" v-model="changePsw.old_password"/>
+                        <input type="password" placeholder="Старый пароль" required class="modal-input" v-model="changePsw.old_password"/>
                     </div>
                     <div class="modal-container-input">
-                        <input type="text" placeholder="Новый пароль" required class="modal-input" v-model="changePsw.new_password"/>
+                        <input type="password" placeholder="Новый пароль" required class="modal-input" v-model="changePsw.new_password"/>
                     </div>
                     <div class="modal-container-input">
-                        <input type="text" placeholder="Повтор пароля" required class="modal-input" v-model="changePsw.new_password_confirmation"/>
+                        <input type="password" placeholder="Повтор пароля" required class="modal-input" v-model="changePsw.new_password_confirmation"/>
                     </div>
                     <div class="modal-container-buttons">
                         <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
@@ -152,6 +152,7 @@ import api from '../../api.js';
 import {push} from 'notivue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, sameAs, minLength, helpers } from '@vuelidate/validators'
+import {mask} from 'vue-the-mask'
 export default {
     components: {
         HeaderView,
@@ -164,6 +165,8 @@ export default {
             v$: useVuelidate()
         }
     },
+    directives: { mask },
+
     data() {
         return {
 
@@ -180,6 +183,11 @@ export default {
                 new_password: '',
                 new_password_confirmation: ''
             }
+        }
+    },
+    computed: {
+        haveTeam() {
+            return this.$store.getters.haveTeam;
         }
     },
     methods: {

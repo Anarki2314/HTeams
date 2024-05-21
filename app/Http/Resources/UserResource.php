@@ -17,7 +17,7 @@ class UserResource extends JsonResource
         $data = [
             'email' => $this->email,
             'phone' => $this->phone,
-            'createdAt' => $this->created_at,
+            'created_at' => $this->created_at,
             'role' => $this->role->title,
             'avatar' => ($this->avatar) ? new FileResource($this->avatar) : [
                 'path' => '/assets/img/avatar.jpg',

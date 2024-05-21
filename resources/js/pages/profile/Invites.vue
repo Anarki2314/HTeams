@@ -7,20 +7,16 @@
                 <div class="container-back">
                         <a @click="$router.go(-1)" class="router-link-underline">Назад</a>
                     </div>  
-                <div class="form-search mb-3 text-end ">
-                    <div class="container-search">
-                        <input type="text" class="form-input" name="search" id="search" placeholder="Поиск" v-model="search">
-                        <button class="search-btn"> <img :src="'/assets/img/search.svg'" alt=""> </button>
-                    </div>
-                </div>
                 <div class="container-invites-title d-flex align-items-center justify-content-between">
                     <h3 class="block-title text-center text-lg-start">Приглашения</h3>
                 </div>
                 <div class="container-sort"></div>
                 <div class="container-invites-items d-flex flex-column flex-wrap">
-
+                    <div class="container-empty-page row-card" v-if="!invites.length">
+                        <div class="empty-page">Ничего не найдено</div>
+                    </div>
                     <invite-card v-for="invite, index in invites" :key="index" :invite="invite" @sendChoice="sendChoice"/>
-
+                    <loading-screen v-if="contentLoading"/>
                 </div>
             </div>
         </div>
@@ -37,6 +33,7 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 
 import api from '../../api.js';
 import {push} from 'notivue';
+import SearchForm from '../../components/SearchForm.vue';
 export default {
     components: {
         HeaderView,
@@ -47,7 +44,6 @@ export default {
     },
     data() {
         return {
-            search: '',
             invites: [  
             ],
             contentLoading: true

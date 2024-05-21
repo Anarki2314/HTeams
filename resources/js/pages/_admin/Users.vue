@@ -6,30 +6,31 @@
     
     <section class="users-section admin-section">
         <div class="container-block">
-            <div class="container-request admin-container">
+            <div class="container-users admin-container">
 
-                <div class="form-search mb-3 text-end ">
-                    <div class="container-search">
-                        <input type="text" class="form-input" name="search" id="search" placeholder="Поиск" v-model="search">
-                        <button class="search-btn"> <img :src="'/assets/img/search.svg'" alt=""> </button>
-                    </div>
-                </div>
-
+                <SearchForm @search="getUsers" v-model="query['filter[email]']" />
                 <div class="container-users-title d-flex align-items-center justify-content-between">
-                    <h3 class="block-title text-center text-lg-start">Пользователи </h3>
-                    <div class="container-filters">
-                        <button class="filters-btn info-button">Фильтры</button>
-                    </div>
+                    <h3 class="block-title text-center text-lg-start">
+                        Пользователи
+                    </h3>
+                    
                 </div>
-
-                <div class="container-sort"></div>
-                <div class="container-admin-items d-flex flex-column flex-wrap">
-
-                    <user-card v-for="user, index in users" :key="index" :user="user"/>
-
+                <sorting v-model="query['sort']" :sortList="sortList" @update:modelValue="getUsers" />
+                <div
+                    class="container-users-items d-flex flex-column">
+                    <loading-screen v-if="contentLoading" />
+                    <div class="container-empty-page row-card" v-if="!users.length">
+                        <div class="empty-page">Ничего не найдено</div>
+                    </div>
+                    <user-card v-for="(user, index) in users" :key="index" :user="user" url="/_admin/users/" />
+                    <button class="container-pagination row-card d-flex justify-content-center" @click="loadNextPage"
+                        v-if="nextPage">
+                        <span class="pagination-btn" v-if="!pageLoading">Показать еще</span>
+                        <img :src="'/assets/img/loading.svg'" alt="" v-if="pageLoading" class="pagination-loading" />
+                    </button>
                 </div>
             </div>
-        </div>
+            </div>
     </section>
 
     <footer-view/>
@@ -40,26 +41,112 @@ import HeaderView from '@/components/HeaderView.vue';
 import AdminNav from '../../components/_admin/AdminNav.vue';
 import UserCard from '../../components/_admin/UserCard.vue';
 import FooterView from '@/components/FooterView.vue';
+import LoadingScreen from '../../components/LoadingScreen.vue';
+import SearchForm from '../../components/SearchForm.vue';
+import Sorting from '../../components/Sorting.vue';
+import api from '../../api.js';
 
 export default {
     components: {
         HeaderView,
         AdminNav,
         UserCard,
-        FooterView
+        FooterView,
+        LoadingScreen,
+        SearchForm,
+        Sorting
     },
 
     data() {
         return {
-            users: [
+            contentLoading: true,
+            pageLoading: false,
+
+            query: {
+                "filter[email]": "",
+                role: 'Пользователь',
+                sort: "-created_at",
+                perPage: 10,
+                ...this.$route.query,
+            },
+            page: 1,
+            nextPage: null,
+
+            users: [],
+
+
+            sortList: [
                 {
-                    id: 1,
-                    email: 'XfUeh@example.com',
-                    image: 'https://via.placeholder.com/80',
-                }
+                    label: "По времени регистрации",
+                    items: [
+                        { label: "От новых к старым", value: "-created_at" },
+                        { label: "От старых к новым", value: "created_at" },
+                    ],
+                },
+                {
+                    label: "По почте",
+                    items: [
+                        { label: "От A к Z", value: "email" },
+                        { label: "От Z к A", value: "-email" },
+                    ],
+                },
             ],
-            search: ''
-        }
+
+            showModal: false,
+            activeModal: "",
+        };
+    },
+
+    methods: {
+        async getUsers() {
+            this.contentLoading = true;
+            try {
+                const response = await api.get(
+                    "/admin/users?page=" +
+                    this.page +
+                    "&" +
+                    new URLSearchParams(this.query).toString()
+                );
+                this.users = response.data.data;
+                this.nextPage = response.data.next_page_url
+                    ? response.data.next_page_url.split("page=")[1]
+                    : null;
+                this.$router.push({
+                    query: {
+                        sort: this.query["sort"],
+                        "filter[email]": this.query["filter[email]"],
+                    },
+                });
+            } catch (error) {
+            } finally {
+                this.contentLoading = false;
+            }
+        },
+
+        async loadNextPage() {
+            this.pageLoading = true;
+            try {
+                const response = await api.get(
+                    "/admin/users?page=" +
+                    this.nextPage +
+                    "&" +
+                    new URLSearchParams(this.query).toString()
+                );
+                this.nextPage = response.data.next_page_url
+                    ? response.data.next_page_url.split("page=")[1]
+                    : null;
+                this.users = [...this.users, ...response.data.data];
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.pageLoading = false;
+            }
+        },
+
+    },
+
+    created() {
+        this.getUsers();
     },
 }
 </script>

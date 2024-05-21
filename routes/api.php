@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\UserController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -101,6 +102,7 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
     Route::delete('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
 
     Route::delete('/team', [ProfileController::class, 'deleteTeam'])->middleware('ability:Пользователь');
+    Route::delete('/team/{id}/kick', [TeamController::class, 'kickMember'])->middleware('ability:Пользователь')->where(['id' => '[0-9]+']);
 });
 
 
@@ -122,4 +124,6 @@ Route::get('/near', [EventController::class, 'getNearEvents']);
 Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ'])->group(function () {
 
     Route::apiResource('/tags', TagController::class, ['only' => ['index', 'store', 'update', 'destroy']])->where(['id' => '[0-9]+']);
+
+    Route::apiResource('/users', UserController::class, ['only' => ['index', 'show']])->where(['id' => '[0-9]+']);
 });

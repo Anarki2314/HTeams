@@ -113,4 +113,20 @@ class TeamController extends Controller
 
         return response()->json(['message' => 'Приглашение отправлено'], 201);
     }
+
+    public function kickMember(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!$user->isLeader()) {
+            return response()->json(['message' => 'Выгнать участника может только лидер команды']);
+        }
+
+        $member = TeamMembers::where('team_id', $user->team->id)->where('user_id', $id)->first();
+        if (!$member) {
+            return response()->json(['message' => 'Участник не найден']);
+        }
+        $member->delete();
+
+        return response()->json(['message' => 'Участник выгнан']);
+    }
 }

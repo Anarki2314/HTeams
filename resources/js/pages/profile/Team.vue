@@ -17,7 +17,7 @@
                     <div class="container-team-content mb-5 d-flex justify-content-center justify-content-lg-between flex-wrap">
     
                         <div class="container-team-image d-flex flex-column">
-                            <img :src="team.leader.avatar?.path" alt="">
+                            <img :src="team.leader?.avatar.path" alt="">
     
                         </div>
                         
@@ -25,7 +25,7 @@
                             <h4 class="team-subtitle text-center text-md-start">Участники:</h4>
                             <div class="container-team-members d-flex justify-content-start justify-content-lg-between flex-wrap flex-column">
 
-                                <team-member-card v-for="member in team.members" :key="member.id" :member="member" :type="(isLeader && !member.isLeader) ? 'profile' : ''" @openModal="openModal"/>
+                                <team-member-card v-for="member in team.members" :key="member.id" :member="member" :type="(isLeader && !member.isLeader) ? 'profile' : ''" @openModal="openModal" @setActiveMember="setActiveMember"/>
 
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                     </form>
                 </div>
         </modal>
-        <modal v-if="showModal && activeModal === 'modal-kick-member'" modalId="modal-kick-member" @close="closeModal">
+        <modal v-if="showModal && activeModal === 'modal-kick-member'" modalId="modal-kick-member" @close="closeModal" >
                 <h2 class="modal-title">Вы уверены, что хотите выгнать этого пользователя?</h2>
                 <div class="modal-content">
                     <form @submit.prevent="kickMember">
@@ -144,7 +144,7 @@
 
                 showModal: false,
                 activeModal: '',
-
+                activeMember : null,
                 email: '',
 
                 isLoading: false,
@@ -174,6 +174,10 @@
             closeModal() {
                 this.showModal = false;
                 this.activeModal = '';
+            },
+
+            setActiveMember(memberId) {
+                this.activeMember = memberId;
             },
 
             async inviteFromTeam() {
@@ -216,15 +220,30 @@
                 } finally {
                     this.isLoading = false;
                 }
+            },
+
+            async kickMember() {
+                this.isLoading = true;
+                try {
+                    const response = await api.delete('/profile/team/' + this.activeMember + '/kick');
+                    this.closeModal();
+                    this.activeMember = null;
+                    push.success(response.data.message);
+                    this.getTeam();
+                } catch (error) {
+                    push.error(error.data.message);
+                } finally {
+                    this.isLoading = false;
+                }
             }
         },
-        async created() {
+        created() {
             if (!this.$store.getters.haveTeam){
                 push.info('Вы не состоите в команде');
                 this.$router.push('/profile/')
             }
 
-            await this.getTeam();
+            this.getTeam();
         },
         computed: {
             isTeamFull() {

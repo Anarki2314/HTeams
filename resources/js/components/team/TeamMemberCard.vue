@@ -7,10 +7,14 @@
                 class="member-image"
             />
         </div>
-        <div class="member-name d-flex align-items-center">{{ member.surname }} {{ member.name }}
+        <div class="member-name d-flex align-items-center" v-if="type != 'admin'">{{ member.surname }} {{ member.name }}
         <img :src="'/assets/img/leader-mark.png'" alt="" v-if ="member.isLeader" class="leader-mark">
-        <span class="kick-btn" v-if="type == 'profile'" @click="$emit('openModal', 'modal-kick-member')">+</span>
+        <span class="kick-btn" v-if="type == 'profile'" @click="$emit('openModal', 'modal-kick-member');$emit('setActiveMember', member.id)">+</span>
         </div>
+        <router-link :to="'/_admin/users/' + member.id" class="member-name d-flex align-items-center" v-if="type == 'admin'">{{ member.surname }} {{ member.name }}
+        <img :src="'/assets/img/leader-mark.png'" alt="" v-if ="member.isLeader" class="leader-mark">
+        <span class="kick-btn" v-if="type == 'profile'" @click="$emit('openModal', 'modal-kick-member');$emit('setActiveMember', member.id)">+</span>
+        </router-link>
     </div>
 </template>
 
