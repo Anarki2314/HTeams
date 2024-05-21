@@ -11,7 +11,7 @@
                     <div class="container-profile-image d-flex flex-column">
                         <img :src="user.avatar?.path" alt="" class="profile-image">
 
-                        <div class="profile-image-text">Изменить фото</div>
+                        <div class="profile-image-text" @click="openModal('modal-generate-avatar')">Сгенерировать фото</div>
                     </div>
                     
                     <div class="container-profile-about">
@@ -23,7 +23,7 @@
 
                             <div class="container-profile-item">Телефон: <span class="profile-info-text">{{ user.phone }}</span></div>
                             <div class="container-profile-item">Дата регистрации: <span class="profile-info-text">{{ user.createdAt }}</span></div>
-                            <div class="container-profile-item"><span class="info-button">Сменить пароль</span></div>
+                            <div class="container-profile-item"><span class="info-button" @click="openModal('modal-change-password')">Сменить пароль</span></div>
                             <div class="container-profile-item"><span class="info-button" @click="openModal('modal-delete-profile')">Удалить аккаунт</span></div>
                         </div>
                     </div>
@@ -81,6 +81,32 @@
                     </form>
                 </div>
         </modal>
+        <modal v-if="showModal && activeModal === 'modal-change-password'" modalId="modal-change-password" @close="closeModal">
+                <h2 class="modal-title">Смена пароля</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="changePassword">
+                    <div class="modal-container-input">
+                        <input type="text" placeholder="Старый пароль" required class="modal-input" v-model="changePsw.old_password"/>
+                    </div>
+                    <div class="modal-container-input">
+                        <input type="text" placeholder="Новый пароль" required class="modal-input" v-model="changePsw.new_password"/>
+                    </div>
+                    <div class="modal-container-input">
+                        <input type="text" placeholder="Повтор пароля" required class="modal-input" v-model="changePsw.new_password_confirmation"/>
+                    </div>
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading">Изменить</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+
+
+                    </div>
+                    </form>
+                </div>
+        </modal>
         <modal v-if="showModal && activeModal === 'modal-delete-profile'" modalId="modal-delete-profile" @close="closeModal">
                 <h2 class="modal-title">Вы уверены, что хотите удалить свой аккаунт?</h2>
                 <div class="modal-content">
@@ -98,6 +124,23 @@
                     </form>
                 </div>
         </modal>
+        <modal v-if="showModal && activeModal === 'modal-generate-avatar'" modalId="modal-generate-avatar" @close="closeModal">
+                <h2 class="modal-title">Сгенерировать новую фотографию?</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="generateNewAvatar">
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading">Сгенерировать</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+
+
+                    </div>
+                    </form>
+                </div>
+        </modal>
     </section>
 </template>
 
@@ -107,11 +150,19 @@ import Modal from '@/components/Modal.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import api from '../../api.js';
 import {push} from 'notivue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, sameAs, minLength, helpers } from '@vuelidate/validators'
 export default {
     components: {
         HeaderView,
         Modal,
         LoadingScreen
+    },
+
+    setup() {
+        return {
+            v$: useVuelidate()
+        }
     },
     data() {
         return {
@@ -123,6 +174,12 @@ export default {
             inviteCode: '',
             isLoading: false,
             contentLoading: true,
+
+            changePsw:{
+                old_password: '',
+                new_password: '',
+                new_password_confirmation: ''
+            }
         }
     },
     methods: {
@@ -154,7 +211,7 @@ export default {
         async joinTeam() {
             this.isLoading = true;
             try {
-                const response = await api.post('/profile/join-team', {invite_code: this.inviteCode});
+                const response = await api.post('/profile/join-team', {invite_code: this.inviteCode.toUpperCase()});
                 this.closeModal();
                 push.success(response.data.message);
             } catch (error) {
@@ -189,6 +246,62 @@ export default {
                 push.error(error.data.message);
             } finally {
                 this.isLoading = false;
+            }
+        },
+
+        async generateNewAvatar() {
+            this.isLoading = true;
+            try {
+                const response = await api.post('/profile/generate-avatar');
+                this.user.avatar = response.data.data;
+                push.success(response.data.message);
+                
+                this.closeModal();
+            } catch (error) {
+                push.error(error.data.message);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async changePassword() {
+            const isFormCorrect = await this.v$.$validate();
+            if (!isFormCorrect) {
+                this.v$.$errors.forEach(error => {
+                    push.error(error.$message);
+                });
+                return
+            }
+            this.isLoading = true;
+            try {
+                
+                const response = await api.post('/profile/change-password', this.changePsw);
+                push.success(response.data.message);
+                this.closeModal();
+            } catch (error) {
+                push.error(error.data.message);
+            } finally {
+                this.isLoading = false;
+            }
+        }
+    },
+
+    validations() {
+        return {
+            changePsw: {
+                old_password: {
+                required: helpers.withMessage('Поле `Текущий пароль` обязательно.', required),
+            },
+
+            new_password: {
+                required: helpers.withMessage('Поле `Новый пароль` обязательно.', required),
+                regex: helpers.withMessage('Поле `Новый пароль` должен содержать буквы в верхнем и нижнем регистре, цифры.', helpers.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)./)),
+                minLength: helpers.withMessage('Поле `Новый пароль` должен содержать не менее 8 символов.', minLength(8))
+            },
+            new_password_confirmation: {
+                 required: helpers.withMessage('Поле `Повтор пароля` обязательно.', required),
+                 sameAs: helpers.withMessage('Поле `Повтор пароля` должно совпадать с полем `Новый пароль`.', sameAs(this.changePsw.new_password))
+            },
             }
         }
     },

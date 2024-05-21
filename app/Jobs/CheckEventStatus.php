@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Event;
 use App\Models\EventStatus;
+use App\Models\EventTeams;
 use App\Models\NotificationEvents;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,18 +42,42 @@ class CheckEventStatus implements ShouldQueue
             switch ($event->status_id) {
                 case $statusesId['New']:
                     if ($event->date_registration < now('Europe/Moscow')) {
+
                         $event->status_id = $statusesId['Registration'];
                         $event->save();
                     }
                     break;
                 case $statusesId['Registration']:
                     if ($event->date_start < now('Europe/Moscow')) {
+                        $count = EventTeams::where('event_id', 1)->distinct('team_id')->count();
+                        if ($count < 10) {
+                            $event->status_id = $statusesId['Cancelled'];
+                            $event->participants->each(function ($participant) use ($event) {
+                                NotificationEvents::insertNotification($participant->user_id, $event->id, 'cancelled', 'Недостаточно участников');
+                            });
+                            NotificationEvents::insertNotification($event->creator_id, $event->id, 'cancelled', 'Недостаточно участников');
+                            $event->save();
+
+
+                            break;
+                        }
+
                         $event->status_id = $statusesId['Started'];
+
+                        $count = EventTeams::where('event_id', 1)->distinct('team_id')->count();
+                        $event->participants->each(function ($participant) use ($event) {
+                            NotificationEvents::insertNotification($participant->user_id, $event->id, 'started');
+                        });
+                        NotificationEvents::insertNotification($event->creator_id, $event->id, 'started');
                         $event->save();
                     }
                     break;
                 case $statusesId['Started']:
                     if ($event->date_end < now('Europe/Moscow')) {
+                        $event->participants->each(function ($participant) use ($event) {
+                            NotificationEvents::insertNotification($participant->user_id, $event->id, 'finished');
+                        });
+                        NotificationEvents::insertNotification($event->creator_id, $event->id, 'finished');
                         $event->status_id = $statusesId['Finished'];
                         $event->save();
                     }

@@ -251,7 +251,7 @@ export default {
         async cancelEvent() {
             this.isLoading = true;
             try {
-                const response = await api.delete(`/events/${this.$route.params.eventId}/cancel`);
+                const response = await api.post(`/events/${this.$route.params.eventId}/cancel`);
                 push.success(response.data.message);
                 this.closeModal();
                 this.$router.push({ name: "moderating-events"    });

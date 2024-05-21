@@ -35,9 +35,9 @@
                 <div class="container-stats-content d-flex justify-content-center justify-content-lg-between align-items-center flex-wrap text-center text-lg-start">
 
                     <div class="container-stats-left">
-                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{300000}</span> <span class="stats-description">участников</span> </div>
-                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{123}</span> <span class="stats-description">команд</span> </div>
-                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{123}</span> <span class="stats-description">соревнований</span> </div>
+                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ users }}</span> <span class="stats-description">участников</span> </div>
+                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ teams }}</span> <span class="stats-description">команд</span> </div>
+                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ events }}</span> <span class="stats-description">соревнований</span> </div>
                     </div>
                     
                     <div class="container-stats-right d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap">
@@ -61,62 +61,29 @@
 
     <section class="events-section">
         <div class="container-block">
-            <div class="container-events-title d-flex justify-content-between align-items-end">
-                <h3 class="block-title text-center text-lg-start">Ближайшие соревнования</h3>
+            <div class="container-events-title d-flex justify-content-center justify-content-sm-between align-items-end flex-wrap">
+                <h3 class="block-title text-center text-lg-start mb-3">Ближайшие соревнования</h3>
                 <router-link to="/events" class="events-link info-button">Все соревнования</router-link>
             </div>
 
             <div class="container-events d-flex justify-content-center justify-content-lg-around align-items-center flex-wrap">
 
 
+                <div class="container-events-block" v-for="event in nearEvents" :key="event.id">
 
-                <router-link to="/events">
-                    <div class="container-events-block position-relative">
-                        <div class="container-event-img">
-                            <img :src="'/assets/img/main-test-event.png'" alt="">
+                    <router-link :to="'/events/' + event.id" >
+                        <div class="container-events-block position-relative">
+                            <div class="container-event-img">
+                                <img :src="event.image?.path" alt="">
+                            </div>
+                            <div class="container-event-content">
+                                <h4 class="event-title"> {{ event.title }}</h4>
+                                
+                            </div>
                         </div>
-                        <div class="container-event-content">
-                            <h4 class="event-title"> {Название соревнования}</h4>
-                            
-                        </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                </div>
 
-                <router-link to="/events">
-                    <div class="container-events-block position-relative">
-                        <div class="container-event-img">
-                            <img :src="'/assets/img/main-test-event.png'" alt="">
-                        </div>
-                        <div class="container-event-content">
-                            <h4 class="event-title"> {Название соревнования}</h4>
-                            
-                        </div>
-                    </div>
-                </router-link>
-
-                <router-link to="/events">
-                    <div class="container-events-block position-relative">
-                        <div class="container-event-img">
-                            <img :src="'/assets/img/main-test-event.png'" alt="">
-                        </div>
-                        <div class="container-event-content">
-                            <h4 class="event-title"> {Название соревнования}</h4>
-                            
-                        </div>
-                    </div>
-                </router-link>
-
-                <router-link to="/events">
-                    <div class="container-events-block position-relative">
-                        <div class="container-event-img">
-                            <img :src="'/assets/img/main-test-event.png'" alt="">
-                        </div>
-                        <div class="container-event-content">
-                            <h4 class="event-title"> {Название соревнования}</h4>
-                            
-                        </div>
-                    </div>
-                </router-link>
 
 
             </div>
@@ -128,11 +95,42 @@
 
 <script>
 import HeaderView from '@/components/HeaderView.vue';
-import FooterView from '@/components/FooterView.vue'
+import FooterView from '@/components/FooterView.vue';
+
+import api from '../api.js';
 export default {
     components: {
         HeaderView,
         FooterView
+    },
+
+    data() {
+        return {
+            users: 0,
+            teams: 0,
+            events: 0,
+
+            nearEvents:[]
+        }
+    },
+
+    methods: {
+        async getStats() {
+            const response = await api.get('/stats');
+            this.users = response.data.data.users;
+            this.teams = response.data.data.teams;
+            this.events = response.data.data.events;
+        },
+
+        async getNearEvents() {
+            const response = await api.get('/near');
+            this.nearEvents = response.data.data;
+        }
+    },
+
+    created() {
+        this.getStats();
+        this.getNearEvents();
     }
 }
 </script>
@@ -235,7 +233,10 @@ section{
 }
 .container-event-img img {
     border-radius: 10px;
-    max-width: 100%;
+
+    width: clamp( 280px , 95vw , 650px);
+    aspect-ratio: 1.8/1;
+    object-fit: cover;
     filter: brightness(0.5);
 }
 

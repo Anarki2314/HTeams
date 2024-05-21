@@ -82,6 +82,7 @@ class EventController extends Controller
         $tags = EventTags::insertTags($event->id, $validated['tags']);
         $prizes = EventPrizes::insertPrizes($event->id, $validated['prizes']);
 
+        NotificationEvents::insertNotification(1, $event->id, 'created');
         return response()->json(['message' => 'Соревнование успешно создано', 'data' => [
             'id' => $event->id
         ]], 201);
@@ -143,8 +144,16 @@ class EventController extends Controller
         $user = $request->user();
         if ($user->isAdmin()) {
             $event = Event::where(['status_id' => EventStatus::getByTitle('На проверке')->id])->findOrFail($id);
+            $message = $request->validate([
+                'message' => 'required|string|max:255',
+            ])['message'];
+            NotificationEvents::insertNotification($event->creator_id, $event->id, 'cancelled', $message);
         } else {
             $event = Event::where(['creator_id' => $user->id])->whereIn('status_id', [EventStatus::getByTitle('На проверке')->id, EventStatus::getByTitle('Новое')->id, EventStatus::getByTitle('Регистрация')->id])->findOrFail($id);
+            $message = 'По решению организатора';
+            $event->participants->each(function ($participant) use ($message, $event) {
+                NotificationEvents::insertNotification($participant->user_id, $event->id, 'cancelled', $message);
+            });
         }
         $event->status_id = EventStatus::getByTitle('Отменено')->id;
         $event->save();
@@ -396,6 +405,13 @@ class EventController extends Controller
 
         return response()->json([
             'message' => 'Итоги добавлены',
+        ]);
+    }
+    public function getNearEvents(Request $request)
+    {
+        $events = Event::whereIn('status_id', [EventStatus::getByTitle('Новое')->id, EventStatus::getByTitle('Регистрация')->id])->orderBy('date_start', 'asc')->limit(4)->get();
+        return response()->json([
+            'data' => EventResource::collection($events),
         ]);
     }
 }

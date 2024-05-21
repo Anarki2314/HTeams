@@ -9,6 +9,7 @@
         </div>
         <div class="member-name d-flex align-items-center">{{ member.surname }} {{ member.name }}
         <img :src="'/assets/img/leader-mark.png'" alt="" v-if ="member.isLeader" class="leader-mark">
+        <span class="kick-btn" v-if="type == 'profile'" @click="$emit('openModal', 'modal-kick-member')">+</span>
         </div>
     </div>
 </template>
@@ -20,6 +21,10 @@ export default {
         member:{
             type: Object,
             required: true
+        },
+        type:{
+            type: String,
+            default: 'team'
         }
     },
 }
@@ -43,5 +48,12 @@ export default {
 
     .leader-mark {
         width: clamp( 24px , 3vw , 30px);
+    }
+
+    .kick-btn {
+        transform: rotate(45deg);
+    font-size: 50px;
+    cursor: pointer;
+    user-select: none;
     }
 </style>

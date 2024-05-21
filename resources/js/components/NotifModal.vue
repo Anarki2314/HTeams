@@ -6,7 +6,7 @@
           <div class="close modal-close" @click="closeModal">+</div>
           <div class="modal-container-notif-content">
             <notif-invite @getNotifications="getNotifications" v-for="invite in notifications.invites" :key="invite" :invite="invite"/>
-
+            <notif-event @getNotifications="getNotifications" v-for="event in notifications.events" :key="event" :event="event" @closeModal="closeModal"/>
           </div>
 
       </div>
@@ -15,9 +15,11 @@
   
   <script>
   import NotifInvite from './notifications/NotifInvite.vue';
+  import NotifEvent from './notifications/NotifEvent.vue';
   export default {
     components: {
-      NotifInvite
+      NotifInvite,
+      NotifEvent
     },
     props: {
         notifications: Object,

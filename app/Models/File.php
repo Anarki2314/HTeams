@@ -35,7 +35,7 @@ class File extends Model
             $fileContents = file_get_contents($url);
             file_put_contents($path . $fileName, $fileContents);
             $file = File::create(['name' => $fileName, 'path' => '/assets/uploads/' . $fileName]);
-            return $file->id;
+            return $file;
         } catch (\Exception $exception) {
             return null;
         }

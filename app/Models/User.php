@@ -108,4 +108,23 @@ class User extends Authenticatable
     {
         return $this->belongsTo(File::class, 'avatar_id');
     }
+
+    public function generateAvatar()
+    {
+        $avatar = File::generateAvatar();
+        $this->attributes['avatar_id'] = $avatar->id;
+        $this->save();
+        return $avatar;
+    }
+
+    public function changePassword($oldPassword, $newPassword)
+    {
+        if (Hash::check($oldPassword, $this->password)) {
+            $this->password = $newPassword;
+            $this->save();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

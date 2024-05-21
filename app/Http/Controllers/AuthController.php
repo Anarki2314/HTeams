@@ -21,7 +21,7 @@ class AuthController extends Controller
 
 
         $validated = $request->validated();
-        $validated['avatar_id'] = File::generateAvatar();
+        $validated['avatar_id'] = File::generateAvatar()->id;
         $user = User::create($validated);
 
         $token = TokenService::generateToken($user);

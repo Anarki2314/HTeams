@@ -15,6 +15,7 @@ class NotificationInvitesResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = [
+
             'type' => $this->type,
         ];
 

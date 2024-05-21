@@ -55,10 +55,10 @@ Route::get('/events/{id}/teams', [EventController::class, 'getEventTeams'])->mid
 Route::post('/events/{id}/winners', [EventController::class, 'setEventWinners'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
 Route::post('/events/{id}/answer', [EventController::class, 'answerEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
 
-Route::delete('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
+Route::post('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
 Route::put('/events/{id}/approve', [EventController::class, 'approveEvent'])->middleware(['auth:sanctum', 'ability:Админ'])->where(['id' => '[0-9]+']);
 
-Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
+Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
 
 
 // Event routes
@@ -94,6 +94,10 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
 
     Route::get('/team/invites', [ProfileController::class, 'getTeamInvites'])->middleware('ability:Пользователь');
 
+    Route::post('/generate-avatar', [ProfileController::class, 'generateNewAvatar']);
+
+    Route::post('/change-password', [ProfileController::class, 'changePassword']);
+
     Route::delete('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
 
     Route::delete('/team', [ProfileController::class, 'deleteTeam'])->middleware('ability:Пользователь');
@@ -110,6 +114,9 @@ Route::get('/tags', [TagController::class, 'index']);
 
 Route::get('/statuses', [StatusController::class, 'index']);
 
+Route::get('/stats', [NotificationsController::class, 'getStatsInfo']);
+
+Route::get('/near', [EventController::class, 'getNearEvents']);
 // Admin routes
 
 Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ'])->group(function () {

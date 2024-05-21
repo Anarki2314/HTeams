@@ -106,7 +106,7 @@
   }
 
   .modal-input {
-    width: clamp(260px, 100%, 300px);
+    width: clamp(260px, 75%, 300px);
     height: 40px;
     outline: none;
     border: none;

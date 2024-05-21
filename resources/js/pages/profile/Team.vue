@@ -25,7 +25,7 @@
                             <h4 class="team-subtitle text-center text-md-start">Участники:</h4>
                             <div class="container-team-members d-flex justify-content-start justify-content-lg-between flex-wrap flex-column">
 
-                                <team-member-card v-for="member in team.members" :key="member.id" :member="member"/>
+                                <team-member-card v-for="member in team.members" :key="member.id" :member="member" :type="(isLeader && !member.isLeader) ? 'profile' : ''" @openModal="openModal"/>
 
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                     </form>
                 </div>
         </modal>
-            <modal v-if="showModal && activeModal === 'modal-leave-team'" modalId="modal-leave-team" @close="closeModal">
+        <modal v-if="showModal && activeModal === 'modal-leave-team'" modalId="modal-leave-team" @close="closeModal">
                 <h2 class="modal-title">Вы уверены, что хотите покинуть команду?</h2>
                 <div class="modal-content">
                     <form @submit.prevent="leaveTeam">
@@ -94,6 +94,21 @@
                         <div class="modal-container-button">
                             <button class="button-view dark-button" type="submit" v-if
                             =" !isLoading" >Покинуть</button>
+                            <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+        </modal>
+        <modal v-if="showModal && activeModal === 'modal-kick-member'" modalId="modal-kick-member" @close="closeModal">
+                <h2 class="modal-title">Вы уверены, что хотите выгнать этого пользователя?</h2>
+                <div class="modal-content">
+                    <form @submit.prevent="kickMember">
+                    <div class="modal-container-buttons">
+                        <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                        <div class="modal-container-button">
+                            <button class="button-view dark-button" type="submit" v-if
+                            =" !isLoading" >Выгнать</button>
                             <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
                         </div>
                     </div>
@@ -214,6 +229,10 @@
         computed: {
             isTeamFull() {
                 return this.team.members.length >= 5 ;
+            },
+
+            isLeader() {
+                return this.$store.getters.isLeader
             }
 
         },

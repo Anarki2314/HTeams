@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AuthResource;
+use App\Http\Resources\FileResource;
 use App\Http\Resources\TeamInvitesResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
+use App\Models\EventTeams;
 use App\Models\Team;
 use App\Models\TeamInvites;
 use App\Models\TeamMembers;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -245,6 +248,7 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Вы не состоите в команде'], 409);
         }
         TeamMembers::where('team_id', $user->team->id)->where('user_id', $user->id)->delete();
+        EventTeams::where('user_id', $user->id)->delete();
         return response()->json(['message' => 'Вы покинули команду'], 200);
     }
 
@@ -263,5 +267,39 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->delete();
         return response()->json(['message' => 'Аккаунт удален'], 200);
+    }
+
+    public function generateNewAvatar(Request $request)
+    {
+        $user = $request->user();
+        $file = $user->generateAvatar();
+        return response()->json(['message' => 'Аватар обновлен', 'data' => new FileResource($file)], 200);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = $request->user();
+        $validated = $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/',
+
+        ], [
+
+            'old_password.required' => 'Поле `Текущий пароль` обязательно.',
+            'new_password.required' => 'Поле `Новый пароль` обязательно.',
+            'new_password.regex' => 'Пароль должен содержать цифры, строчные и заглавные буквы.',
+            'new_password.confirmed' => 'Поле `Повтор пароля` должно совпадать с полем `Новый пароль`.',
+            'new_password.min' => 'Поле `Новый пароль` должно содержать не менее 8 символов.',
+        ]);
+        if (Hash::check($validated['new_password'], $user->password)) {
+            return response()->json(['message' => 'Новый пароль должен отличаться от текущего'], 409);
+        }
+        if ($user->changePassword($validated['old_password'], $validated['new_password'])) {
+
+            return response()->json(['message' => 'Пароль изменен'], 200);
+        } else {
+
+            return response()->json(['message' => 'Неверный пароль'], 409);
+        }
     }
 }

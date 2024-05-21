@@ -153,9 +153,18 @@
     </section>
 
     <modal v-if="showModal && activeModal === 'modal-cancel-event'" modalId="modal-cancel-event" @close="closeModal">
-                <h2 class="modal-title">Вы уверены, что хотите отменить соревнование?</h2>
+                <h2 class="modal-title">Укажите причину</h2>
                 <div class="modal-content">
                     <form @submit.prevent="cancelEvent">
+                        <div class="modal-container-input">
+                    <input
+                        type="text"
+                        placeholder="Причина"
+                        required
+                        class="modal-input"
+                        v-model="message"
+                    />
+                </div>
                     <div class="modal-container-buttons">
                         <button type="button" class="button-view info-button" @click="closeModal">Закрыть</button>
                         <div class="modal-container-button">
@@ -209,6 +218,7 @@ export default {
             activeModal: "",
 
             event: {},
+            message: ''
         };
     },
 
@@ -239,12 +249,14 @@ export default {
         async cancelEvent() {
             this.isLoading = true;
             try {
-                const response = await api.delete(`/events/${this.$route.params.requestId}/cancel`);
+                const response = await api.post(`/events/${this.$route.params.requestId}/cancel`, {
+                    'message': this.message
+                });
                 push.success(response.data.message);
                 this.closeModal();
                 this.$router.push({ name: "admin-requests"});
             } catch (error) {
-                console.log(error);
+                push.error(error.data.message);
             } finally {
                 this.isLoading = false;
             }
