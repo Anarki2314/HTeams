@@ -111,17 +111,17 @@
                         <div class="container-info-item">
                             <div class="info-item-text">Начало регистрации</div>
                             <div class="info-item info-first">
-                                {{ new Date(event.date_registration).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
+                                {{ event.date_registration}}</div>
                         </div>
                         <div class="container-info-item">
                             <div class="info-item-text">Начало события</div>
                             <div class="info-item info-second">
-                                {{ new Date(event.date_start).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
+                                {{ event.date_start}}</div>
                         </div>
                         <div class="container-info-item">
                             <div class="info-item-text">Конец события</div>
                             <div class="info-item info-third">
-                                {{ new Date(event.date_end).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}}                            </div>
+                                {{ event.date_end}}</div>
                         </div>
                     </div>
                 </div>

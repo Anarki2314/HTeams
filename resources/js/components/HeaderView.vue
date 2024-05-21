@@ -133,7 +133,6 @@ export default {
                     localStorage.removeItem('user');
                     push.error('Срок действия сессии истек. Пожалуйста, войдите в аккаунт еще раз');
                     this.$router.replace('/signIn')
-
                 }
             }
         },

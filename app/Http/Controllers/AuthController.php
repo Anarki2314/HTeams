@@ -7,6 +7,7 @@ use App\Http\Requests\SignUpRequest;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
+use App\Models\Ban;
 use App\Models\File;
 use App\Models\User;
 use App\Services\TokenService;
@@ -40,7 +41,12 @@ class AuthController extends Controller
         $credentials = $request->validated(); // email and password
         $user = User::where('email', $credentials['email'])->first();
 
+
         if ($user) {
+            if ($user->isBanned()) {
+                $ban = Ban::where('user_id', $user->id)->where('expires_at', '>', now())->first();
+                return response()->json(['message' => 'Ваш аккаунт заблокирован. Причина: ' . $ban->reason . '. Дата окончания блокировки: ' . $ban->expires_at], 403);
+            }
             if (Hash::check($credentials['password'], $user->password)) {
                 $token = TokenService::generateToken($user);
                 $response = [
@@ -71,6 +77,10 @@ class AuthController extends Controller
     {
         $user = $request->user();
         TokenService::deleteToken($user);
+        if ($user->isBanned()) {
+            $ban = Ban::where('user_id', $user->id)->where('expires_at', '>', now())->first();
+            return response()->json(['message' => 'Ваш аккаунт заблокирован. Причина: ' . $ban->reason . '. Дата окончания блокировки: ' . $ban->expires_at], 403);
+        }
         $token = TokenService::generateToken($user);
 
         $response = [

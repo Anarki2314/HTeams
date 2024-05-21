@@ -63,4 +63,9 @@ class Team extends Model
     {
         return strtoupper(Str::random(10));
     }
+
+    public function isBanned(): bool
+    {
+        return Ban::where('user_id', $this->leader_id)->where('expires_at', '>', now())->exists();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Ban;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,7 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $isBanned = $this->isBanned();
         $data = [
             'email' => $this->email,
             'phone' => $this->phone,
@@ -23,7 +25,16 @@ class UserResource extends JsonResource
                 'path' => '/assets/img/avatar.jpg',
                 'name' => 'Аватар',
             ],
+            'isBanned' => $isBanned,
         ];
+
+        if ($isBanned) {
+            $ban = Ban::where('user_id', $this->id)->where('expires_at', '>', now())->first();
+            $data['ban'] = [
+                'reason' => $ban->reason,
+                'expires_at' => $ban->expires_at,
+            ];
+        }
 
         if ($this->isUser()) {
             $data['name'] = $this->name;

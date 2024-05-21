@@ -127,4 +127,10 @@ class User extends Authenticatable
             return false;
         }
     }
+
+
+    public function isBanned(): bool
+    {
+        return Ban::where('user_id', $this->id)->where('expires_at', '>', now())->exists();
+    }
 }

@@ -60,6 +60,12 @@ async function checkToken() {
             localStorage.removeItem("user");
             store.dispatch("logout");
         }
+        if (error.status === 403) {
+            push.error(error.data.message);
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            store.dispatch("logout");
+        }
         return false;
     }
 }

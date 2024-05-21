@@ -10,8 +10,8 @@
                 <div class="container-team-title d-flex justify-content-center justify-content-md-between flex-wrap">
                     <h3 class="block-title text-center text-lg-start">{{ team.title }}</h3>
                     <div class="container-profile-block-buttons d-flex ">
-                        <button class="button-view main-button"
-                            @click="openModal('modal-ban-team')">Заблокировать</button>
+                        <button class="button-view main-button" @click="openModal('modal-unban-users')" v-if="team.isBanned">Разблокировать пользователей</button>
+                        <button class="button-view main-button" @click="openModal('modal-ban-users')" v-else>Заблокировать пользователей</button>
                     </div>
                 </div>
                 <div
@@ -41,13 +41,13 @@
         </div>
     </section>
 
-    <modal v-if="showModal && activeModal === 'modal-ban-team'" :show="showModal" @close="closeModal">
+    <modal v-if="showModal && activeModal === 'modal-ban-users'" :show="showModal" @close="closeModal">
         <h2 class="modal-title">Укажите время и причину блокировки</h2>
         <div class="modal-content">
-            <form @submit.prevent="banTeam">
+            <form @submit.prevent="banUsers">
                 <div class="modal-container-input">
                     <input type="text" placeholder="Время блокировки в днях" v-mask="['#', '##', '###']"  required class="modal-input"
-                        v-model="banDate" />
+                        v-model="banTime" />
                 </div>
                 <div class="modal-container-input">
                     <input type="text" placeholder="Причина" maxlength="32" required class="modal-input"
@@ -56,10 +56,26 @@
                 <div class="modal-container-buttons">
                     <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
                     <div class="modal-container-button">
-                        <button to="/signIn" class="button-view dark-button">Заблокировать</button>
+                        <button class="button-view dark-button" v-if="!isLoading" type="submit">Заблокировать</button>
+                        <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
                     </div>
 
 
+                </div>
+            </form>
+        </div>
+    </modal>
+
+    <modal v-if="showModal && activeModal === 'modal-unban-users'" :show="showModal" @close="closeModal">
+        <h2 class="modal-title">Разблокировать пользователей?</h2>
+        <div class="modal-content">
+            <form @submit.prevent="unbanUsers">
+                <div class="modal-container-buttons">
+                    <button type="button" class="button-view info-button" @click="closeModal">Отмена</button>
+                    <div class="modal-container-button">
+                        <button class="button-view dark-button" v-if="!isLoading" type="submit"> Разблокировать</button>
+                        <div class="loading" :class="{ 'd-none': !isLoading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -73,6 +89,9 @@ import TeamMemberCard from '@/components/team/TeamMemberCard.vue';
 import LoadingScreen from '../../components/LoadingScreen.vue';
 import { push } from 'notivue';
 import { mask } from 'vue-the-mask'
+
+import { useVuelidate } from '@vuelidate/core'
+import { required, helpers, minValue, maxValue, maxLength } from '@vuelidate/validators';
 import api from '../../api';
 export default {
     components: {
@@ -83,16 +102,20 @@ export default {
 
     },
 
+    setup() {
+        return { v$: useVuelidate() }
+    },
     directives: { mask },
     data() {
         return {
+            isLoading: false,
             contentLoading: true,
             team: {},
             isFull: false,
             showModal: false,
             activeModal: '',
 
-            banDate: '',
+            banTime: '',
             reason: ''
         }
     },
@@ -121,6 +144,59 @@ export default {
             }
         },
 
+        async banUsers() {
+            const isFormCorrect = await this.v$.$validate();
+            if (!isFormCorrect) {
+                this.v$.$errors.forEach((error) => {
+                    push.error(error.$message);
+                })
+                return
+            }
+            try {
+                this.isLoading = true;
+                const response = await api.post(`/admin/users/${this.$route.params.teamId}/ban-by-team`, {
+                    banTime: this.banTime,
+                    reason: this.reason
+                });
+                push.success(response.data.message);
+                this.closeModal();
+                this.getTeam();
+            } catch (error) {
+                push.error(error.data.message);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async unbanUsers() {
+            try {
+                this.isLoading = true;
+                const response = await api.post(`/admin/users/${this.$route.params.teamId}/unban-by-team`);
+                push.success(response.data.message);
+                this.closeModal();
+                this.getTeam();
+            } catch (error) {
+                push.error(error.data.message);
+            } finally {
+                this.isLoading = false;
+            }
+        }
+
+    },
+
+    validations() {
+        return {
+            banTime: {
+                required: helpers.withMessage('Необходимо указать время бана', required),
+                minValue: helpers.withMessage('Минимальное время бана 1 день', minValue(1)),
+                maxValue: helpers.withMessage('Максимальное время бана 365 дней', maxValue(365)),
+            },
+            reason: {
+                required: helpers.withMessage('Поле обязательно для заполнения', required),
+                regex: helpers.withMessage('Причина бана может содержать только буквы, цифры и пробелы', helpers.regex(/^[а-яА-ЯёЁa-zA-Z0-9\s]+$/)),
+                maxLength: helpers.withMessage('Максимальная длина причины бана 32 символа', maxLength(32)),
+            },
+        }
     },
     created() {
         this.getTeam();

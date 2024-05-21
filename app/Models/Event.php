@@ -41,6 +41,30 @@ class Event extends Model
         $this->attributes['date_end'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
+    public function getDateRegistrationAttribute($value)
+    {
+        return Carbon::parse($value)->format('d.m.Y H:i');
+    }
+
+    public function getDateStartAttribute($value)
+    {
+        return Carbon::parse($value)->format('d.m.Y H:i');
+    }
+
+    public function getDateEndAttribute($value)
+    {
+        return Carbon::parse($value)->format('d.m.Y H:i');
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('d.m.Y H:i');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('d.m.Y H:i');
+    }
 
     public function status(): BelongsTo
     {

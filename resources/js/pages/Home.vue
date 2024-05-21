@@ -35,9 +35,9 @@
                 <div class="container-stats-content d-flex justify-content-center justify-content-lg-between align-items-center flex-wrap text-center text-lg-start">
 
                     <div class="container-stats-left">
-                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ users }}</span> <span class="stats-description">участников</span> </div>
-                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ teams }}</span> <span class="stats-description">команд</span> </div>
-                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ events }}</span> <span class="stats-description">соревнований</span> </div>
+                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ users }}</span> <span class="stats-description">{{ this.declOfNum(users, ['участник', 'участника', 'участников'])}}</span> </div>
+                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ teams }}</span> <span class="stats-description">{{ this.declOfNum(teams, ['команда', 'команды', 'команд']) }}</span> </div>
+                        <div class="container-stats-text d-flex align-items-center"><span class="stats-number">{{ events }}</span> <span class="stats-description">{{this.declOfNum(events, ['соревнование', 'соревнования', 'соревнований'])}}</span> </div>
                     </div>
                     
                     <div class="container-stats-right d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap">
@@ -114,7 +114,12 @@ export default {
         }
     },
 
+
+
     methods: {
+        declOfNum(n, titles) {  
+            return titles[(n % 10 === 1 && n % 100 !== 11) ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2]
+        },
         async getStats() {
             const response = await api.get('/stats');
             this.users = response.data.data.users;

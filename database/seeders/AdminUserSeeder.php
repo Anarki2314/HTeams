@@ -17,11 +17,12 @@ class AdminUserSeeder extends Seeder
     {
         $adminEmail = env('ADMIN_EMAIL');
         $adminPassword = env('ADMIN_PASSWORD');
+        $adminPhone = env('ADMIN_PHONE');
         if (!User::where('email', $adminEmail)->exists()) {
             User::create([
                 'name' => 'Admin',
                 'email' => $adminEmail,
-                'phone' => '123456789',
+                'phone' => $adminPhone,
                 'role_id' => Role::getIdRoleByTitle('Админ'),
                 'password' => $adminPassword,
                 // Add any additional fields for the admin user if needed

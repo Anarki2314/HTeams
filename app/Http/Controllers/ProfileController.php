@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\FileResource;
 use App\Http\Resources\TeamInvitesResource;
@@ -301,5 +302,16 @@ class ProfileController extends Controller
 
             return response()->json(['message' => 'Неверный пароль'], 409);
         }
+    }
+
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = $request->user();
+        if ($user->isAdmin()) {
+            return response()->json(['message' => 'Администратор не может изменить профиль'], 409);
+        }
+        $validated = $request->validated();
+        $user->update($validated);
+        return response()->json(['message' => 'Профиль обновлен', 'data' => new UserResource($user)], 200);
     }
 }

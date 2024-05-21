@@ -75,7 +75,7 @@ Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [ProfileController::class, 'getProfile']);
 
     Route::delete('/', [ProfileController::class, 'deleteProfile']);
-
+    Route::put('/', [ProfileController::class, 'updateProfile']);
 
     // Profile Team routes
 
@@ -126,4 +126,12 @@ Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ'])->gro
     Route::apiResource('/tags', TagController::class, ['only' => ['index', 'store', 'update', 'destroy']])->where(['id' => '[0-9]+']);
 
     Route::apiResource('/users', UserController::class, ['only' => ['index', 'show']])->where(['id' => '[0-9]+']);
+
+    Route::post('/users/{id}/ban', [UserController::class, 'banUser'])->where(['id' => '[0-9]+']);
+
+    Route::post('/users/{id}/unban', [UserController::class, 'unbanUser'])->where(['id' => '[0-9]+']);
+
+    Route::post('/users/{id}/ban-by-team', [UserController::class, 'banUsersByTeam'])->where(['id' => '[0-9]+']);
+
+    Route::post('/users/{id}/unban-by-team', [UserController::class, 'unbanUsersByTeam'])->where(['id' => '[0-9]+']);
 });

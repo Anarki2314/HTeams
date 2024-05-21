@@ -24,7 +24,6 @@ class CreateEventRequest extends FormRequest
      */
     public function rules(): array
     {
-        //! dates min max validation
 
         $rules = [
             'title' => 'required|min:2|max:50|regex:/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/u',
