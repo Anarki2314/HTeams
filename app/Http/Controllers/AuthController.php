@@ -11,6 +11,7 @@ use App\Models\Ban;
 use App\Models\File;
 use App\Models\User;
 use App\Services\TokenService;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,8 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
         ];
+
+        event(new Registered($user));
         return response()->json([
             'data' => new AuthResource($response),
             'message' => 'Вы успешно зарегистрировались',

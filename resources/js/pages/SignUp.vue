@@ -199,7 +199,7 @@ export default {
 
                 this.$store.commit('login', response.data.data);
                 push.success(response.data.message);
-                this.$router.push({ name: 'home' });
+                this.$router.push({ name: 'email-verify' });
             } catch (error) {
                 if (error.status === 401) {
                     push.error(error.data.message);

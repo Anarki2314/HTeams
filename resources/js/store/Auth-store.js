@@ -54,7 +54,11 @@ export default createStore({
 
         isLeader(state) {
             return state.user?.isLeader;
-        }
+        },
+
+        isVerified(state) {
+            return state.user?.isVerified;
+        },
     },
     actions: {
         login({ commit }, data) {

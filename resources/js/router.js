@@ -36,6 +36,14 @@ import AdminUser from "@/pages/_admin/User.vue";
 import AdminTeam from "@/pages/_admin/Team.vue";
 import AdminRequest from "@/pages/_admin/Request.vue";
 
+
+// Email verification pages
+import EmailVerify from "@/pages/email-verify/EmailVerify.vue";
+import EmailVerified from "@/pages/email-verify/EmailVerified.vue";
+
+// Reset password pages
+import ForgotPassword from "@/pages/reset-password/ForgotPassword.vue";
+import ResetPasswordForm from "@/pages/reset-password/ResetPasswordForm.vue";
 // 404 Page
 import NotFound from "@/pages/NotFound.vue";
 
@@ -325,6 +333,36 @@ const routes = [
             requiresAuth: true,
             role: "Админ",
         },
+    },
+
+    // Email Verification Routes
+    {
+        path: "/email/verify/",
+        name: "email-verify",
+        component: EmailVerify,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: "/email/verify/:id/:hash",
+        name: "email-verify-success",
+        component: EmailVerified,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+
+    {
+        path:"/forgot-password",
+        name: "forgot-password",
+        component: ForgotPassword,
+
+    },
+    {
+        path:"/reset-password/:token",
+        name: "reset-password-form",
+        component: ResetPasswordForm,
     },
 
     // 404

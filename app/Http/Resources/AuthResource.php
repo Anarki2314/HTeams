@@ -20,6 +20,8 @@ class AuthResource extends JsonResource
                 'id' => $this->resource['user']->id,
                 'email' => $this->resource['user']->email,
                 'role' => $this->resource['user']->role->title,
+                'isVerified' => $this->resource['user']->isVerified(),
+
             ],
         ];
 

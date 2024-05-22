@@ -42,16 +42,23 @@
     border: 2px solid var(--color-main);
     color: var(--color-main);
 }
-.main-button:hover{
+.main-button:disabled{
+    background: none;
+    border: 2px solid var(--color-main);
+    color: var(--color-main);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.main-button:hover:not(:disabled){
     background-color: var(--color-main);
     color: #1B1B1B;
 }
-.main-button:active, .router-link-active.main-button {
+.main-button:active:not(:disabled), .router-link-active.main-button {
     background-color: var(--color-main);
 
     color: #1B1B1B;
 }
-.main-button:focus-visible {
+.main-button:focus-visible:not(:disabled) {
     background-color: var(--color-main);
     color: #1B1B1B;
 

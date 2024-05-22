@@ -14,11 +14,11 @@
         </div>
     </header>
 
-    <section class="sign-in-section ">
+    <section class="reset-password-section ">
         <div class="container-block">
             <div class="container-form">
-                <form action="" class="sign-in-form" @submit.prevent="signIn">
-                    <h2 class="block-title text-center">Вход</h2>
+                <form action="" class="reset-password-form" @submit.prevent="forgotPassword">
+                    <h2 class="block-title text-center">Сброс пароля</h2>
                     <div class="form-content">
                         <div class="container-inputs">
 
@@ -26,23 +26,17 @@
                                 <input type="email" v-model="email" name="email" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': email }">Email</label>
                             </div>
-                            
-                            <div class="container-input">
-                                <input type="password" v-model="password" name="password" required class="form-input">
-                                <label for="" class="input-label" :class="{ 'active': password }">Пароль</label>
-                            </div>
 
 
                         </div>
                         <div class="container-submit text-center">
-                            <button type="submit" class="submit-btn main-button" v-if=" !loading">Войти</button>
+                            <button type="submit" class="button-view main-button" v-if="!loading" :disabled="coolDown">Подтвердить</button>
                             <div class="loading" :class="{ 'd-none': !loading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
 
                         </div>
                         <div class="container-text text-center">
-                            <div class="sign-in-text"><span>У вас нет аккаунта? <router-link to="/signUp">Зарегистрироваться</router-link></span></div>
 
-                            <router-link  to="/forgot-password" class="sign-in-text">Забыли пароль?</router-link>
+                            <router-link  to="/signIn" class="reset-password-text">Назад</router-link>
                         </div>
                         
                     </div>
@@ -56,10 +50,10 @@
 </template>
 
 <script>
-import api from '../api.js';
+import api from '../../api.js';
 import {push} from 'notivue';
 import {useVuelidate} from '@vuelidate/core';
-import {required, email, helpers,minLength} from '@vuelidate/validators';
+import {required, email, helpers} from '@vuelidate/validators';
 
 export default {
     setup() {
@@ -69,7 +63,7 @@ export default {
         return {
             loading: false,
             email: '',
-            password: '',
+            coolDown: 0
         }
     },
 
@@ -80,15 +74,19 @@ export default {
                 email: helpers.withMessage('Поле `Email` должно быть валидным email адресом.', email),
             },
 
-            password: {
-                required: helpers.withMessage('Поле `Пароль` обязательно', required),
-                minLength: helpers.withMessage('Поле `Пароль` должно содержать не менее 8 символов', minLength(8))
-            },
         }
     },
 
     methods: {
-        async signIn() {
+        coolDownInterval(){
+            if(this.coolDown > 0){
+                setTimeout(() => {
+                    this.coolDown--;
+                    this.coolDownInterval();
+                }, 1000);
+            }
+        },
+        async forgotPassword() {
             const isFormCorrect = await this.v$.$validate();
             if (!isFormCorrect) {
                 this.v$.$errors.forEach((error) => {
@@ -98,23 +96,21 @@ export default {
             }
             this.loading = true;
             try {
-                const response = await api.post('/auth/sign-in', {
+                this.coolDown = 30;
+                this.coolDownInterval();
+                const response = await api.post('/forgot-password', {
                     email: this.email,
-                    password: this.password,
                 })
-                localStorage.setItem('token', response.data.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.data.user));
-                localStorage.removeItem('reset-email');
-                this.$store.commit('login', response.data.data);
-                this.$router.push({ name: 'home' }  );
+
+
+                push.success(response.data.message);
             } catch (error) {
                 push.error(error.data.message)
             } finally {
                 this.loading = false;
             }
         }
-    }
-
+    },
 }
 
 </script>
@@ -200,32 +196,21 @@ section{
 }
 
 
-.submit-btn {
+.button-view {
     width: 75%;
-    background: none;
-    border: 2px solid var(--color-main);
-    color: var(--color-main);
-    font-size: var(--size-text);
     padding: 10px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all .3s ease;
 }
 
-.submit-btn:hover {
-    background-color: var(--color-main);
-    color: #1B1B1B;
-}
-.sign-in-text *, .sign-in-text:any-link{
+.reset-password-text *, .reset-password-text:any-link{
     color: #666666;
     font-family: 'Montserrat Regular', sans-serif;
-    font-size: clamp(14px, 3vw, 20px);
+    font-size: var(--size-text);
 }
 
 .container-text {
     margin-top: 10px;
 }
-.sign-in-text a:any-link, .sign-in-text:any-link {
+.reset-password-text a:any-link, .reset-password-text:any-link {
     text-decoration: underline;
 }
 </style>

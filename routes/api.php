@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailVerifyController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatusController;
@@ -10,6 +12,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -135,3 +138,9 @@ Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ'])->gro
 
     Route::post('/users/{id}/unban-by-team', [UserController::class, 'unbanUsersByTeam'])->where(['id' => '[0-9]+']);
 });
+
+Route::post('/email/verify/resend', [EmailVerifyController::class, 'send'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('guest')->name('password.email');
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->middleware('guest')->name('password.update');

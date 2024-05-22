@@ -14,35 +14,33 @@
         </div>
     </header>
 
-    <section class="sign-in-section ">
+    <section class="reset-password-section ">
         <div class="container-block">
             <div class="container-form">
-                <form action="" class="sign-in-form" @submit.prevent="signIn">
-                    <h2 class="block-title text-center">Вход</h2>
+                <form action="" class="reset-password-form" @submit.prevent="resetPassword">
+                    <h2 class="block-title text-center">Сброс пароля</h2>
                     <div class="form-content">
                         <div class="container-inputs">
 
                             <div class="container-input">
-                                <input type="email" v-model="email" name="email" required class="form-input">
-                                <label for="" class="input-label" :class="{ 'active': email }">Email</label>
-                            </div>
-                            
-                            <div class="container-input">
                                 <input type="password" v-model="password" name="password" required class="form-input">
                                 <label for="" class="input-label" :class="{ 'active': password }">Пароль</label>
+                            </div>
+                            <div class="container-input">
+                                <input type="password" v-model="password_confirmation" name="password_confirmation" required class="form-input">
+                                <label for="" class="input-label" :class="{ 'active': password_confirmation }">Повтор пароля</label>
                             </div>
 
 
                         </div>
                         <div class="container-submit text-center">
-                            <button type="submit" class="submit-btn main-button" v-if=" !loading">Войти</button>
+                            <button type="submit" class="button-view main-button" v-if=" !loading">Изменить</button>
                             <div class="loading" :class="{ 'd-none': !loading }"><img :src="'/assets/img/loading.svg'" alt=""></div>
 
                         </div>
                         <div class="container-text text-center">
-                            <div class="sign-in-text"><span>У вас нет аккаунта? <router-link to="/signUp">Зарегистрироваться</router-link></span></div>
 
-                            <router-link  to="/forgot-password" class="sign-in-text">Забыли пароль?</router-link>
+                            <router-link  to="/signIn" class="reset-password-text">Назад</router-link>
                         </div>
                         
                     </div>
@@ -56,10 +54,10 @@
 </template>
 
 <script>
-import api from '../api.js';
+import api from '../../api.js';
 import {push} from 'notivue';
 import {useVuelidate} from '@vuelidate/core';
-import {required, email, helpers,minLength} from '@vuelidate/validators';
+import {required, helpers, minLength, sameAs} from '@vuelidate/validators';
 
 export default {
     setup() {
@@ -68,27 +66,32 @@ export default {
     data() {
         return {
             loading: false,
-            email: '',
             password: '',
+            password_confirmation: '',
+
+            email: this.$route.query.email,
+            token: this.$route.params.token,
+
         }
     },
 
     validations() {
         return {
-            email: {
-                required: helpers.withMessage('Поле `Email` обязательно', required),
-                email: helpers.withMessage('Поле `Email` должно быть валидным email адресом.', email),
+            password: {
+                required: helpers.withMessage('Поле `Пароль` обязательно.', required),
+                minLengthValue: helpers.withMessage('Поле `Пароль` должно содержать не менее 8 символов.', minLength(8)),
+                regex: helpers.withMessage('Поле `Пароль` должен содержать буквы в верхнем и нижнем регистре, цифры.', helpers.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)./)),
             },
 
-            password: {
-                required: helpers.withMessage('Поле `Пароль` обязательно', required),
-                minLength: helpers.withMessage('Поле `Пароль` должно содержать не менее 8 символов', minLength(8))
+            password_confirmation: {
+                 required: helpers.withMessage('Поле `Повторите пароль` обязательно.', required),
+                 sameAs: helpers.withMessage('Поле `Повторите пароль` должно совпадать с полем `Пароль`.', sameAs(this.password))
             },
         }
     },
 
     methods: {
-        async signIn() {
+        async resetPassword() {
             const isFormCorrect = await this.v$.$validate();
             if (!isFormCorrect) {
                 this.v$.$errors.forEach((error) => {
@@ -98,22 +101,25 @@ export default {
             }
             this.loading = true;
             try {
-                const response = await api.post('/auth/sign-in', {
-                    email: this.email,
+                const response = await api.post('/reset-password/', {
                     password: this.password,
+                    password_confirmation: this.password_confirmation,
+                    token: this.token,
+                    email: this.email,
                 })
-                localStorage.setItem('token', response.data.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.data.user));
-                localStorage.removeItem('reset-email');
-                this.$store.commit('login', response.data.data);
-                this.$router.push({ name: 'home' }  );
+
+
+                push.success(response.data.message);
+                localStorage.removeItem('reset-email', this.email);
+                this.$router.push({ name: 'signIn' });
             } catch (error) {
                 push.error(error.data.message)
             } finally {
                 this.loading = false;
             }
         }
-    }
+    },
+
 
 }
 
@@ -200,32 +206,20 @@ section{
 }
 
 
-.submit-btn {
+.button-view {
     width: 75%;
-    background: none;
-    border: 2px solid var(--color-main);
-    color: var(--color-main);
-    font-size: var(--size-text);
     padding: 10px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all .3s ease;
 }
-
-.submit-btn:hover {
-    background-color: var(--color-main);
-    color: #1B1B1B;
-}
-.sign-in-text *, .sign-in-text:any-link{
+.reset-password-text *, .reset-password-text:any-link{
     color: #666666;
     font-family: 'Montserrat Regular', sans-serif;
-    font-size: clamp(14px, 3vw, 20px);
+    font-size: var(--size-text);
 }
 
 .container-text {
     margin-top: 10px;
 }
-.sign-in-text a:any-link, .sign-in-text:any-link {
+.reset-password-text a:any-link, .reset-password-text:any-link {
     text-decoration: underline;
 }
 </style>
