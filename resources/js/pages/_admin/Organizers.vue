@@ -18,7 +18,7 @@
                 <sorting v-model="query['sort']" :sortList="sortList" @update:modelValue="getUsers" />
                 <div
                     class="container-users-items d-flex flex-column">
-                    <loading-screen v-if="contentLoading" />
+                    <loading-screen v-if="contentLoading" position="absolute" />
                     <div class="container-empty-page row-card" v-if="!users.length">
                         <div class="empty-page">Ничего не найдено</div>
                     </div>

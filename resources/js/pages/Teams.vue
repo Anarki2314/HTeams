@@ -48,7 +48,7 @@
                     <div class="container-empty-page row-card" v-if="!teams.length">
                         <div class="empty-page" >Ничего не найдено</div>
                     </div>
-                    <loading-screen v-if="contentLoading"/>
+                    <loading-screen v-if="contentLoading" position="absolute"/>
                     <team-card v-for="team, index in teams" :key="index" :team="team" @openModal="openModal" @join="joinTeam"/>
 
                     <button class="container-pagination row-card d-flex justify-content-center "@click="loadNextPage" v-if="nextPage">

@@ -59,7 +59,7 @@
                 <sorting v-model="query['sort']" :sortList="sortList" @update:modelValue="getEvents" />
                 <div
                     class="container-events-items d-flex justify-content-center justify-content-lg-between flex-wrap position-relative">
-                    <loading-screen v-if="contentLoading" />
+                    <loading-screen v-if="contentLoading" position="absolute" />
                     <div class="container-empty-page row-card" v-if="!events.length">
                         <div class="empty-page">Ничего не найдено</div>
                     </div>

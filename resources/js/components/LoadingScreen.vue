@@ -1,6 +1,6 @@
 <template>
 
-        <div id="loading-screen">
+        <div id="loading-screen" :class="`position-${position}`">
 
             <img :src="'/assets/img/loading.svg'" alt="loading image">
         </div>
@@ -9,7 +9,13 @@
 
 <script>
 export default {
-    name: "LoadingScreen"
+    name: "LoadingScreen",
+    props: {
+        position: {
+            type: String,
+            default: 'fixed'
+        }
+    }
 }
 </script>
 
@@ -17,7 +23,6 @@ export default {
 <style lang="scss" scoped>
 
     #loading-screen {
-        position: absolute;
         top: 0;
         left: 0;
         width: 100%;

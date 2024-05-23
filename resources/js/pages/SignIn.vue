@@ -106,7 +106,11 @@ export default {
                 localStorage.setItem('user', JSON.stringify(response.data.data.user));
                 localStorage.removeItem('reset-email');
                 this.$store.commit('login', response.data.data);
-                this.$router.push({ name: 'home' }  );
+                if (response.data.data.user.isVerified) {
+                    this.$router.push({ name: 'home' }  );
+                } else {
+                    this.$router.push({ name: 'email-verify' }  );
+                }
             } catch (error) {
                 push.error(error.data.message)
             } finally {

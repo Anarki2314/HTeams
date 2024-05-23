@@ -6,6 +6,7 @@
         </div>
         <div class="event-card-body d-flex flex-column">
             <h3 class="event-card-title"> {{ event.title }}</h3>
+            <span class="event-card-title" v-if="event.status?.title"> {{ event.status?.title }} </span>
             <div class="event-card-tags d-flex align-items-center flex-wrap">
 
                 <span class="event-card-tag " v-for="tag, index in slicedTags" :key="tag "> #{{ tag.title }} </span>
@@ -14,8 +15,20 @@
             </div>
             <div class="event-card-date" v-if = "!event.status?.title"> {{ event.updated_at}} 
             </div>
-            <div class="event-card-date" v-if = "event.status?.title">
+            <div class="event-card-date" v-if = "event.status?.title == 'Новое'">
                  {{ event.date_registration}}
+            </div>
+            <div class="event-card-date" v-if = "event.status?.title == 'Регистрация'">
+                {{ event.date_start}}
+            </div>
+            <div class="event-card-date" v-if = "event.status?.title == 'Началось'">
+                {{ event.date_end}}
+            </div>
+            <div class="event-card-date" v-if = "event.status?.title == 'Завершено'">
+                {{ event.date_end}}
+            </div>
+            <div class="event-card-date" v-if = "event.status?.title == 'Итоги'">
+                {{ event.date_end}}
             </div>
         </div>
     </router-link>

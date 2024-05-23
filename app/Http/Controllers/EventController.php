@@ -30,7 +30,7 @@ class EventController extends Controller
     {
 
         $events = QueryBuilder::for(Event::class)
-            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id'])
+            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id', 'date_start', 'date_end'])
             ->defaultSort('-updated_at')
             ->with('image', function ($query) {
                 $query->select(['id', 'name', 'path']);
@@ -258,7 +258,7 @@ class EventController extends Controller
         $user = $request->user();
 
         $events = QueryBuilder::for(Event::class)
-            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id'])
+            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id', 'date_start', 'date_end'])
             ->defaultSort('-updated_at')
 
             ->with('image', function ($query) {
@@ -299,7 +299,7 @@ class EventController extends Controller
         $user = $request->user();
 
         $events = QueryBuilder::for(Event::class)
-            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id'])
+            ->select(['id', 'title', 'date_registration', 'updated_at', 'image_id', 'creator_id', 'status_id', 'date_start', 'date_end'])
             ->defaultSort('-updated_at')
             ->with('image', function ($query) {
                 $query->select(['id', 'name', 'path']);

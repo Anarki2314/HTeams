@@ -24,7 +24,7 @@
                 <div
                     class="container-admin-items  container-page position-relative d-flex flex-column"
                 >
-                    <loading-screen v-if="contentLoading" />
+                    <loading-screen v-if="contentLoading" position="absolute"/>
                     <div
                         class="container-empty-page row-card"
                         v-if="!tags.length"

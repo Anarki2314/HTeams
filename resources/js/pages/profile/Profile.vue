@@ -49,16 +49,16 @@
                                     class="profile-info-text info-button">Предстоящие</router-link></div>
                             <div class="container-profile-item"><router-link to="/profile/finished"
                                     class="profile-info-text info-button">Завершенные</router-link></div>
-                            <div class="container-profile-item" v-if="!user.isOrganizer && !haveTeam"><span
+                            <div class="container-profile-item" v-if="!user.isOrganizer && !haveTeam && !user.haveTeam"><span
                                     class="info-button" @click="openModal('modal-create-team')">Создать команду</span>
                             </div>
-                            <div class="container-profile-item" v-if="!user.isOrganizer && !haveTeam"><span
+                            <div class="container-profile-item" v-if="!user.isOrganizer && !haveTeam && !user.haveTeam"><span
                                     class="info-button" @click="openModal('modal-join-team')">Вступить в команду</span>
                             </div>
                             <div class="container-profile-item" v-if="user.isOrganizer"><router-link
                                     to="/profile/create-event" class="info-button">Создать соревнование</router-link>
                             </div>
-                            <div class="container-profile-item" v-if="!user.isOrganizer && haveTeam"><router-link
+                            <div class="container-profile-item" v-if="!user.isOrganizer && haveTeam || user.haveTeam"><router-link
                                     to="/profile/team" class="info-button">Ваша команда</router-link></div>
                         </div>
                     </div>
@@ -342,6 +342,10 @@ export default {
                 });
                 return
             }
+            if ((this.user.isUser && (this.updateForm.name == this.user.name && this.updateForm.surname == this.user.surname)) || (this.user.isOrganizer && (this.updateForm.orgName == this.user.orgName))) {
+                this.closeUpdateModal();
+                return
+            }
             try {
                 this.isLoading = true;
                 const response = await api.put('/profile/', this.updateForm);
@@ -419,14 +423,13 @@ export default {
             
             if (this.user.isOrganizer) {
                 rules.updateForm ={
-                    updateForm:{
+                    
                         orgName: {
                     required: helpers.withMessage('Поле `Название организации` обязательно.', required),
                     regex: helpers.withMessage('Поле `Название организации` должно содержать только кириллицу и латиницу.', helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\s]+$/)),
                     minLengthValue: helpers.withMessage('Поле `Название организации` должно содержать не менее 2 букв.', minLength(2)),
                     maxLengthValue: helpers.withMessage('Поле `Название организации` должно содержать не более 50 букв.', maxLength(50))
                         }
-                }
             }
             } else if (this.user.isUser) {
                  rules.updateForm={

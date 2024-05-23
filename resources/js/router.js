@@ -134,6 +134,8 @@ const routes = [
         component: Profile,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
+            
         },
     },
     {
@@ -142,6 +144,7 @@ const routes = [
         component: ProfileTeam,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Пользователь",
         },
     },
@@ -151,6 +154,7 @@ const routes = [
         component: ProfileTeamInvites,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Пользователь",
         },
     },
@@ -159,7 +163,8 @@ const routes = [
         name: "upcoming",
         component: UpcomingEvents,
         meta: {
-            requiresAuth: true,            
+            requiresAuth: true,
+            requiresVerifiedEmail: true,            
         }
         // beforeEnter: requireAuth
     },
@@ -169,6 +174,7 @@ const routes = [
         component: FinishedEvents,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
         }
         // beforeEnter: requireAuth
     },
@@ -179,6 +185,7 @@ const routes = [
         component: CreateEvent,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Организатор",
         },
     },
@@ -188,6 +195,7 @@ const routes = [
         component: ModerationEvent,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Организатор",
         },
     },
@@ -197,6 +205,7 @@ const routes = [
         component: ModerationEventAnswers,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Организатор",
         },
     },
@@ -206,6 +215,7 @@ const routes = [
         component: ModerationEventWinners,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Организатор",
         },
     },
@@ -215,6 +225,7 @@ const routes = [
         component: ModerationEvents,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Организатор",
         },
     },
@@ -224,6 +235,7 @@ const routes = [
         component: EditEvent,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Организатор",
         },
     },
@@ -233,6 +245,9 @@ const routes = [
         path: "/teams/:teamId",
         name: "team",
         component: Team,
+        meta: {
+            requiresAuth: false,
+        },
     },
 
     // Event Routes
@@ -240,6 +255,9 @@ const routes = [
         path: "/events/:eventId",
         name: "event",
         component: Event,
+        meta: {
+            requiresAuth: false,
+        },
     },
 
     // Admin Routes
@@ -249,6 +267,7 @@ const routes = [
         component: AdminRequestsEvents,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -258,6 +277,7 @@ const routes = [
         component: AdminRequestsEvents,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -267,6 +287,7 @@ const routes = [
         component: AdminUsers,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -276,6 +297,7 @@ const routes = [
         component: AdminTeams,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -285,6 +307,7 @@ const routes = [
         component: AdminTags,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     
@@ -295,6 +318,7 @@ const routes = [
         component: AdminOrganizers,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -304,6 +328,7 @@ const routes = [
         component: AdminUser,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -313,6 +338,7 @@ const routes = [
         component: AdminRequest,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -322,6 +348,7 @@ const routes = [
         component: AdminUser,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -331,6 +358,7 @@ const routes = [
         component: AdminTeam,
         meta: {
             requiresAuth: true,
+            requiresVerifiedEmail: true,
             role: "Админ",
         },
     },
@@ -357,12 +385,18 @@ const routes = [
         path:"/forgot-password",
         name: "forgot-password",
         component: ForgotPassword,
+        meta: {
+            requiresAuth: false,
+        }
 
     },
     {
         path:"/reset-password/:token",
         name: "reset-password-form",
         component: ResetPasswordForm,
+        meta: {
+            requiresAuth: false,
+        }
     },
 
     // 404
@@ -370,6 +404,9 @@ const routes = [
         path: "/:pathMatch(.*)*",
         name: "404",
         component: NotFound,
+        meta: {
+            requiresAuth: false,
+        }
     },
 ];
 
@@ -385,6 +422,8 @@ router.beforeEach( async (to, from, next) => {
     } else if (to.meta.role && getCurrentUserRole() !== to.meta.role) {
         push.error("У вас нет доступа к этой странице");
         next("/");
+    } else if (to.meta.requiresVerifiedEmail && !store.getters.isVerified) {
+        next("/email/verify");
     } else {
         next();
     }

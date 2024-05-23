@@ -86,6 +86,8 @@ ul {
 header {
     position: absolute;
     padding: 40px 0 0;
+    width: 100%;
+    z-index: 100;   
     font-size: var(--size-text);
 }
 

@@ -47,7 +47,7 @@
 
     </section>
     <modal v-if="showModal && activeModal === 'modal-confirm-winners'" modalId="modal-confirm-winners" @close="closeModal">
-                <h2 class="modal-title">Вы уверены, что хотите отменить соревнование?</h2>
+                <h2 class="modal-title">Вы уверены в своем выборе?</h2>
                 <div class="modal-content">
                     <form @submit.prevent="chooseWinners">
                     <div class="modal-container-buttons">

@@ -13,7 +13,7 @@
                     <div class="container-empty-page row-card" v-if="!answers.length">
                         <div class="empty-page">Ничего не найдено</div>
                     </div>
-                    <loading-screen v-if="contentLoading" />
+                    <loading-screen v-if="contentLoading" position="absolute" />
 
                     <div class="team-row-card row-card justify-content-sm-between" v-for="(answer, index) in answers" :key="index" >
                         <router-link :to="'/teams/' + answer.team.id"

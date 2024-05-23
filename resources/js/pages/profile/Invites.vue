@@ -16,7 +16,7 @@
                         <div class="empty-page">Ничего не найдено</div>
                     </div>
                     <invite-card v-for="invite, index in invites" :key="index" :invite="invite" @sendChoice="sendChoice"/>
-                    <loading-screen v-if="contentLoading"/>
+                    <loading-screen v-if="contentLoading" position="absolute"/>
                 </div>
             </div>
         </div>

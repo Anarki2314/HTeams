@@ -36,38 +36,39 @@ Route::post('/auth/refresh', [AuthController::class, 'refresh'])->middleware('au
 
 Route::post('/teams/join', [TeamController::class, 'joinTeam'])->middleware(['auth:sanctum', 'ability:Пользователь']);
 
-Route::apiResource('/teams', TeamController::class)->only(['index', 'store', 'show']);
+Route::apiResource('/teams', TeamController::class)->only(['index', 'show']);
+Route::apiResource('/teams', TeamController::class)->only(['store'])->middleware(['auth:sanctum', 'ability:Пользователь', 'verified']);
 
 
 
 // Event Organizer/Admin routes
 
-Route::get('/events/{id}/full', [EventController::class, 'getFullEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
+Route::get('/events/{id}/full', [EventController::class, 'getFullEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ', 'verified'])->where(['id' => '[0-9]+']);
 
-Route::get('/events/moderation', [EventController::class, 'getModerationEvents'])->middleware(['auth:sanctum', 'ability:Организатор,Админ']);
+Route::get('/events/moderation', [EventController::class, 'getModerationEvents'])->middleware(['auth:sanctum', 'ability:Организатор,Админ', 'verified']);
 
-Route::get('/events/upcoming', [EventController::class, 'getUpcomingEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор']);
-Route::get('/events/finished', [EventController::class, 'getFinishedEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор']);
+Route::get('/events/upcoming', [EventController::class, 'getUpcomingEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор', 'verified']);
+Route::get('/events/finished', [EventController::class, 'getFinishedEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор', 'verified']);
 
-Route::post('/events/{id}/join', [EventController::class, 'joinEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
-Route::delete('/events/{id}/leave', [EventController::class, 'leaveEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
+Route::post('/events/{id}/join', [EventController::class, 'joinEvent'])->middleware(['auth:sanctum', 'ability:Пользователь', 'verified', 'verified'])->where(['id' => '[0-9]+']);
+Route::delete('/events/{id}/leave', [EventController::class, 'leaveEvent'])->middleware(['auth:sanctum', 'ability:Пользователь', 'verified'])->where(['id' => '[0-9]+']);
 
 
-Route::get('/events/{id}/answers', [EventController::class, 'getEventAnswers'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
-Route::get('/events/{id}/teams', [EventController::class, 'getEventTeams'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
+Route::get('/events/{id}/answers', [EventController::class, 'getEventAnswers'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified'])->where(['id' => '[0-9]+']);
+Route::get('/events/{id}/teams', [EventController::class, 'getEventTeams'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified'])->where(['id' => '[0-9]+']);
 
-Route::post('/events/{id}/winners', [EventController::class, 'setEventWinners'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
-Route::post('/events/{id}/answer', [EventController::class, 'answerEvent'])->middleware(['auth:sanctum', 'ability:Пользователь'])->where(['id' => '[0-9]+']);
+Route::post('/events/{id}/winners', [EventController::class, 'setEventWinners'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified'])->where(['id' => '[0-9]+']);
+Route::post('/events/{id}/answer', [EventController::class, 'answerEvent'])->middleware(['auth:sanctum', 'ability:Пользователь', 'verified'])->where(['id' => '[0-9]+']);
 
-Route::post('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ'])->where(['id' => '[0-9]+']);
-Route::put('/events/{id}/approve', [EventController::class, 'approveEvent'])->middleware(['auth:sanctum', 'ability:Админ'])->where(['id' => '[0-9]+']);
+Route::post('/events/{id}/cancel', [EventController::class, 'cancelEvent'])->middleware(['auth:sanctum', 'ability:Организатор,Админ', 'verified'])->where(['id' => '[0-9]+']);
+Route::put('/events/{id}/approve', [EventController::class, 'approveEvent'])->middleware(['auth:sanctum', 'ability:Админ', 'verified'])->where(['id' => '[0-9]+']);
 
-Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(['auth:sanctum', 'ability:Организатор'])->where(['id' => '[0-9]+']);
+Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified'])->where(['id' => '[0-9]+']);
 
 
 // Event routes
 
-Route::post('/events/', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор']);
+Route::post('/events/', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified']);
 
 Route::apiResource('/events', EventController::class)->only(['index', 'show'])->where(['id' => '[0-9]+']);
 
@@ -75,37 +76,35 @@ Route::apiResource('/events', EventController::class)->only(['index', 'show'])->
 // Profile routes (only for logged users)
 
 Route::prefix('/profile')->middleware('auth:sanctum')->group(function () {
-    Route::get('/', [ProfileController::class, 'getProfile']);
+    Route::get('/', [ProfileController::class, 'getProfile'])->middleware(['verified']);
 
-    Route::delete('/', [ProfileController::class, 'deleteProfile']);
-    Route::put('/', [ProfileController::class, 'updateProfile']);
+    Route::delete('/', [ProfileController::class, 'deleteProfile', 'verified']);
+    Route::put('/', [ProfileController::class, 'updateProfile', 'verified']);
 
     // Profile Team routes
 
-    Route::post('/create-team', [ProfileController::class, 'createTeam'])->middleware('ability:Пользователь');
+    Route::post('/create-team', [ProfileController::class, 'createTeam'])->middleware('ability:Пользователь')->middleware(['verified']);
 
-    Route::post('/join-team', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь');
+    Route::post('/join-team', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь')->middleware(['verified']);
 
-    Route::get('/team', [ProfileController::class, 'getTeam'])->middleware('ability:Пользователь');
+    Route::get('/team', [ProfileController::class, 'getTeam'])->middleware('ability:Пользователь')->middleware(['verified']);
 
-    Route::post('/team/invite', [ProfileController::class, 'inviteFromTeam'])->middleware('ability:Пользователь');
+    Route::post('/team/invite', [ProfileController::class, 'inviteFromTeam'])->middleware('ability:Пользователь')->middleware(['verified']);
 
     Route::post('/team/invite/team-choice', [ProfileController::class, 'teamChoiceInvite'])->middleware('ability:Пользователь');
 
     Route::post('/team/invite/user-choice', [ProfileController::class, 'userChoiceInvite'])->middleware('ability:Пользователь');
 
-    Route::post('/team/join', [ProfileController::class, 'inviteToTeam'])->middleware('ability:Пользователь');
+    Route::get('/team/invites', [ProfileController::class, 'getTeamInvites'])->middleware('ability:Пользователь')->middleware(['verified']);
 
-    Route::get('/team/invites', [ProfileController::class, 'getTeamInvites'])->middleware('ability:Пользователь');
+    Route::post('/generate-avatar', [ProfileController::class, 'generateNewAvatar'])->middleware(['verified']);
 
-    Route::post('/generate-avatar', [ProfileController::class, 'generateNewAvatar']);
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])->middleware(['verified']);
 
-    Route::post('/change-password', [ProfileController::class, 'changePassword']);
+    Route::delete('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь')->middleware(['verified']);
 
-    Route::delete('/team/leave', [ProfileController::class, 'leaveTeam'])->middleware('ability:Пользователь');
-
-    Route::delete('/team', [ProfileController::class, 'deleteTeam'])->middleware('ability:Пользователь');
-    Route::delete('/team/{id}/kick', [TeamController::class, 'kickMember'])->middleware('ability:Пользователь')->where(['id' => '[0-9]+']);
+    Route::delete('/team', [ProfileController::class, 'deleteTeam'])->middleware('ability:Пользователь')->middleware(['verified']);
+    Route::delete('/team/{id}/kick', [TeamController::class, 'kickMember'])->middleware('ability:Пользователь')->middleware(['verified'])->where(['id' => '[0-9]+']);
 });
 
 
@@ -124,7 +123,7 @@ Route::get('/stats', [NotificationsController::class, 'getStatsInfo']);
 Route::get('/near', [EventController::class, 'getNearEvents']);
 // Admin routes
 
-Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ'])->group(function () {
+Route::prefix('/admin')->middleware(['auth:sanctum', 'ability:Админ', 'verified'])->group(function () {
 
     Route::apiResource('/tags', TagController::class, ['only' => ['index', 'store', 'update', 'destroy']])->where(['id' => '[0-9]+']);
 

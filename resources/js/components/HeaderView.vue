@@ -197,6 +197,9 @@ header {
     z-index: -1;
 }
 
+.container-logo .router-link-active{
+    border-bottom: none;
+}
 .container-auth {
     color: var(--color-main);
     display: flex;

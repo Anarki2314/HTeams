@@ -25,6 +25,7 @@ class AdminUserSeeder extends Seeder
                 'phone' => $adminPhone,
                 'role_id' => Role::getIdRoleByTitle('Админ'),
                 'password' => $adminPassword,
+                'email_verified_at' => now(),
                 // Add any additional fields for the admin user if needed
             ]);
         }

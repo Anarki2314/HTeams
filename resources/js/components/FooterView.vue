@@ -23,19 +23,22 @@
                             <div class="contacts-item-img-container">
                                 <img :src="'/assets/img/tme.png'" alt="" class="contacts-item-img">
                             </div>
-                            <router-link to="/" class="router-link-underline">@HTeams</router-link>
+                            <!-- <a href="https://t.me/hteams">@HTeams</a> -->
+                            <a href="#">@HTeams</a>
                         </div>
                         <div class="contacts-item">
                             <div class="contacts-item-img-container">
                                 <img :src="'/assets/img/vk.png'" alt="" class="contacts-item-img">
                             </div>
-                            <router-link to="/" class="router-link-underline">HTeams</router-link>
+                            <!-- <a href="https://vk.com/hteams">HTeams</a> -->
+                            <a href="#">HTeams</a>
                         </div>
                         <div class="contacts-item">
                             <div class="contacts-item-img-container">
                                 <img :src="'/assets/img/mail.png'" alt="" class="contacts-item-img">
                             </div>
-                            <router-link to="/" class="router-link-underline">hteams@gmail.com</router-link>
+                            <!-- <a href="mailto:hteams@gmail.com">hteams@gmail.com</a> -->
+                            <a href="#">hteams@gmail.com</a>
                         </div>
                         </div>
                 </div>
