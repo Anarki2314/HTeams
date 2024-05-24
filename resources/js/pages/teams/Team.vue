@@ -29,7 +29,7 @@
                             Участники:
                         </h4>
                         <div
-                            class="container-team-members d-flex justify-content-start justify-content-lg-between flex-wrap">
+                            class="container-team-members  justify-content-start justify-content-lg-between flex-wrap">
                             <team-member-card v-for="member in team.members" :key="member" :member="member" />
                         </div>
                     </div>
@@ -174,13 +174,9 @@ section {
 }
 
 .container-team-members {
-    display: flex;
-    flex-direction: row;
-    gap: clamp(10px, 3vw, 30px);
-}
-
-.container-team-member {
-    gap: clamp(10px, 3vw, 30px);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap:clamp(10px, 3vw, 30px) clamp(20px, 4.5vw,80px) ;
 }
 
 .member-image {
