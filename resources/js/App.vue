@@ -35,7 +35,7 @@ export default {
 
 <style lang="scss">
 
-
+@import url("../sass/app.scss");
 :root{
     --color-main: #DEAC35;
     --size-title: clamp(24px, 3vw, 48px);
@@ -59,8 +59,8 @@ html {
     scroll-behavior: smooth;
 }
 body {
-    background-color: #1B1B1B;
-    color: #f4f4f4;
+    background-color: #1B1B1B !important;
+    color: #f4f4f4 !important;
 }
 section {
     position: relative;

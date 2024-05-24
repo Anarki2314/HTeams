@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\EventStatus;
 use App\Models\EventTeams;
 use App\Models\NotificationEvents;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -41,14 +42,13 @@ class CheckEventStatus implements ShouldQueue
         foreach ($events as $event) {
             switch ($event->status_id) {
                 case $statusesId['New']:
-                    if ($event->date_registration < now('Europe/Moscow')) {
-
+                    if (Carbon::parse($event->date_registration) < now('Europe/Moscow')) {
                         $event->status_id = $statusesId['Registration'];
                         $event->save();
                     }
                     break;
                 case $statusesId['Registration']:
-                    if ($event->date_start < now('Europe/Moscow')) {
+                    if (Carbon::parse($event->date_start) < now('Europe/Moscow')) {
                         $count = EventTeams::where('event_id', 1)->distinct('team_id')->count();
                         if ($count < 10) {
                             $event->status_id = $statusesId['Cancelled'];
@@ -73,7 +73,7 @@ class CheckEventStatus implements ShouldQueue
                     }
                     break;
                 case $statusesId['Started']:
-                    if ($event->date_end < now('Europe/Moscow')) {
+                    if (Carbon::parse($event->date_end) < now('Europe/Moscow')) {
                         $event->participants->each(function ($participant) use ($event) {
                             NotificationEvents::insertNotification($participant->user_id, $event->id, 'finished');
                         });

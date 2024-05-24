@@ -7,7 +7,7 @@
 
         <div class="footer-container-content">
             <div class="container-block">
-                <div class="footer-container d-flex justify-content-center text-center text-lg-start justify-content-md-between flex-wrap">
+                <div class="footer-container d-flex justify-content-center text-start justify-content-sm-between flex-wrap">
                 <div class="footer-container-navigation">
                     <h3 class="block-title">Навигация</h3>
                     <ul>
@@ -38,7 +38,7 @@
                                 <img :src="'/assets/img/mail.png'" alt="" class="contacts-item-img">
                             </div>
                             <!-- <a href="mailto:hteams@gmail.com">hteams@gmail.com</a> -->
-                            <a href="#">hteams@gmail.com</a>
+                            <a href="mailto:info@hteams.ru">info@hteams.ru</a>
                         </div>
                         </div>
                 </div>

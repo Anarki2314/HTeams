@@ -400,7 +400,7 @@ export default {
             this.isLoading = true;
 
             try {
-                const response = await api.post("/events/", this.form, {
+                const response = await api.post("/events", this.form, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
@@ -446,10 +446,6 @@ export default {
                         "Поле `Название` обязательно",
                         required
                     ),
-                    regex: helpers.withMessage(
-                        "В поле `Название` можно использовать только буквы и цифры",
-                        helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/)
-                    ),
                     minLength: helpers.withMessage(
                         "Поле `Название` должно содержать не менее 2 символов",
                         minLength(2)
@@ -463,10 +459,6 @@ export default {
                     required: helpers.withMessage(
                         "Поле `Описание` обязательно",
                         required
-                    ),
-                    regex: helpers.withMessage(
-                        "В поле `Описание` можно использовать только буквы и цифры",
-                        helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/)
                     ),
                     minLength: helpers.withMessage(
                         "Поле `Описание` должно содержать не менее 100 символов",

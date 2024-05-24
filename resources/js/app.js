@@ -3,7 +3,6 @@ import 'primevue/resources/themes/aura-dark-amber/theme.css'
 import 'notivue/notification.css'
 import 'notivue/animations.css'
 import 'notivue/notification-progress.css'
-import "../sass/app.scss";
 import { createApp } from 'vue';
 import router from './router'
 import store from './store/Auth-store'

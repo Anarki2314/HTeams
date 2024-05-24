@@ -182,6 +182,7 @@ export default {
             );
         },
         dateStartMin() {
+            console.log(this.form.date_registration);
             return (
                 new Date(
                     new Date(
@@ -245,6 +246,15 @@ export default {
         },
     },
     methods: {
+        convertDateString(dateString) {
+  const dateParts = dateString.split('.');
+  const timeParts = dateParts[2].split(' ');
+
+  const [day, month, year, time] = [dateParts[0], dateParts[1], timeParts[0], timeParts[1]];
+
+  const formattedDate = `${year}-${month}-${day}T${time}:00`;
+  return formattedDate;
+},
         async editEvent() {
             const isFormCorrect = await this.v$.$validate();
             if (!isFormCorrect) {
@@ -284,6 +294,10 @@ export default {
                     `/events/${this.$route.params.eventId}/full`
                 );
                 this.form = response.data.data;
+
+                this.form.date_start = this.convertDateString(this.form.date_start);
+                this.form.date_registration = this.convertDateString(this.form.date_registration);
+                this.form.date_end = this.convertDateString(this.form.date_end);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -305,10 +319,6 @@ export default {
                         "Поле `Название` обязательно",
                         required
                     ),
-                    regex: helpers.withMessage(
-                        "В поле `Название` можно использовать только буквы и цифры",
-                        helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/)
-                    ),
                     minLength: helpers.withMessage(
                         "Поле `Название` должно содержать не менее 2 символов",
                         minLength(2)
@@ -322,10 +332,6 @@ export default {
                     required: helpers.withMessage(
                         "Поле `Описание` обязательно",
                         required
-                    ),
-                    regex: helpers.withMessage(
-                        "В поле `Описание` можно использовать только буквы и цифры",
-                        helpers.regex(/^(?!.*\s{2})[а-яА-ЯёЁA-Za-z\d\s\-\_]+$/)
                     ),
                     minLength: helpers.withMessage(
                         "Поле `Описание` должно содержать не менее 100 символов",

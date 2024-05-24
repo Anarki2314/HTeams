@@ -68,7 +68,7 @@ Route::put('/events/{id}', [EventController::class, 'updateEvent'])->middleware(
 
 // Event routes
 
-Route::post('/events/', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified']);
+Route::post('/events', [EventController::class, 'createEvent'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified']);
 
 Route::apiResource('/events', EventController::class)->only(['index', 'show'])->where(['id' => '[0-9]+']);
 

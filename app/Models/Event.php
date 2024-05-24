@@ -41,6 +41,15 @@ class Event extends Model
         $this->attributes['date_end'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = htmlspecialchars($value);
+    }
+
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = htmlspecialchars($value);
+    }
     public function getDateRegistrationAttribute($value)
     {
         return Carbon::parse($value)->format('d.m.Y H:i');

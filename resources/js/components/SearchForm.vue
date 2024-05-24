@@ -38,7 +38,7 @@ export default {
 }
 
 #search::placeholder {
-    color: #313131;
+    color: #cecece;
 }
 
 .search-btn {
