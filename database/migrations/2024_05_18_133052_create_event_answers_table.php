@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('event_answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->foreignId('team_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('answer_id')->constrained('files')->onDelete('cascade');
             $table->timestamps();
         });
