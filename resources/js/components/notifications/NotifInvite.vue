@@ -3,8 +3,8 @@
         <h4 class="invite-name notif-row-card-name" v-if="invite.type == 'join'">Пользователь <span >
             {{ invite.email }}
         </span> хочет присоединиться к команде</h4>
-        <h4 class="invite-name notif-row-card-name" v-if="invite.type == 'invite'">Команда <router-link to="/teams/{{ invite.teamId }}" class="info-button">{{ invite.teamName }}</router-link>
-        приглашает вас вступить в команду</h4>
+        <h4 class="invite-name notif-row-card-name" v-if="invite.type == 'invite'">Команда <router-link :to="'/teams/' + invite.teamId  " class="info-button">{{ invite.teamName }}</router-link>
+        приглашает вас вступить</h4>
         <div class="container-invite-buttons d-flex flew-wrap notif-row-card-container-buttons">
             <button class="button-view dark-button notif-button" @click="sendChoice(true)" v-if="!isLoading">Принять</button>
             <button class="button-view dark-outline-button notif-button" @click="sendChoice(false)" v-if="!isLoading">Отклонить</button>

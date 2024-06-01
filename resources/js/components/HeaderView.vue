@@ -45,7 +45,7 @@
                         <li v-if="!isAuth"><router-link to="/signIn" class="router-link-underline">Войти</router-link>
                         </li>
                         <li v-if="!isAuth"><router-link to="/signUp"
-                                class="router-link-underline">Зарегистрироваться</router-link></li>
+                                class="router-link-underline cursor-pointer">Зарегистрироваться</router-link></li>
                     </ul>
                 </nav>
 
@@ -56,8 +56,6 @@
                     <router-link to="/signIn" class="sign-in-link">Войти</router-link>
                     <router-link to="/signUp">Зарегистрироваться</router-link>
 
-                    <!-- <router-link to="/profile" class="profile-link">example@example.com</router-link>
-                    <button class="logout-button">Выйти</button> -->
                 </div>
                 <div class="container-auth  d-none d-lg-flex align-items-center" v-if="isAuth">
                     <div class="container-notif-info d-flex align-items-center" @click="openModal('notif-modal')">
@@ -67,7 +65,7 @@
                         <div class="container-notif-count">{{ count }}</div>
                     </div>
                     <router-link to="/profile" class="profile-link">{{ $store.getters.getUser.email }}</router-link>
-                    <button class="logout-button" @click="logout(); toggleModal('nav-modal')">Выйти</button>
+                    <button class="logout-button" @click="logout(); toggleModal('nav-modal')" >Выйти</button>
                 </div>
             </div>
         </div>
@@ -269,5 +267,7 @@ header {
     background: none;
     font-size: var(--size-text);
     color: var(--color-main);
+
+    cursor: pointer;
 }
 </style>

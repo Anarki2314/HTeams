@@ -31,7 +31,7 @@
                         </div>
 
                         <div class="container-team-stats">
-                            <h4 class="team-subtitle text-center text-md-start">Статистика:</h4>
+                            <h4 class="team-subtitle text-center text-md-start">Управление:</h4>
                             
                             <div class="container-team-items">
                                 <div class="container-team-item">

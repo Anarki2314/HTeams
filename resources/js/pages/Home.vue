@@ -62,7 +62,7 @@
     <section class="events-section">
         <div class="container-block">
             <div class="container-events-title d-flex justify-content-center justify-content-sm-between align-items-end flex-wrap">
-                <h3 class="block-title text-center text-lg-start mb-3">Ближайшие соревнования</h3>
+                <h3 class="block-title text-center text-lg-start mb-3">Предстоящие соревнования</h3>
                 <router-link to="/events" class="events-link info-button">Все соревнования</router-link>
             </div>
 

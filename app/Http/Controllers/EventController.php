@@ -128,8 +128,12 @@ class EventController extends Controller
             })
             ->with('tags', function ($query) {
                 $query->select(['tags.id', 'tags.title']);
-            })
-            ->where(['status_id' => EventStatus::getByTitle('На проверке')->id])
+            });
+
+        if ($request->user()->isOrganizer()) {
+            $events = $events->where('creator_id', $request->user()->id);
+        }
+        $events = $events->where(['status_id' => EventStatus::getByTitle('На проверке')->id])
             ->allowedSorts(['created_at', 'updated_at'])
             ->allowedFilters(['title', AllowedFilter::custom('tags', new \App\Filters\TagsFilter())])
             ->paginate($request->get('perPage', 10));
@@ -160,8 +164,6 @@ class EventController extends Controller
 
 
         return response()->json(['message' => 'Соревнование отменено']);
-
-        // Maybe send notifications to all registrated users
     }
 
     public function approveEvent(Request $request, $id)

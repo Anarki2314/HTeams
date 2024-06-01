@@ -11,7 +11,7 @@
                 <SearchForm @search="getUsers" v-model="query['filter[email]']" />
                 <div class="container-users-title d-flex align-items-center justify-content-between">
                     <h3 class="block-title text-center text-lg-start">
-                        Пользователи
+                        Участники
                     </h3>
                     
                 </div>

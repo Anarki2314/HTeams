@@ -377,7 +377,6 @@ export default {
                 this.isLoading = false;
             }
         },
-
         async changePassword() {
             const isFormCorrect = await this.v$.$validate();
             if (!isFormCorrect) {

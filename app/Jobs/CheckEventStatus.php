@@ -38,7 +38,6 @@ class CheckEventStatus implements ShouldQueue
             'Cancelled' => EventStatus::getByTitle('Отменено')->id
         ];
         $events = Event::whereIn('status_id', array_slice($statusesId, 0, 3))->get();
-
         foreach ($events as $event) {
             switch ($event->status_id) {
                 case $statusesId['New']:
@@ -57,11 +56,8 @@ class CheckEventStatus implements ShouldQueue
                             });
                             NotificationEvents::insertNotification($event->creator_id, $event->id, 'cancelled', 'Недостаточно участников');
                             $event->save();
-
-
                             break;
                         }
-
                         $event->status_id = $statusesId['Started'];
 
                         $count = EventTeams::where('event_id', 1)->distinct('team_id')->count();
@@ -82,7 +78,6 @@ class CheckEventStatus implements ShouldQueue
                         $event->save();
                     }
                     break;
-
                 default:
                     break;
             }

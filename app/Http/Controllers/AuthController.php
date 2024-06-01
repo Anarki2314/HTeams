@@ -46,11 +46,11 @@ class AuthController extends Controller
 
 
         if ($user) {
-            if ($user->isBanned()) {
-                $ban = Ban::where('user_id', $user->id)->where('expires_at', '>', now())->first();
-                return response()->json(['message' => 'Ваш аккаунт заблокирован. Причина: ' . $ban->reason . '. Дата окончания блокировки: ' . $ban->expires_at], 403);
-            }
             if (Hash::check($credentials['password'], $user->password)) {
+                if ($user->isBanned()) {
+                    $ban = Ban::where('user_id', $user->id)->where('expires_at', '>', now())->first();
+                    return response()->json(['message' => 'Ваш аккаунт заблокирован. Причина: ' . $ban->reason . '. Дата окончания блокировки: ' . $ban->expires_at], 403);
+                }
                 $token = TokenService::generateToken($user);
                 $response = [
                     'token' => $token,

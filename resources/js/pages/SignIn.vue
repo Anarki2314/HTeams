@@ -104,7 +104,6 @@ export default {
                 })
                 localStorage.setItem('token', response.data.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.data.user));
-                localStorage.removeItem('reset-email');
                 this.$store.commit('login', response.data.data);
                 if (response.data.data.user.isVerified) {
                     this.$router.push({ name: 'home' }  );

@@ -5,7 +5,7 @@
             <div class="container-events">
                 <SearchForm @search="getEvents" v-model="query['filter[title]']"/>
                 <div class="container-events-title d-flex align-items-center justify-content-between">
-                    <h3 class="block-title text-center text-lg-start">Соревнования</h3>
+                    <h3 class="block-title text-center text-lg-start">Соревнования на проверке</h3>
                     <div class="container-filters">
                         <button class="filters-open-btn info-button" @click="toggleModal('modal-filters')">Фильтры</button>
                         <filters-modal v-if="showModal && activeModal === 'modal-filters'" :show="showModal" @close="closeModal">
