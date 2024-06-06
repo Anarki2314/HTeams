@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('password');
 
             $table->foreignId('avatar_id')->nullable()->constrained('files', 'id')->onDelete('cascade');
-            $table->string('auth_code')->nullable();
             $table->foreignId('role_id')->constrained('roles');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
