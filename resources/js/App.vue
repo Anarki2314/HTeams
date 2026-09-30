@@ -4,6 +4,20 @@
 
         <router-view/>
     </div>
+    <div class="modal-cookie" v-if="!cookieAccept">
+        <div class="container-block">
+            <div class="container-cookie">
+
+                <div class="cookie-text">
+                    Мы используем файлы cookie для предоставления наших услуг, анализа веб-трафика и улучшения вашего опыта на сайте. Используя сайт, вы соглашаетесь на использование файлов cookie.
+                </div>
+    
+                <div class="container-cookie-btn text-center text-sm-end">
+                    <button type="button" class="cookie-btn button-view main-button" @click="acceptCookie">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <Notivue v-slot="item">
     <NotivueSwipe :item="item">
         <Notification :item="item" :theme="pastelTheme" >
@@ -27,7 +41,15 @@ export default {
 
     data() {
         return {
-            pastelTheme
+            pastelTheme,
+            cookieAccept: localStorage.getItem('cookieAccept') ? true : false
+        }
+    },
+
+    methods: {
+        acceptCookie() {
+            localStorage.setItem('cookieAccept', true)
+            this.cookieAccept = true
         }
     }
 }
@@ -246,6 +268,33 @@ ul {
 .notif-row-card-container-buttons{
     gap: clamp(10px, 3vw, 20px);
 }
+
+
+.modal-cookie{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.container-cookie{
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: clamp(10px, 1.5vw, 20px) clamp(20px, 3vw, 40px);
+    border-radius: 5px;
+}
+.container-cookie-btn{
+    margin-top: clamp(10px, 1.5vw, 20px);
+}
+
+
+.cookie-text{
+    font-size: var(--size-text);
+    color: #f4f4f4;
+
+}
+
+
 
 /** Buttons */
 @import url("@sass/buttons.scss");

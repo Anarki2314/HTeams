@@ -141,6 +141,32 @@ class EventController extends Controller
 
         return response()->json($events);
     }
+    public function getCancelledEvents(Request $request)
+    {
+        $events = QueryBuilder::for(Event::class)
+            ->select(['id', 'title', 'date_registration', 'created_at', 'updated_at', 'image_id', 'creator_id'])
+            ->defaultSort('-updated_at')
+            ->with('image', function ($query) {
+                $query->select(['id', 'name', 'path']);
+            })
+            ->with('creator', function ($query) {
+                $query->select(['id', 'orgName']);
+            })
+            ->with('tags', function ($query) {
+                $query->select(['tags.id', 'tags.title']);
+            });
+
+        if ($request->user()->isOrganizer()) {
+            $events = $events->where('creator_id', $request->user()->id);
+        }
+        $events = $events->where(['status_id' => EventStatus::getByTitle('Отменено')->id])
+            ->allowedSorts(['created_at', 'updated_at'])
+            ->allowedFilters(['title', AllowedFilter::custom('tags', new \App\Filters\TagsFilter())])
+            ->paginate($request->get('perPage', 10));
+
+
+        return response()->json($events);
+    }
 
     public function cancelEvent(Request $request, $id)
     {

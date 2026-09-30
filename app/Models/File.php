@@ -26,7 +26,7 @@ class File extends Model
 
     public static function generateAvatar()
     {
-        $url = 'https://robohash.org/' . \Illuminate\Support\Str::random(10) . '?set=set3';
+        $url = 'https://api.dicebear.com/7.x/avataaars/png?seed=' . \Illuminate\Support\Str::random(10);
 
         try {
 

@@ -45,6 +45,8 @@
                             <div class="container-profile-item" v-if="user.isOrganizer"><router-link
                                     to="/profile/moderating-events" class="profile-info-text info-button">На
                                     проверке</router-link></div>
+                            <div class="container-profile-item" v-if="user.isOrganizer"><router-link
+                                    to="/profile/cancelled-events" class="profile-info-text info-button">Отмененные</router-link></div>
                             <div class="container-profile-item"><router-link to="/profile/upcoming"
                                     class="profile-info-text info-button">Предстоящие</router-link></div>
                             <div class="container-profile-item"><router-link to="/profile/finished"

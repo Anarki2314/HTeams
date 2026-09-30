@@ -49,6 +49,7 @@ Route::get('/events/moderation', [EventController::class, 'getModerationEvents']
 
 Route::get('/events/upcoming', [EventController::class, 'getUpcomingEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор', 'verified']);
 Route::get('/events/finished', [EventController::class, 'getFinishedEvents'])->middleware(['auth:sanctum', 'ability:Пользователь,Организатор', 'verified']);
+Route::get('/events/cancelled', [EventController::class, 'getCancelledEvents'])->middleware(['auth:sanctum', 'ability:Организатор', 'verified']);
 
 Route::post('/events/{id}/join', [EventController::class, 'joinEvent'])->middleware(['auth:sanctum', 'ability:Пользователь', 'verified', 'verified'])->where(['id' => '[0-9]+']);
 Route::delete('/events/{id}/leave', [EventController::class, 'leaveEvent'])->middleware(['auth:sanctum', 'ability:Пользователь', 'verified'])->where(['id' => '[0-9]+']);
